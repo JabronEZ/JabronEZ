@@ -35,6 +35,8 @@ fi
 JEZ_META_DIR="$JEZ_ABS_DIR/Meta"
 JEZ_SM_DIR="$JEZ_ABS_DIR/Sourcemod"
 JEZ_PATCHES_DIR="$JEZ_ABS_DIR/Patches"
+JEZ_HL2SDK_DIR="$JEZ_ABS_DIR/HL2SDK"
+JEZ_SOURCEMM_DIR="$JEZ_ABS_DIR/SourceMM"
 
 if ! "$JEZ_META_DIR/PullSourcemod.sh" "$JEZ_SM_DIR"
 then
@@ -45,6 +47,18 @@ fi
 if ! "$JEZ_META_DIR/ApplyPatches.sh" "$JEZ_SM_DIR" "$JEZ_PATCHES_DIR"
 then
 	echo "Unable to apply patches, halting."
+	exit 1
+fi
+
+if ! "$JEZ_META_DIR/PullHL2SDK.sh" "$JEZ_HL2SDK_DIR"
+then
+	echo "Unable to pull HL2SDK codebase, halting."
+	exit 1
+fi
+
+if ! "$JEZ_META_DIR/PullSourceMM.sh" "$JEZ_SOURCEMM_DIR"
+then
+	echo "Unable to pull SourceMM codebase, halting."
 	exit 1
 fi
 
