@@ -33,10 +33,11 @@ then
 fi
 
 JEZ_META_DIR="$JEZ_ABS_DIR/Meta"
-JEZ_SM_DIR="$JEZ_ABS_DIR/Sourcemod"
+JEZ_SM_DIR="$JEZ_ABS_DIR/Dependencies/Sourcemod"
 JEZ_PATCHES_DIR="$JEZ_ABS_DIR/Patches"
-JEZ_HL2SDK_DIR="$JEZ_ABS_DIR/HL2SDK"
-JEZ_SOURCEMM_DIR="$JEZ_ABS_DIR/SourceMM"
+JEZ_HL2SDK_DIR="$JEZ_ABS_DIR/Dependencies/HL2SDK/hl2sdk-csgo"
+JEZ_SOURCEMM_DIR="$JEZ_ABS_DIR/Dependencies/SourceMM"
+JEZ_MYSQL_DIR="$JEZ_ABS_DIR/Dependencies/MySQL"
 
 if ! "$JEZ_META_DIR/PullSourcemod.sh" "$JEZ_SM_DIR"
 then

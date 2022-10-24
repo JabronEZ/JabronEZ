@@ -1,0 +1,24 @@
+From 4bbb52c1d38be8e629620990a825d93a0877e0a9 Mon Sep 17 00:00:00 2001
+From: Anthony Iacono <anthonyiacono@gmail.com>
+Date: Sun, 23 Oct 2022 22:48:49 -0400
+Subject: [PATCH 2/2] Freedom35: Build the extension when building SourceMod
+
+---
+ AMBuildScript | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/AMBuildScript b/AMBuildScript
+index 6ada6eb9..865e0a88 100644
+--- a/AMBuildScript
++++ b/AMBuildScript
+@@ -833,6 +833,7 @@ else:
+     'extensions/tf2/AMBuilder',
+     'extensions/topmenus/AMBuilder',
+     'extensions/updater/AMBuilder',
++    '../../Extension/AMBuilder'
+   ]
+ 
+   if builder.backend == 'amb2':
+-- 
+2.38.0.windows.1
+

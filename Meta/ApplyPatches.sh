@@ -20,3 +20,4 @@ fi
 echo "Applying patches from $JEZ_PATCHES_DIR..."
 
 (cd "$JEZ_SM_DIR" && git am --3way --ignore-space-change "$JEZ_PATCHES_DIR/0001-Freedom35-Add-support-for-FireEventEx.patch")
+#(cd "$JEZ_SM_DIR" && git am --3way --ignore-space-change "$JEZ_PATCHES_DIR/0002-Freedom35-Build-the-extension-when-building-SourceMo.patch")
