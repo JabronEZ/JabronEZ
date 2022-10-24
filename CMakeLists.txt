@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.23)
+project(JabronEZ)
+
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(Sourcemod/public/extensions)
+include_directories(Sourcemod/sourcepawn/include)
+include_directories(Sourcemod/public/amtl/amtl)
+include_directories(Sourcemod/public)
+include_directories(SourceMM/core)
+include_directories(SourceMM/core/sourcehook)
+include_directories(HL2SDK/game/shared)
+include_directories(HL2SDK/public/game/server)
+include_directories(HL2SDK/public/vstdlib)
+include_directories(HL2SDK/public/tier1)
+include_directories(HL2SDK/public/tier0)
+include_directories(HL2SDK/public/engine)
+include_directories(HL2SDK/public)
+
+add_library(JabronEZ SHARED Extension/extension.cpp Extension/forwards.cpp Extension/globals.cpp Extension/natives.cpp)
