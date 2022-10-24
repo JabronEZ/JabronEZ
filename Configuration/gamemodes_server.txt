@@ -1,0 +1,326 @@
+// To use this file rename it from gamemodes_server.example.txt to gamemodes_server.txt
+//
+// Values here override the default gamemodes.txt 
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// This verion of the defunked gamemodes_server.txt.example renamed gamemodes_server.example.txt
+// for easier editing and renaming for extentions.
+// This file was kindly provided by the owner / developer, Krillin, of KrillinsWorld.us 
+//
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+"GameModes_Server.txt"
+{
+	"gameTypes"
+	{
+		"classic"
+		{
+			"gameModes"
+			{
+
+				"casual"
+				{
+
+					"maxplayers"		"30"		// Note that maxplayers doesn't go in the convar block.
+																	// Another way to set maxplayers is to add -maxplayers_override XX to the cmd line.
+					"exec"
+					{
+						// Any config files listed here will be executed after the ones in gamemodes.txt.
+						"exec"					"server_last.cfg"
+					}
+					
+					// Map groups for online modes
+					"mapgroupsMP"
+					{
+						"mg_bomb"		""
+						"mg_hostage"		""
+						"mg_dust"		""
+						"mg_bomb_se"		""
+						"mg_custom"	""			// To use this change your server launch script or batch to +mapgroup mg_custom +map de_dust2
+					}
+				}
+
+				"competitive"
+				{
+					"maxplayers"		"11"		// Note that maxplayers doesn't go in the convar block.
+																	// Another way to set maxplayers is to add -maxplayers_override XX to the cmd line.
+					"exec"
+					{
+						// Any config files listed here will be executed after the ones in gamemodes.txt.
+						"exec"					"server_last.cfg"
+					}
+										
+					// Map groups for online modes
+					"mapgroupsMP"
+					{
+						"mg_bomb"		""
+						"mg_hostage"	""
+						"mg_dust"		""
+						"mg_bomb_se"	""
+						"mg_custom"	""			// To use this change your server launch script or batch to +mapgroup mg_custom +map de_dust2
+					}
+				}
+			}	
+		}
+		"gungame"
+		{
+			// This is the list of game modes supported by this game type.
+			"gameModes"
+			{
+				"gungameprogressive"
+				{
+
+					"maxplayers"		"10"		// Note that maxplayers doesn't go in the convar block.
+																	// Another way to set maxplayers is to add -maxplayers_override XX to the cmd line.
+					"exec"
+					{
+						// Any config files listed here will be executed after the ones in gamemodes.txt.
+						"exec"					"server_last.cfg"
+					}
+					
+					// Map groups for online modes
+					"mapgroupsMP"
+					{
+						"mg_armsrace"	""
+					}
+
+					"no_reset_vote_threshold_ct" 		"knife"
+					"no_reset_vote_threshold_t" 		"knife"
+
+					"weaponprogression_ct"
+					{
+						"mp9"			{ "kills"	"2" }
+						"mac10"			{ "kills"	"2" }
+						"mp7"			{ "kills"	"2" }
+						"bizon"			{ "kills"	"2" }
+						"ump45"			{ "kills"	"2" }
+						"p90"			{ "kills"	"2" }
+						"nova"			{ "kills"	"2" }
+						"mag7"			{ "kills"	"2" }
+						"xm1014"		{ "kills"	"2" }
+						"sawedoff"		{ "kills"	"2" }
+						"galilar"		{ "kills"	"2" }
+						"famas"			{ "kills"	"2" }
+						"ak47"			{ "kills"	"2" }
+						"m4a1"			{ "kills"	"2" }
+						"sg556"			{ "kills"	"2" }
+						"aug"			{ "kills"	"2" }
+						"awp"			{ "kills"	"2" }
+						"m249"			{ "kills"	"2" }
+						"negev"			{ "kills"	"2" }
+						"glock"			{ "kills"	"2" }
+						"hkp2000"		{ "kills"	"2" }
+						"tec9"			{ "kills"	"2" }
+						"p250"			{ "kills"	"2" }
+						"deagle"		{ "kills"	"2" }
+						"fiveseven"		{ "kills"	"2" }
+						"elite"			{ "kills"	"2" }
+						"knifegg"			{ "kills"	"1" }
+					}
+					
+					"weaponprogression_t"
+					{
+						"mp9"			{ "kills"	"2" }
+						"mac10"			{ "kills"	"2" }
+						"mp7"			{ "kills"	"2" }
+						"bizon"			{ "kills"	"2" }
+						"ump45"			{ "kills"	"2" }
+						"p90"			{ "kills"	"2" }
+						"nova"			{ "kills"	"2" }
+						"mag7"			{ "kills"	"2" }
+						"xm1014"		{ "kills"	"2" }
+						"sawedoff"		{ "kills"	"2" }
+						"galilar"		{ "kills"	"2" }
+						"famas"			{ "kills"	"2" }
+						"ak47"			{ "kills"	"2" }
+						"m4a1"			{ "kills"	"2" }
+						"sg556"			{ "kills"	"2" }
+						"aug"			{ "kills"	"2" }
+						"awp"			{ "kills"	"2" }
+						"m249"			{ "kills"	"2" }
+						"negev"			{ "kills"	"2" }
+						"glock"			{ "kills"	"2" }
+						"hkp2000"		{ "kills"	"2" }
+						"tec9"			{ "kills"	"2" }
+						"p250"			{ "kills"	"2" }
+						"deagle"		{ "kills"	"2" }
+						"fiveseven"		{ "kills"	"2" }
+						"elite"			{ "kills"	"2" }
+						"knifegg"			{ "kills"	"2" }
+					}
+				}
+
+				"gungametrbomb"
+				{
+
+					"maxplayers"		"10"		// Note that maxplayers doesn't go in the convar block.
+																	// Another way to set maxplayers is to add -maxplayers_override XX to the cmd line.
+					"exec"
+					{
+						// Any config files listed here will be executed after the ones in gamemodes.txt.
+						"exec"					"server_last.cfg"
+					}
+					
+					// Map groups for online modes
+					"mapgroupsMP"
+					{
+						"mg_demolition"		""
+					}
+
+					"weaponprogression_ct"
+					{
+						"m4a1"			{ "kills"	"1" }
+						"p90"			{ "kills"	"1" }
+						"ump45"			{ "kills"	"1" }
+						"deagle"		{ "kills"	"1" }
+						"nova"			{ "kills"	"1" }
+						"fiveseven"		{ "kills"	"1" }
+						"hkp2000"		{ "kills"	"1" }
+						"ssg08"			{ "kills"	"1" }
+						"awp"			{ "kills"	"1" }
+						"Scar20"		{ "kills"	"1" }
+					}
+					
+					"weaponprogression_t"
+					{
+						"ak47"			{ "kills"	"1" }
+						"p90"			{ "kills"	"1" }
+						"bizon"			{ "kills"	"1" }
+						"deagle"		{ "kills"	"1" }
+						"nova"			{ "kills"	"1" }
+						"p250"			{ "kills"	"1" }
+						"glock"			{ "kills"	"1" }
+						"ssg08"			{ "kills"	"1" }
+						"awp"			{ "kills"	"1" }
+						"g3sg1"			{ "kills"	"1" }
+					}
+				}
+			}
+		}
+	}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Map groups
+//
+// To use a mapgroup, it needs to be defined in a keyvalues
+// block such as the example below, as well as listed in the 
+// 'mapgroupsMP' block within the game mode that will run it,
+// such as the example above.
+//
+// Then launch the server with '+mapgroup MAPGROUPNAME'
+//
+// Example:
+//
+// srcds -game csgo +game_mode 1 +mapgroup mg_bomb_se +map de_nuke_se
+//
+//
+// Check the developer wiki for updated community info
+// https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+	"mapgroups"
+	{
+		"mg_bomb_se"									// mapgroup definition
+		{
+			"name"			"mg_bomb_se"
+			"maps"
+			{
+				"de_dust_se"		""
+				"de_dust2_se"		""
+				"de_nuke_se"		""
+				"de_train_se"		""
+				"de_inferno_se"		""
+				"de_aztec_se"		""
+			}
+		}
+
+		"mg_custom"								// mapgroup definition
+		{
+			"name"			"mg_custom"
+			"maps"
+			{
+				"cs_agency"		""
+				"cs_assault"		""
+				"cs_italy"		""
+				"cs_militia"		""
+				"cs_office"		""
+				"cs_siege"		""
+				"de_ali"		""
+				"de_aztec"		""
+				"de_cache"		""
+				"de_chinatown"		""
+				"de_dust"		""
+				"de_dust2"		""
+				"de_gwalior"		""
+				"de_inferno"		""
+				"de_mirage"		""
+				"de_nuke"		""
+				"de_ruins"		""
+				"de_seaside"		""
+				"de_shorttrain"		""
+				"de_train"		""
+				"de_vertigo"		""
+			}
+		}
+
+		"mg_hostage"
+		{
+			"name"			"mg_hostage"
+			"maps"
+			{
+				"cs_office"		""
+				"cs_italy"		""
+			}
+		}
+
+		"mg_bomb"
+		{
+			"name"			"mg_bomb"
+			"maps"
+			{
+				"de_dust2"		""
+				"de_train"		""
+				"de_inferno"		""
+				"de_dust"		""
+				"de_aztec"		""
+				"de_nuke"		""
+			}
+		}
+
+		"mg_dust"
+		{
+			"name"			"mg_dust"
+			"maps"
+			{
+				"de_dust"		""
+				"de_dust2"		""
+			}
+		}
+
+		"mg_armsrace"
+		{
+			"name"			"mg_armsrace"
+			"maps"
+			{
+				"ar_shoots"		""
+				"ar_baggage"		""
+			}
+		}
+
+		"mg_demolition"
+		{
+			"name"			"mg_demolition"
+			"maps"
+			{
+				"de_lake"		""
+				"de_stmarc"		""
+				"de_sugarcane"		""
+				"de_bank"		""
+				"de_safehouse"		""
+				"de_shorttrain"		""
+			}
+		}
+	}
+}

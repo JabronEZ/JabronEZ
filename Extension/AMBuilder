@@ -1,0 +1,19 @@
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
+import os
+
+project = SM.HL2Project(builder, 'freedom35.ext')
+
+project.sources += [
+  'extension.cpp',
+  'globals.cpp',
+  'natives.cpp',
+  'forwards.cpp',
+  '../../public/smsdk_ext.cpp',
+  '../../public/CDetour/detours.cpp',
+  '../../public/asm/asm.c'
+]
+
+sdk = SM.sdks['csgo']
+  
+SM.HL2Config(project, 'freedom35.ext', sdk)
+SM.extensions += builder.Add(project)

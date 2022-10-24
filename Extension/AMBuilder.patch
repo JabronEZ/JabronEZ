@@ -1,0 +1,11 @@
+--- AMBuilder.or	Thu Jan 22 00:07:39 2015
++++ AMBuilder	Mon Jan 26 09:45:43 2015
+@@ -20,7 +20,7 @@
+       '-lm',
+     ]
+   if builder.target_platform == 'linux':
+-    binary.compiler.postlink += ['-lrt']
++    binary.compiler.postlink += ['-lrt','-lstdc++']
+   elif builder.target_platform == 'windows':
+     binary.compiler.postlink += [
+       os.path.join(SM.mysql_root, 'lib', 'opt', 'mysqlclient.lib'),

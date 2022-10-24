@@ -1,0 +1,18 @@
+--- AMBuildScript.or	Sat Jan 24 19:50:44 2015
++++ AMBuildScript	Sat Jan 24 19:51:00 2015
+@@ -164,7 +164,6 @@
+         '-pipe',
+         '-fno-strict-aliasing',
+         '-Wall',
+-        '-Werror',
+         '-Wno-unused',
+         '-Wno-switch',
+         '-Wno-array-bounds',
+@@ -501,6 +500,7 @@
+   'extensions/clientprefs/AMBuilder',
+   'extensions/curl/AMBuilder',
+   'extensions/cstrike/AMBuilder',
++  'extensions/freedom35/AMBuilder',
+   'extensions/geoip/AMBuilder',
+   'extensions/mysql/AMBuilder',
+   'extensions/regex/AMBuilder',

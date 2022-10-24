@@ -1,0 +1,468 @@
+From 4c3e21c6a3a12da46742828320f20773b7d84826 Mon Sep 17 00:00:00 2001
+From: Anthony Iacono <anthonyiacono@gmail.com>
+Date: Sun, 23 Oct 2022 20:01:43 -0400
+Subject: [PATCH] Freedom35: Add support for `FireEventEx`
+
+This commit adds support for firing a game event to a list of clients, since by default an event is automatically fired to all clients. We take advantage of this to allow our grenades practice plugin to prevent broadcast of certain events for features like group invisibility, etc.
+---
+ core/EventManager.cpp      | 248 +++++++++++++++++++++++++++++++++++++
+ core/EventManager.h        |  17 ++-
+ core/smn_events.cpp        |  56 +++++++++
+ plugins/include/events.inc |  13 ++
+ 4 files changed, 333 insertions(+), 1 deletion(-)
+
+diff --git a/core/EventManager.cpp b/core/EventManager.cpp
+index dc67d81c..9aab617d 100644
+--- a/core/EventManager.cpp
++++ b/core/EventManager.cpp
+@@ -30,15 +30,19 @@
+  */
+ 
+ #include "EventManager.h"
++#include "sourcemod.h"
+ #include "sm_stringutil.h"
++#include <IGameConfigs.h>
+ #include "PlayerManager.h"
+ 
+ #include "logic_bridge.h"
+ #include <bridge/include/IScriptManager.h>
++#include <bridge/include/ILogger.h>
+ 
+ EventManager g_EventManager;
+ 
+ SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent *, bool);
++SH_DECL_MANUALHOOK1(ClientFireGameEvent, 0, 0, 0, bool, IGameEvent *);
+ 
+ const ParamType GAMEEVENT_PARAMS[] = {Param_Cell, Param_String, Param_Cell};
+ typedef List<EventHook *> EventHookList;
+@@ -73,8 +77,19 @@ EventManager::~EventManager()
+ 	m_FreeEvents.popall();
+ }
+ 
++void EventManager::OnSourceModAllInitialized_Post()
++{
++	ReconfigureHook();
++
++	GetIServer();
++}
++
+ void EventManager::OnSourceModAllInitialized()
+ {
++	g_Players.AddClientListener(this);
++
++	m_FiringToClients = false;
++	m_FiringToClientsVec.clear();
+ 	/* Add a hook for IGameEventManager2::FireEvent() */
+ 	SH_ADD_HOOK(IGameEventManager2, FireEvent, gameevents, SH_MEMBER(this, &EventManager::OnFireEvent), false);
+ 	SH_ADD_HOOK(IGameEventManager2, FireEvent, gameevents, SH_MEMBER(this, &EventManager::OnFireEvent_Post), true);
+@@ -514,3 +529,236 @@ bool EventManager::OnFireEvent_Post(IGameEvent *pEvent, bool bDontBroadcast)
+ 
+ 	RETURN_META_VALUE(MRES_IGNORED, true);
+ }
++
++#if defined PLATFORM_WINDOWS
++#define FAKECLIENT_KEY "CreateFakeClient_Windows"
++#elif defined PLATFORM_LINUX
++#define FAKECLIENT_KEY "CreateFakeClient_Linux"
++#elif defined PLATFORM_APPLE
++#define FAKECLIENT_KEY "CreateFakeClient_Mac"
++#else
++#error "Unsupported platform"
++#endif
++
++size_t UTIL_StringToSignature(const char *str, char buffer[], size_t maxlength)
++{
++	size_t real_bytes = 0;
++	size_t length = strlen(str);
++
++	for (size_t i = 0; i<length; i++)
++	{
++		if (real_bytes >= maxlength)
++		{
++			break;
++		}
++		buffer[real_bytes++] = (unsigned char)str[i];
++		if (str[i] == '\\'
++			&& str[i + 1] == 'x')
++		{
++			if (i + 3 >= length)
++			{
++				continue;
++			}
++			/* Get the hex part */
++			char s_byte[3];
++			int r_byte;
++			s_byte[0] = str[i + 2];
++			s_byte[1] = str[i + 3];
++			s_byte[2] = '\n';
++			/* Read it as an integer */
++			sscanf(s_byte, "%x", &r_byte);
++			/* Save the value */
++			buffer[real_bytes - 1] = (unsigned char)r_byte;
++			/* Adjust index */
++			i += 3;
++		}
++	}
++
++	return real_bytes;
++}
++
++bool UTIL_VerifySignature(const void *addr, const char *sig, size_t len)
++{
++	unsigned char *addr1 = (unsigned char *)addr;
++	unsigned char *addr2 = (unsigned char *)sig;
++
++	for (size_t i = 0; i < len; i++)
++	{
++		if (addr2[i] == '*')
++			continue;
++		if (addr1[i] != addr2[i])
++			return false;
++	}
++
++	return true;
++}
++
++int EventManager::GetClientIndexFromGameClient(void *p_GameClient)
++{
++	for (int s_Index = 1; s_Index <= 64; s_Index++)
++	{
++		IGamePlayer *s_Player = g_Players.GetGamePlayer(s_Index);
++
++		if (s_Player == NULL)
++			continue;
++
++		IClient *s_Client = m_IServer->GetClient(s_Index - 1);
++
++		if (s_Client == NULL)
++			continue;
++
++		unsigned char *s_GameClient = (unsigned char *)s_Client - 4;
++
++		if (s_GameClient != p_GameClient)
++			continue;
++
++		return s_Index;
++	}
++
++	return -1;
++}
++
++/* IClientListener::OnClientConnected */
++void EventManager::OnClientConnected(int client)
++{
++	IGamePlayer *pPlayer = g_Players.GetGamePlayer(client);
++
++	if (pPlayer == NULL)
++		return;
++
++#if SOURCE_ENGINE >= SE_CSGO
++	IClient *pClient = m_IServer->GetClient(client - 1);
++
++	if (pClient == NULL)
++		return;
++
++	unsigned char *pGameClient = (unsigned char *)pClient - 4;
++
++	SH_ADD_MANUALHOOK(ClientFireGameEvent, pGameClient, SH_MEMBER(this, &EventManager::Hook_ClientFireGameEvent), false);
++#endif
++}
++
++void EventManager::GetIServer()
++{
++	m_IServer = NULL;
++
++	void *addr;
++	const char *sigstr;
++	char sig[32];
++	size_t siglen;
++	int offset;
++	void *vfunc = NULL;
++
++	/* Use the symbol if it exists */
++	if (g_pGameConf->GetMemSig("sv", &addr) && addr)
++	{
++		m_IServer = reinterpret_cast<IServer *>(addr);
++	}
++
++#if defined METAMOD_PLAPI_VERSION || PLAPI_VERSION >= 11
++	/* Get the CreateFakeClient function pointer */
++	if (!(vfunc = SH_GET_ORIG_VFNPTR_ENTRY(engine, &IVEngineServer::CreateFakeClient)))
++	{
++		return;
++	}
++#else
++	/* Get the interface manually */
++	SourceHook::MemFuncInfo info = { true, -1, 0, 0 };
++	SourceHook::GetFuncInfo(&IVEngineServer::CreateFakeClient, info);
++
++	vfunc = enginePatch->GetOrigFunc(info.vtbloffs, info.vtblindex);
++	if (!vfunc)
++	{
++		void **vtable = *reinterpret_cast<void ***>(enginePatch->GetThisPtr() + info.thisptroffs + info.vtbloffs);
++		vfunc = vtable[info.vtblindex];
++	}
++#endif
++
++	/* Get signature string for IVEngineServer::CreateFakeClient() */
++	sigstr = g_pGameConf->GetKeyValue(FAKECLIENT_KEY);
++
++	if (!sigstr)
++	{
++		return;
++	}
++
++	/* Convert signature string to signature bytes */
++	siglen = UTIL_StringToSignature(sigstr, sig, sizeof(sig));
++
++	/* Check if we're on the expected function */
++	if (!UTIL_VerifySignature(vfunc, sig, siglen))
++	{
++		return;
++	}
++
++	/* Get the offset into CreateFakeClient */
++	if (!g_pGameConf->GetOffset("sv", &offset))
++	{
++		return;
++	}
++
++	/* Finally we have the interface we were looking for */
++	m_IServer = *reinterpret_cast<IServer **>(reinterpret_cast<unsigned char *>(vfunc)+offset);
++}
++
++bool EventManager::Hook_ClientFireGameEvent(IGameEvent *pEvent)
++{
++	if (!m_FiringToClients)
++	{
++		RETURN_META_VALUE(MRES_IGNORED, false);
++	}
++
++	void *pGameClient = META_IFACEPTR(void*);
++	int client = GetClientIndexFromGameClient(pGameClient);
++
++	bool clientIsIgnored = true;
++	int vecSize = m_FiringToClientsVec.size();
++
++	for (int idx = 0; idx < vecSize; idx++)
++	{
++		if (m_FiringToClientsVec.at(idx) != client)
++			continue;
++
++		clientIsIgnored = false;
++		break;
++	}
++
++	if (clientIsIgnored)
++	{
++		RETURN_META_VALUE(MRES_SUPERCEDE, true);
++	}
++
++	RETURN_META_VALUE(MRES_IGNORED, false);
++}
++
++void EventManager::ReconfigureHook()
++{
++	int offset;
++
++	if (!g_pGameConf->GetOffset("ClientFireGameEvent", &offset))
++	{
++		logger->LogError("Failed to find ClientFireGameEvent offset");
++		return;
++	}
++
++	META_CONPRINTF("ClientFireGameEvent offset loaded as: %d\n", offset);
++	SH_MANUALHOOK_RECONFIGURE(ClientFireGameEvent, offset, 0, 0);
++}
++
++void EventManager::FireEventEx(EventInfo *pInfo, CVector<int> vecClients)
++{
++	m_FiringToClients = true;
++	m_FiringToClientsVec = vecClients;
++
++	/* Actually fire event now */
++	gameevents->FireEvent(pInfo->pEvent, false);
++
++	m_FiringToClients = false;
++	m_FiringToClientsVec.clear();
++
++	/* IGameEvent is free at this point, so no one owns this */
++	pInfo->pOwner = NULL;
++
++	/* Add EventInfo struct to free event stack */
++	m_FreeEvents.push(pInfo);
++}
+\ No newline at end of file
+diff --git a/core/EventManager.h b/core/EventManager.h
+index b1492314..b1e7c508 100644
+--- a/core/EventManager.h
++++ b/core/EventManager.h
+@@ -40,6 +40,9 @@
+ #include <IHandleSys.h>
+ #include <IForwardSys.h>
+ #include <IPluginSys.h>
++#include "PlayerManager.h"
++#include "iserver.h"
++#include <sh_vector.h>
+ 
+ class IClient;
+ 
+@@ -102,13 +105,15 @@ class EventManager :
+ 	public SMGlobalClass,
+ 	public IHandleTypeDispatch,
+ 	public IPluginsListener,
+-	public IGameEventListener2
++	public IGameEventListener2,
++	public IClientListener
+ {
+ public:
+ 	EventManager();
+ 	~EventManager();
+ public: // SMGlobalClass
+ 	void OnSourceModAllInitialized();
++	void OnSourceModAllInitialized_Post();
+ 	void OnSourceModShutdown();
+ public: // IHandleTypeDispatch
+ 	void OnHandleDestroy(HandleType_t type, void *object);
+@@ -116,9 +121,15 @@ public: // IPluginsListener
+ 	void OnPluginUnloaded(IPlugin *plugin);
+ public: // IGameEventListener2
+ 	void FireGameEvent(IGameEvent *pEvent);
++public: // IClientListener
++	void OnClientConnected(int client);
+ #if SOURCE_ENGINE >= SE_LEFT4DEAD
+ 	int GetEventDebugID();
+ #endif
++	void ReconfigureHook();
++	void GetIServer();
++	int GetClientIndexFromGameClient(void *pGameClient);
++	bool Hook_ClientFireGameEvent(IGameEvent *pEvent);
+ public:
+ 	/**
+ 	 * Get the 'GameEvent' handle type ID.
+@@ -132,6 +143,7 @@ public:
+ 	EventHookError UnhookEvent(const char *name, IPluginFunction *pFunction, EventHookMode mode=EventHookMode_Post);
+ 	EventInfo *CreateEvent(IPluginContext *pContext, const char *name, bool force=false);
+ 	void FireEvent(EventInfo *pInfo, bool bDontBroadcast=false);
++	void FireEventEx(EventInfo *pInfo, CVector<int> pClients);
+ 	void FireEventToClient(EventInfo *pInfo, IClient *pClient);
+ 	void CancelCreatedEvent(EventInfo *pInfo);
+ private: // IGameEventManager2 hooks
+@@ -143,6 +155,9 @@ private:
+ 	CStack<EventInfo *> m_FreeEvents;
+ 	CStack<EventHook *> m_EventStack;
+ 	CStack<IGameEvent *> m_EventCopies;
++	IServer *m_IServer;
++	bool m_FiringToClients;
++	CVector<int> m_FiringToClientsVec;
+ };
+ 
+ extern EventManager g_EventManager;
+diff --git a/core/smn_events.cpp b/core/smn_events.cpp
+index 16ffad93..e470825b 100644
+--- a/core/smn_events.cpp
++++ b/core/smn_events.cpp
+@@ -147,6 +147,60 @@ static cell_t sm_FireEvent(IPluginContext *pContext, const cell_t *params)
+ 	return 1;
+ }
+ 
++static cell_t sm_FireEventEx(IPluginContext *pContext, const cell_t *params)
++{
++	Handle_t hndl = static_cast<Handle_t>(params[1]);
++	HandleError err;
++	EventInfo *pInfo;
++	HandleSecurity sec(pContext->GetIdentity(), g_pCoreIdent);
++
++	if ((err = handlesys->ReadHandle(hndl, g_EventManager.GetHandleType(), &sec, (void **)&pInfo))
++		!= HandleError_None)
++	{
++		return pContext->ThrowNativeError("Invalid game event handle %x (error %d)", hndl, err);
++	}
++
++	/* If identities do not match, don't fire event */
++	if (pContext->GetIdentity() != pInfo->pOwner)
++	{
++		return pContext->ThrowNativeError("Game event \"%s\" could not be fired because it was not created by this plugin", pInfo->pEvent->GetName());
++	}
++
++	cell_t *cl_array;
++	unsigned int numClients;
++	int client;
++	IGamePlayer *pPlayer = NULL;
++
++	pContext->LocalToPhysAddr(params[2], &cl_array);
++	numClients = params[3];
++
++	SourceHook::CVector<int> vecClients;
++
++	/* Client validation */
++	for (unsigned int i = 0; i < numClients; i++)
++	{
++		client = cl_array[i];
++		pPlayer = g_Players.GetGamePlayer(client);
++
++		if (!pPlayer)
++		{
++			return pContext->ThrowNativeError("Client index %d is invalid", client);
++		}
++		else if (!pPlayer->IsInGame()) {
++			return pContext->ThrowNativeError("Client %d is not connected", client);
++		}
++
++		vecClients.push_back(client);
++	}
++
++	g_EventManager.FireEventEx(pInfo, vecClients);
++
++	/* Free handle on game event */
++	handlesys->FreeHandle(hndl, &sec);
++
++	return 1;
++}
++
+ static cell_t sm_FireEventToClient(IPluginContext *pContext, const cell_t *params)
+ {
+ 	Handle_t hndl = static_cast<Handle_t>(params[1]);
+@@ -461,6 +515,7 @@ REGISTER_NATIVES(gameEventNatives)
+ 	{"UnhookEvent",			sm_UnhookEvent},
+ 	{"CreateEvent",			sm_CreateEvent},
+ 	{"FireEvent",			sm_FireEvent},
++	{ "FireEventEx", sm_FireEventEx },
+ 	{"CancelCreatedEvent",	sm_CancelCreatedEvent},
+ 	{"GetEventName",		sm_GetEventName},
+ 	{"GetEventBool",		sm_GetEventBool},
+@@ -475,6 +530,7 @@ REGISTER_NATIVES(gameEventNatives)
+ 
+ 	// Transitional syntax support.
+ 	{"Event.Fire",			sm_FireEvent},
++	{ "Event.FireEx", sm_FireEventEx },
+ 	{"Event.FireToClient",	sm_FireEventToClient},
+ 	{"Event.Cancel",		sm_CancelCreatedEvent},
+ 	{"Event.GetName",		sm_GetEventName},
+diff --git a/plugins/include/events.inc b/plugins/include/events.inc
+index 46a84c29..264a4735 100644
+--- a/plugins/include/events.inc
++++ b/plugins/include/events.inc
+@@ -222,6 +222,19 @@ native Event CreateEvent(const char[] name, bool force=false);
+  */
+ native void FireEvent(Handle event, bool dontBroadcast=false);
+ 
++/**
++ * Fires a game event to a specific list of clients.
++ *
++ * This function closes the event Handle after completing.
++ *
++ * @param event			Handle to the event.
++ * @param clients		Array of clients.
++ * @param clientCount	Number of clients in array.
++ * @noreturn
++ * @error				Invalid or corrupt Handle.
++ */
++native void FireEventEx(Handle event, int[] clients, int clientCount);
++
+ /**
+  * Cancels a previously created game event that has not been fired.
+  *
+-- 
+2.38.0.windows.1
+

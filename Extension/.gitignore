@@ -1,0 +1,10 @@
+.idea/
+msvc/Freedom35/Freedom35/Debug/
+msvc/Freedom35/
+
+*.opensdf
+*.suo
+*.sdf
+Debug/
+Release/
+obj/
