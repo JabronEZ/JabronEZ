@@ -10,8 +10,24 @@ endif()
 
 if (SMSDK STREQUAL "")
     set(SMEXTCPP "")
+    set(CDETOURCPP "")
+    set(ASMCPP "")
+    set(LIBUDIS86DECODEC "")
+    set(LIBUDIS86ITABC "")
+    set(LIBUDIS86SYNATTC "")
+    set(LIBUDIS86SYNINTELC "")
+    set(LIBUDIS86SYNC "")
+    set(LIBUDIS86C "")
 else()
     set(SMEXTCPP "${SMSDK}/public/smsdk_ext.cpp")
+    set(CDETOURCPP "${SMSDK}/public/CDetour/detours.cpp")
+    set(ASMCPP "${SMSDK}/public/asm/asm.c")
+    set(LIBUDIS86DECODEC "${SMSDK}/public/libudis86/decode.c")
+    set(LIBUDIS86ITABC "${SMSDK}/public/libudis86/itab.c")
+    set(LIBUDIS86SYNATTC "${SMSDK}/public/libudis86/syn-att.c")
+    set(LIBUDIS86SYNINTELC "${SMSDK}/public/libudis86/syn-intel.c")
+    set(LIBUDIS86SYNC "${SMSDK}/public/libudis86/syn.c")
+    set(LIBUDIS86C "${SMSDK}/public/libudis86/udis86.c")
 endif()
 
 set(HL2PUB "${HL2SDK}/public")
@@ -24,7 +40,19 @@ project(jabronez)
 add_library(jabronez SHARED
         src/extension.cpp
         src/extension.h
+        src/hooks.cpp
+        src/hooks.h
+        src/hook.cpp
+        src/hook.h
         ${SMEXTCPP}
+        ${CDETOURCPP}
+        ${ASMCPP}
+        ${LIBUDIS86DECODEC}
+        ${LIBUDIS86ITABC}
+        ${LIBUDIS86SYNATTC}
+        ${LIBUDIS86SYNINTELC}
+        ${LIBUDIS86SYNC}
+        ${LIBUDIS86C}
 )
 
 target_compile_definitions(jabronez PRIVATE
@@ -54,21 +82,22 @@ target_compile_definitions(jabronez PRIVATE
         SE_CSGO=12
         SOURCEMOD_BUILD
         HAVE_STDINT_H
+        HAVE_STRING_H
 )
 
 target_compile_options(jabronez PRIVATE
         -fvisibility=hidden
-        -fvisibility-inlines-hidden
-        -std=c++14
+        $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>
+        $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
         -Wall
         -Werror
-        -Wno-overloaded-virtual
+        $<$<COMPILE_LANGUAGE:CXX>:-Wno-overloaded-virtual>
         -Wno-switch
         -Wno-unused
-        -Wno-non-virtual-dtor
-        -Wno-delete-non-virtual-dtor
+        $<$<COMPILE_LANGUAGE:CXX>:-Wno-non-virtual-dtor>
+        $<$<COMPILE_LANGUAGE:CXX>:-Wno-delete-non-virtual-dtor>
         -fno-exceptions
-        -fno-rtti
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
         -Wno-deprecated-register
         -msse
         -m32
