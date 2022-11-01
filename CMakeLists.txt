@@ -17,6 +17,7 @@ endif()
 set(HL2PUB "${HL2SDK}/public")
 set(METAMOD "${MMSOURCE}/core")
 set(HL2LIB "${HL2SDK}/lib/linux")
+string(TOLOWER "${CMAKE_BUILD_TYPE}" BUILD_TYPE_LOWERCASE)
 
 project(jabronez)
 
@@ -86,7 +87,7 @@ target_link_libraries(jabronez PRIVATE
         dl
 )
 
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+if (BUILD_TYPE_LOWERCASE STREQUAL "debug")
     target_compile_definitions(jabronez PRIVATE
             _DEBUG
             DEBUG
