@@ -16,41 +16,32 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_HOOKS_H
-#define JABRONEZ_HOOKS_H
+#ifndef JABRONEZ_FUNCTIONS_H
+#define JABRONEZ_FUNCTIONS_H
 
 #include "smsdk_ext.h"
-#include <sh_vector.h>
 #include "type_definitions.h"
 
-class Hook;
-
-class Hooks {
+class Functions {
 public:
-    Hooks(ISourcePawnEngine *sourcePawnEngine, IGameConfig *gameConfig);
-    ~Hooks();
+    Functions(IGameConfig *gameConfig);
+    ~Functions();
 
     bool Init(char *error, size_t maxlength);
 
-    bool InstallHooks(char *error, size_t maxlength);
-    void UninstallHooks();
-
-    void NewHook(const char *functionName, void *callbackFunction, void **trampolineFunction);
-
-    static CBaseEntity* ProjectileCreateCallingConvention CSmokeGrenadeProjectileCreateHookCallback(
+    CBaseEntity *CreateSmokeGrenadeProjectile(
             const Vector& origin,
             const QAngle& angle,
             const Vector& velocity,
             const Vector& angularImpulse,
-            void *player,
-            int grenadeType);
-
-    void NotifyCreatingSmokeGrenadeProjectile(bool isCreatingFromExtension) { _isCreatingSmokeGrenadeProjectileFromExtension = isCreatingFromExtension; }
+            int playerIndex);
 
 private:
-    SourceHook::CVector<Hook*> _hooks;
-    bool _isCreatingSmokeGrenadeProjectileFromExtension { false };
-    ProjectileCreatePrototype _originalCSmokeGrenadeProjectileCreate { nullptr };
+    void *FindFunction(const char *functionName, char *error, size_t maxlength);
+
+private:
+    IGameConfig *_gameConfig { nullptr };
+    ProjectileCreatePrototype _funcCSmokeGrenadeProjectileCreate { nullptr };
 };
 
 #endif

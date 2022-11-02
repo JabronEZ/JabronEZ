@@ -16,38 +16,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
-#define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
+#ifndef JABRONEZ_TYPE_DEFINITIONS_H
+#define JABRONEZ_TYPE_DEFINITIONS_H
 
 #include "smsdk_ext.h"
-#include "functions.h"
 
-class Hooks;
-class ConsoleManager;
-class Functions;
+#ifdef _WIN32
+#define ProjectileCreateCallingConvention __fastcall
+#else
+#define ProjectileCreateCallingConvention __cdecl
+#endif
 
-class JabronEZ : public SDKExtension
-{
-public:
-    virtual bool SDK_OnLoad(char *error, size_t maxlength, bool late);
-    virtual void SDK_OnUnload();
-
-    virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
-
-    Hooks *GetHooks() { return _hooks; }
-    Functions *GetFunctions() { return _functions; }
-
-private:
-    Hooks *_hooks { nullptr };
-    ConsoleManager *_consoleManager { nullptr };
-    Functions *_functions { nullptr };
-};
-
-extern JabronEZ g_JabronEZ;
-
-extern Vector lastOrigin;
-extern QAngle lastAngle;
-extern Vector lastVelocity;
-extern Vector lastAngularImpulse;
+typedef CBaseEntity* (ProjectileCreateCallingConvention *ProjectileCreatePrototype)(
+        const Vector& origin,
+        const QAngle& angle,
+        const Vector& velocity,
+        const Vector& angularImpulse,
+        void *player,
+        int grenadeType);
 
 #endif

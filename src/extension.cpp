@@ -18,50 +18,17 @@
 
 #include "extension.h"
 #include "hooks.h"
+#include "console_manager.h"
 
 JabronEZ g_JabronEZ;
 
 SMEXT_LINK(&g_JabronEZ);
 
 IGameConfig *g_GameConf = nullptr;
-
-#ifdef _WIN32
-CBaseEntity* (__fastcall *DetourCSmokeGrenadeProjectileCreate_Actual)(
-        const Vector& origin,
-        const QAngle& angle,
-        const Vector& velocity,
-        const Vector& angularImpulse,
-        void *player,
-        int grenadeType) = nullptr;
-
-CBaseEntity* __fastcall DetourCSmokeGrenadeProjectileCreate(
-        const Vector& origin,
-        const QAngle& angle,
-        const Vector& velocity,
-        const Vector& angularImpulse,
-        void *player,
-        int grenadeType)
-#else
-CBaseEntity* (__cdecl *DetourCSmokeGrenadeProjectileCreate_Actual)(
-        const Vector& origin,
-        const QAngle& angle,
-        const Vector& velocity,
-        const Vector& angularImpulse,
-        void *player,
-        int grenadeType) = nullptr;
-
-CBaseEntity* __cdecl DetourCSmokeGrenadeProjectileCreate(
-        const Vector& origin,
-        const QAngle& angle,
-        const Vector& velocity,
-        const Vector& angularImpulse,
-        void *player,
-        int grenadeType)
-#endif
-{
-    engine->ServerCommand("echo Maybe a smoke is thrown?!\n");
-    return DetourCSmokeGrenadeProjectileCreate_Actual(origin, angle, velocity, angularImpulse, player, grenadeType);
-}
+Vector lastOrigin;
+QAngle lastAngle;
+Vector lastVelocity;
+Vector lastAngularImpulse;
 
 bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
 {
@@ -86,12 +53,15 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     _hooks = new Hooks(g_pSM->GetScriptingEngine(), g_GameConf);
-    _hooks->NewHook(
-            "CSmokeGrenadeProjectileCreate",
-            (void*)&DetourCSmokeGrenadeProjectileCreate,
-            (void**)&DetourCSmokeGrenadeProjectileCreate_Actual);
 
-    if (!_hooks->InstallHooks(error, maxlength))
+    if (!_hooks->Init(error, maxlength))
+    {
+        return false;
+    }
+
+    _functions = new Functions(g_GameConf);
+
+    if (!_functions->Init(error, maxlength))
     {
         return false;
     }
@@ -108,4 +78,22 @@ void JabronEZ::SDK_OnUnload()
         delete _hooks;
         _hooks = nullptr;
     }
+
+    if (_consoleManager != nullptr)
+    {
+        delete _consoleManager;
+        _consoleManager = nullptr;
+    }
+}
+
+bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late)
+{
+    _consoleManager = new ConsoleManager();
+
+    if (!_consoleManager->Init(ismm, error, maxlength))
+    {
+        return false;
+    }
+
+    return true;
 }
