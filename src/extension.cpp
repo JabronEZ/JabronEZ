@@ -79,6 +79,12 @@ void JabronEZ::SDK_OnUnload()
         _hooks = nullptr;
     }
 
+    if (_functions != nullptr)
+    {
+        delete _functions;
+        _functions = nullptr;
+    }
+
     if (_consoleManager != nullptr)
     {
         delete _consoleManager;

@@ -52,12 +52,12 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
 ConsoleManager::~ConsoleManager()
 {
-    if (_rethrowLastSmokeCommand != nullptr)
+    if (_rethrowLastSmokeCommand != nullptr && _cvarInterface != nullptr)
     {
-        delete _rethrowLastSmokeCommand;
-        _rethrowLastSmokeCommand = nullptr;
+        _cvarInterface->UnregisterConCommand(_rethrowLastSmokeCommand);
     }
 
+    _rethrowLastSmokeCommand = nullptr;
     _cvarInterface = nullptr;
 }
 
