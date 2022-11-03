@@ -42,13 +42,9 @@ add_library(jabronez SHARED
         src/extension.h
         src/hooks.cpp
         src/hooks.h
-        src/hook.cpp
-        src/hook.h
-        src/functions.cpp
-        src/functions.h
+        src/hooks_macros.h
         src/console_manager.cpp
         src/console_manager.h
-        src/type_definitions.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}

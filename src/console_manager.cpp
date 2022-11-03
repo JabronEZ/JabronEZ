@@ -18,6 +18,7 @@
 
 #include "console_manager.h"
 #include "smsdk_ext.h"
+#include "hooks.h"
 #include "extension.h"
 
 ConsoleManager::ConsoleManager()
@@ -63,10 +64,20 @@ ConsoleManager::~ConsoleManager()
 
 void ConsoleManager::RethrowLastSmokeCallback(const CCommand &command)
 {
-    g_JabronEZ.GetFunctions()->CreateSmokeGrenadeProjectile(
+    void *basePlayer = nullptr;
+    int playerIndex = 1;
+
+    if (playerIndex > 0)
+    {
+        cell_t reference = gamehelpers->IndexToReference(playerIndex);
+        basePlayer = gamehelpers->ReferenceToEntity(reference);
+    }
+
+    Hook_Call_SmokeProjectileCreate(
             lastOrigin,
             lastAngle,
             lastVelocity,
             lastAngularImpulse,
-            1);
+            basePlayer,
+            45);
 }

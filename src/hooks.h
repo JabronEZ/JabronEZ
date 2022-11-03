@@ -21,36 +21,33 @@
 
 #include "smsdk_ext.h"
 #include <sh_vector.h>
-#include "type_definitions.h"
+#include "hooks_macros.h"
 
-class Hook;
+class CDetour;
 
-class Hooks {
-public:
-    Hooks(ISourcePawnEngine *sourcePawnEngine, IGameConfig *gameConfig);
-    ~Hooks();
+bool Hooks_Init(
+        ISourcePawnEngine *sourcePawnEngine,
+        IGameConfig *gameConfig,
+        char *error,
+        size_t maxlength);
 
-    bool Init(char *error, size_t maxlength);
+void Hooks_Cleanup();
 
-    bool InstallHooks(char *error, size_t maxlength);
-    void UninstallHooks();
-
-    void NewHook(const char *functionName, void *callbackFunction, void **trampolineFunction);
-
-    static CBaseEntity* ProjectileCreateCallingConvention CSmokeGrenadeProjectileCreateHookCallback(
-            const Vector& origin,
-            const QAngle& angle,
-            const Vector& velocity,
-            const Vector& angularImpulse,
-            void *player,
-            int grenadeType);
-
-    void NotifyCreatingSmokeGrenadeProjectile(bool isCreatingFromExtension) { _isCreatingSmokeGrenadeProjectileFromExtension = isCreatingFromExtension; }
-
-private:
-    SourceHook::CVector<Hook*> _hooks;
-    bool _isCreatingSmokeGrenadeProjectileFromExtension { false };
-    ProjectileCreatePrototype _originalCSmokeGrenadeProjectileCreate { nullptr };
-};
+JEZ_HOOK_STATIC_DECL6(
+        SmokeProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType);
 
 #endif

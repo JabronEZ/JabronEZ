@@ -23,12 +23,12 @@
 JabronEZ g_JabronEZ;
 
 SMEXT_LINK(&g_JabronEZ);
-
-IGameConfig *g_GameConf = nullptr;
 Vector lastOrigin;
 QAngle lastAngle;
 Vector lastVelocity;
 Vector lastAngularImpulse;
+
+IGameConfig *g_GameConf = nullptr;
 
 bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
 {
@@ -52,16 +52,11 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
-    _hooks = new Hooks(g_pSM->GetScriptingEngine(), g_GameConf);
-
-    if (!_hooks->Init(error, maxlength))
-    {
-        return false;
-    }
-
-    _functions = new Functions(g_GameConf);
-
-    if (!_functions->Init(error, maxlength))
+    if (!Hooks_Init(
+            g_pSM->GetScriptingEngine(),
+            g_GameConf,
+            error,
+            maxlength))
     {
         return false;
     }
@@ -71,19 +66,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
 
 void JabronEZ::SDK_OnUnload()
 {
-    if (_hooks != nullptr)
-    {
-        _hooks->UninstallHooks();
-
-        delete _hooks;
-        _hooks = nullptr;
-    }
-
-    if (_functions != nullptr)
-    {
-        delete _functions;
-        _functions = nullptr;
-    }
+    Hooks_Cleanup();
 
     if (_consoleManager != nullptr)
     {

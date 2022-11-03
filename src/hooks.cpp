@@ -17,102 +17,26 @@
  */
 
 #include "hooks.h"
-#include "hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 
-Hooks::Hooks(ISourcePawnEngine *sourcePawnEngine, IGameConfig *gameConfig)
+JEZ_HOOK_STATIC_DEF6(
+        SmokeProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType)
 {
-    _hooks.clear();
-
-    CDetourManager::Init(sourcePawnEngine, gameConfig);
-}
-
-Hooks::~Hooks()
-{
-    size_t hookCount = _hooks.size();
-    for (size_t hookIndex = 0; hookIndex < hookCount; hookIndex++)
-    {
-        Hook *hook = _hooks.at(hookIndex);
-        delete hook;
-    }
-
-    _hooks.clear();
-}
-
-bool Hooks::Init(char *error, size_t maxlength)
-{
-    NewHook(
-            "CSmokeGrenadeProjectileCreate",
-            (void*)&Hooks::CSmokeGrenadeProjectileCreateHookCallback,
-            (void**)&_originalCSmokeGrenadeProjectileCreate);
-
-    if (!InstallHooks(error, maxlength))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-bool Hooks::InstallHooks(char *error, size_t maxlength)
-{
-    size_t hookCount = _hooks.size();
-    for (size_t hookIndex = 0; hookIndex < hookCount; hookIndex++)
-    {
-        Hook *hook = _hooks.at(hookIndex);
-        if (!hook->Install(error, maxlength))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void Hooks::UninstallHooks()
-{
-    size_t hookCount = _hooks.size();
-    for (size_t hookIndex = 0; hookIndex < hookCount; hookIndex++)
-    {
-        Hook *hook = _hooks.at(hookIndex);
-        hook->Uninstall();
-    }
-}
-
-void Hooks::NewHook(
-    const char *functionName,
-    void *callbackFunction,
-    void **trampolineFunction)
-{
-    Hook *hook = new Hook(functionName, callbackFunction, trampolineFunction);
-    _hooks.push_back(hook);
-}
-
-CBaseEntity* __cdecl Hooks::CSmokeGrenadeProjectileCreateHookCallback(
-        const Vector& origin,
-        const QAngle& angle,
-        const Vector& velocity,
-        const Vector& angularImpulse,
-        void *player,
-        int grenadeType)
-{
-    if (g_JabronEZ.GetHooks()->_isCreatingSmokeGrenadeProjectileFromExtension)
-    {
-        return g_JabronEZ.GetHooks()->_originalCSmokeGrenadeProjectileCreate(
-                origin,
-                angle,
-                velocity,
-                angularImpulse,
-                player,
-                grenadeType);
-    }
-
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
-
     META_CONPRINTF(
             "Smoke thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
             origin.x,
@@ -130,11 +54,27 @@ CBaseEntity* __cdecl Hooks::CSmokeGrenadeProjectileCreateHookCallback(
             player,
             grenadeType);
 
-    return g_JabronEZ.GetHooks()->_originalCSmokeGrenadeProjectileCreate(
-            origin,
-            angle,
-            velocity,
-            angularImpulse,
-            player,
-            grenadeType);
+    lastOrigin = origin;
+    lastAngle = angle;
+    lastVelocity = velocity;
+    lastAngularImpulse = angularImpulse;
+
+    return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+}
+
+bool Hooks_Init(
+        ISourcePawnEngine *sourcePawnEngine,
+        IGameConfig *gameConfig,
+        char *error,
+        size_t maxlength)
+{
+    CDetourManager::Init(sourcePawnEngine, gameConfig);
+
+    JEZ_HOOK_STATIC_CREATE(SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
+
+    return true;
+}
+
+void Hooks_Cleanup()
+{
 }

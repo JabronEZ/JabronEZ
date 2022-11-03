@@ -20,11 +20,9 @@
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
 #include "smsdk_ext.h"
-#include "functions.h"
 
 class Hooks;
 class ConsoleManager;
-class Functions;
 
 class JabronEZ : public SDKExtension
 {
@@ -34,17 +32,11 @@ public:
 
     virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
 
-    Hooks *GetHooks() { return _hooks; }
-    Functions *GetFunctions() { return _functions; }
-
 private:
-    Hooks *_hooks { nullptr };
     ConsoleManager *_consoleManager { nullptr };
-    Functions *_functions { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;
-
 extern Vector lastOrigin;
 extern QAngle lastAngle;
 extern Vector lastVelocity;
