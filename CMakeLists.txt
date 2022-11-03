@@ -47,6 +47,8 @@ add_library(jabronez SHARED
         src/console_manager.h
         src/player_manager.cpp
         src/player_manager.h
+        src/menus.cpp
+        src/menus.h
         src/player.cpp
         src/player.h
         ${SMEXTCPP}

@@ -19,6 +19,7 @@
 #include "extension.h"
 #include "hooks.h"
 #include "console_manager.h"
+#include "menus.h"
 #include "player_manager.h"
 
 JabronEZ g_JabronEZ;
@@ -62,6 +63,8 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
+    _menus = new Menus();
+
     _playerManager = new PlayerManager();
 
     return true;
@@ -75,6 +78,12 @@ void JabronEZ::SDK_OnUnload()
     {
         delete _consoleManager;
         _consoleManager = nullptr;
+    }
+
+    if (_menus != nullptr)
+    {
+        delete _menus;
+        _menus = nullptr;
     }
 
     if (_playerManager != nullptr)
