@@ -23,6 +23,7 @@
 
 class Hooks;
 class ConsoleManager;
+class PlayerManager;
 
 class JabronEZ : public SDKExtension
 {
@@ -32,8 +33,11 @@ public:
 
     virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
 
+    PlayerManager *GetPlayerManager() const { return _playerManager; }
+
 private:
     ConsoleManager *_consoleManager { nullptr };
+    PlayerManager *_playerManager { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

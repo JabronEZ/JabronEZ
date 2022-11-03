@@ -45,6 +45,10 @@ add_library(jabronez SHARED
         src/hooks_macros.h
         src/console_manager.cpp
         src/console_manager.h
+        src/player_manager.cpp
+        src/player_manager.h
+        src/player.cpp
+        src/player.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}
@@ -162,6 +166,7 @@ target_include_directories(jabronez PRIVATE
 
 target_link_libraries(jabronez PRIVATE
         ${HL2LIB}/tier1_i486.a
+        ${HL2LIB}/mathlib_i486.a
         ${HL2LIB}/interfaces_i486.a
         ${HL2LIB}/libvstdlib.so
         ${HL2LIB}/libtier0.so
