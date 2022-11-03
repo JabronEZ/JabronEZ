@@ -103,3 +103,16 @@ void PlayerManager::CleanupPlayer(Player *player)
 
     delete player;
 }
+
+Player *PlayerManager::GetPlayerByEdict(edict_t *edict) const
+{
+    for (auto player : _players)
+    {
+        if (player->GetGamePlayer()->GetEdict() == edict)
+        {
+            return player;
+        }
+    }
+
+    return nullptr;
+}

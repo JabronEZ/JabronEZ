@@ -34,6 +34,7 @@ public:
     void OnClientDisconnecting(int clientIndex) override;
 
     Player *GetPlayerByClientIndex(int clientIndex) const;
+    Player *GetPlayerByEdict(edict_t *edict) const;
 
 private:
     void CleanupPlayer(Player *player);
