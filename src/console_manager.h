@@ -36,8 +36,11 @@ public:
 
     static void RethrowLastSmokeCallback(const CCommand &command);
 
+    void OnClientCommand(edict_t *pEntity, const CCommand &args);
+
 private:
     ICvar *_cvarInterface { nullptr };
+    IServerGameClients *_serverClients { nullptr };
     ConCommand *_rethrowLastSmokeCommand { nullptr };
 };
 

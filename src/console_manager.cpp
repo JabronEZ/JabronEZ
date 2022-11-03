@@ -20,11 +20,17 @@
 #include "smsdk_ext.h"
 #include "hooks.h"
 #include "extension.h"
+#include "menus.h"
+#include "player_manager.h"
+#include "player.h"
+
+SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *, const CCommand &);
 
 ConsoleManager::ConsoleManager()
 {
     _cvarInterface = nullptr;
     _rethrowLastSmokeCommand = nullptr;
+    _serverClients = nullptr;
 }
 
 bool ConsoleManager::RegisterConCommandBase(ConCommandBase *conCommandBase)
@@ -42,11 +48,15 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
     g_pCVar = _cvarInterface;
     ConVar_Register(0, this);
 
+    GET_V_IFACE_CURRENT(GetServerFactory, _serverClients, IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
+
     _rethrowLastSmokeCommand = new ConCommand(
             "sm_jez_rethrow_last_smoke",
             RethrowLastSmokeCallback,
             "Test help",
             0);
+
+    SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
 
     return true;
 }
@@ -57,6 +67,8 @@ ConsoleManager::~ConsoleManager()
     {
         _cvarInterface->UnregisterConCommand(_rethrowLastSmokeCommand);
     }
+
+    SH_REMOVE_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
 
     _rethrowLastSmokeCommand = nullptr;
     _cvarInterface = nullptr;
@@ -80,4 +92,27 @@ void ConsoleManager::RethrowLastSmokeCallback(const CCommand &command)
             lastAngularImpulse,
             basePlayer,
             45);
+}
+
+void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
+{
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByEdict(edict);
+
+    if (player == nullptr)
+    {
+        return;
+    }
+
+    if (args.ArgC() < 1)
+    {
+        return;
+    }
+
+    auto command = args.Arg(0);
+
+    if (strcmp(command, "sm_jez_menu") == 0)
+    {
+        g_JabronEZ.GetMenus()->OpenMenu(player);
+        RETURN_META(MRES_SUPERCEDE);
+    }
 }
