@@ -50,4 +50,72 @@ JEZ_HOOK_STATIC_DECL6(
         int,
         grenadeType);
 
+JEZ_HOOK_STATIC_DECL6(
+        FlashbangProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType);
+
+JEZ_HOOK_STATIC_DECL6(
+        MolotovProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType);
+
+JEZ_HOOK_STATIC_DECL6(
+        DecoyProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType);
+
+JEZ_HOOK_STATIC_DECL6(
+        HEGrenadeProjectileCreate,
+        CBaseEntity*,
+        __cdecl,
+        const Vector&,
+        origin,
+        const QAngle&,
+        angle,
+        const Vector&,
+        velocity,
+        const Vector&,
+        angularImpulse,
+        void*,
+        player,
+        int,
+        grenadeType);
+
 #endif

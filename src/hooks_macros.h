@@ -39,4 +39,11 @@
     } \
     g_Detour##name->EnableDetour()
 
+#define JEZ_HOOK_CLEANUP(name) \
+    if (g_Detour##name != nullptr) \
+    { \
+        g_Detour##name->Destroy(); \
+    } \
+    g_Detour##name = nullptr;
+
 #endif
