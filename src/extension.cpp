@@ -21,6 +21,7 @@
 #include "console_manager.h"
 #include "menus.h"
 #include "player_manager.h"
+#include "translations.h"
 
 JabronEZ g_JabronEZ;
 
@@ -64,8 +65,13 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     _menus = new Menus();
-
     _playerManager = new PlayerManager();
+    _translations = new Translations();
+
+    if (!_translations->Init(error, maxlength))
+    {
+        return false;
+    }
 
     return true;
 }
@@ -90,6 +96,12 @@ void JabronEZ::SDK_OnUnload()
     {
         delete _playerManager;
         _playerManager = nullptr;
+    }
+
+    if (_translations != nullptr)
+    {
+        delete _translations;
+        _translations = nullptr;
     }
 }
 
