@@ -59,3 +59,45 @@ ItemDefinitionIndex GetItemDefinitionIndexFromCSWeaponID(CSWeaponID csWeaponId)
 
     return ItemDefinitionIndex_UNKNOWN;
 }
+
+GrenadeType GetGrenadeTypeFromCSWeaponID(CSWeaponID csWeaponId)
+{
+    switch (csWeaponId)
+    {
+        case CSWeapon_DECOY:
+            return GrenadeType_DECOY;
+        case CSWeapon_FLASHBANG:
+            return GrenadeType_FLASH;
+        case CSWeapon_MOLOTOV:
+            return GrenadeType_MOLOTOV;
+        case CSWeapon_INCGRENADE:
+            return GrenadeType_INCENDIARY;
+        case CSWeapon_SMOKEGRENADE:
+            return GrenadeType_SMOKE;
+        case CSWeapon_HEGRENADE:
+            return GrenadeType_HEGRENADE;
+    }
+
+    return GrenadeType_UNKNOWN;
+}
+
+ItemDefinitionIndex GetItemDefinitionIndexFromGrenadeType(GrenadeType grenadeType)
+{
+    switch (grenadeType)
+    {
+        case GrenadeType_DECOY:
+            return ItemDefinitionIndex_DECOY;
+        case GrenadeType_FLASH:
+            return ItemDefinitionIndex_FLASH;
+        case GrenadeType_MOLOTOV:
+            return ItemDefinitionIndex_MOLOTOV;
+        case GrenadeType_INCENDIARY:
+            return ItemDefinitionIndex_INCENDIARY;
+        case GrenadeType_SMOKE:
+            return ItemDefinitionIndex_SMOKE;
+        case GrenadeType_HEGRENADE:
+            return ItemDefinitionIndex_HEGRENADE;
+    }
+
+    return ItemDefinitionIndex_UNKNOWN;
+}

@@ -133,7 +133,21 @@ enum ItemDefinitionIndex
     ItemDefinitionIndex_INCENDIARY = 48,
 };
 
-CSWeaponID GetCSWeaponIDFromItemDefinitionIndex(ItemDefinitionIndex csWeaponId);
+enum GrenadeType
+{
+    GrenadeType_UNKNOWN = -1,
+    GrenadeType_FLASH,
+    GrenadeType_HEGRENADE,
+    GrenadeType_SMOKE,
+    GrenadeType_MOLOTOV,
+    GrenadeType_DECOY,
+    GrenadeType_INCENDIARY,
+    GrenadeType_COUNT
+};
+
+CSWeaponID GetCSWeaponIDFromItemDefinitionIndex(ItemDefinitionIndex itemDefinitionIndex);
 ItemDefinitionIndex GetItemDefinitionIndexFromCSWeaponID(CSWeaponID csWeaponId);
+GrenadeType GetGrenadeTypeFromCSWeaponID(CSWeaponID csWeaponId);
+ItemDefinitionIndex GetItemDefinitionIndexFromGrenadeType(GrenadeType grenadeType);
 
 #endif
