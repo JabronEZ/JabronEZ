@@ -36,7 +36,7 @@ public:
 
     static void RethrowLastSmokeCallback(const CCommand &command);
 
-    void OnClientCommand(edict_t *pEntity, const CCommand &args);
+    void OnClientCommand(edict_t *edict, const CCommand &args);
 
 private:
     ICvar *_cvarInterface { nullptr };
