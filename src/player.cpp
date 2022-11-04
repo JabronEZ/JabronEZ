@@ -17,15 +17,39 @@
  */
 
 #include "player.h"
+#include "spot.h"
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer)
 {
     _clientIndex = clientIndex;
     _userId = userId;
     _gamePlayer = gamePlayer;
+    _grenadeSpots.clear();
 }
 
 Player::~Player()
 {
     _gamePlayer = nullptr;
+    _grenadeSpots.clear();
+}
+
+ProjectileMode Player::GetProjectileMode(CSWeaponID grenadeType) const
+{
+    switch (grenadeType)
+    {
+        case CSWeapon_FLASHBANG:
+            return GetGrenadeFlashMode();
+        case CSWeapon_SMOKEGRENADE:
+            return GetGrenadeSmokeMode();
+        case CSWeapon_DECOY:
+            return GetGrenadeDecoyMode();
+        case CSWeapon_MOLOTOV:
+            return GetGrenadeMolotovMode();
+        case CSWeapon_INCGRENADE:
+            return GetGrenadeIncendiaryMode();
+        case CSWeapon_HEGRENADE:
+            return GetGrenadeHEGrenadeMode();
+    }
+
+    return ProjectileMode_ALL;
 }
