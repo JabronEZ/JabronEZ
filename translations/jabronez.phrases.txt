@@ -1,0 +1,1717 @@
+"Phrases"
+{
+    "JEZ language changed"
+    {
+        "en"        "Your language has been changed to English."
+    }
+
+    "JEZ changing map to"
+    {
+        "#format"   "{1:s}"
+        "en"    "Changing map to {1}..."
+    }
+
+    "JEZ help see menu for list of commands"
+    {
+        "en"    "Please see the menu for a list of commands."
+    }
+
+    "JEZ help menu root title"
+    {
+        "en"    "JabronEZ Help Menu"
+    }
+
+    "JEZ help menu default title"
+    {
+        "en"    "JabronEZ Help Menu"
+    }
+
+    "JEZ help menu item map commands"
+    {
+        "en"    "Map Commands"
+    }
+
+    "JEZ help menu item locale commands"
+    {
+        "en"    "Locale Commands"
+    }
+
+    "JEZ help menu item group commands"
+    {
+        "en"    "Group Commands"
+    }
+
+    "Grenades help menu item commands"
+    {
+        "en"    "Grenade Commands"
+    }
+
+    "JEZ help menu map commands title"
+    {
+        "en"    "Map Commands"
+    }
+
+    "JEZ help menu locale commands title"
+    {
+        "en"    "Locale Commands"
+    }
+
+    "JEZ help menu group commands title"
+    {
+        "en"    "Group Commands"
+    }
+
+    "Grenades help menu title"
+    {
+        "en"    "Grenade Commands"
+    }
+
+    "JEZ help menu map commands timeleft item"
+    {
+        "en"    "!timeleft - Get remaining time on map."
+    }
+
+    "JEZ help menu map commands nextmap item"
+    {
+        "en"    "!nextmap - Get next map."
+    }
+
+    "JEZ help menu locale commands language item"
+    {
+        "en"    "!language - Set your language."
+    }
+
+    "JEZ help menu locale commands timezone item"
+    {
+        "en"    "!timezone - Set your time zone."
+    }
+
+    "JEZ help menu map commands nominate item"
+    {
+        "en"    "!nominate - Nominate map for vote."
+    }
+
+    "JEZ help menu map commands rtv item"
+    {
+        "en"    "!rtv - Rock the vote."
+    }
+
+    "JEZ help menu group commands group item"
+    {
+        "en"    "!group <unique name> - Create a named group."
+    }
+
+    "JEZ help menu group commands groupname item"
+    {
+        "en"    "!groupname <new name> - Rename your group."
+    }
+
+    "JEZ help menu group commands promote item"
+    {
+        "en"    "!promote <player> - Promote player to group leader."
+    }
+
+    "JEZ help menu group commands groupkick item"
+    {
+        "en"    "!groupkick <player> - Kick a player from your group."
+    }
+
+    "JEZ help menu group commands disband item"
+    {
+        "en"    "!disband - Disband your group."
+    }
+
+    "JEZ help menu group commands leave item"
+    {
+        "en"    "!leave - Leave your group."
+    }
+
+    "JEZ help menu group commands invite item"
+    {
+        "en"    "!invite <player> - Invite player to your group."
+    }
+
+    "JEZ help menu group commands ignore item"
+    {
+        "en"    "!ignore <player> - Ignore group invites from a player."
+    }
+
+    "JEZ help menu group commands unignore item"
+    {
+        "en"    "!unignore <player> - Unignore group invites from a player."
+    }
+
+    "JEZ help menu map commands timeleft title"
+    {
+        "en"    "!timeleft - Get remaining time on map."
+    }
+
+    "JEZ help menu map commands nextmap title"
+    {
+        "en"    "!nextmap - Get next map."
+    }
+
+    "JEZ help menu map commands nominate title"
+    {
+        "en"    "!nominate - Nominate map for vote."
+    }
+
+    "JEZ help menu map commands rtv title"
+    {
+        "en"    "!rtv - Rock the vote."
+    }
+
+    "JEZ help menu locale commands language title"
+    {
+        "en"    "!language - Set your language."
+    }
+
+    "JEZ help menu locale commands timezone title"
+    {
+        "en"    "!timezone - Set your time zone."
+    }
+
+    "JEZ help menu group commands group title"
+    {
+        "en"    "!group <unique name> - Create a named group."
+    }
+
+    "JEZ help menu group commands group title"
+    {
+        "en"    "!group <unique name> - Create a named group."
+    }
+
+    "JEZ help menu group commands groupname title"
+    {
+        "#format"   "{1:s}"
+        "en"    "!groupname <new name> - Rename your group.{1}You must be group leader to do this."
+    }
+
+    "JEZ help menu group commands promote title"
+    {
+        "#format"   "{1:s}"
+        "en"    "!promote <player> - Promote player to group leader.{1}You must be group leader to do this."
+    }
+
+    "JEZ help menu group commands groupkick title"
+    {
+        "#format"   "{1:s}"
+        "en"    "!groupkick <player> - Kick a player from your group.{1}You must be group leader to do this."
+    }
+
+    "JEZ help menu group commands disband title"
+    {
+        "#format"   "{1:s}"
+        "en"    "!disband - Disband your group.{1}You must be group leader to do this."
+    }
+
+    "JEZ help menu group commands leave title"
+    {
+        "#format"   "{1:s}"
+        "en"    "!leave - Leave your group.{1}If you are leader, someone will be randomly promoted."
+    }
+
+    "JEZ help menu group commands invite title"
+    {
+        "en"    "!invite <player> - Invite player to your group."
+    }
+
+    "JEZ help menu group commands ignore title"
+    {
+        "en"    "!ignore <player> - Ignore group invites from a player."
+    }
+
+    "JEZ help menu group commands unignore title"
+    {
+        "en"    "!unignore <player> - Unignore group invites from a player."
+    }
+
+    "Grenades help menu menu title"
+    {
+        "en"    "!menu - Open the grenades menu."
+    }
+
+    "Grenades help menu addspot title"
+    {
+        "en"    "!addspot - Add current spot."
+    }
+
+    "Grenades help menu removespot title"
+    {
+        "en"    "!removespot - Remove closest spot."
+    }
+
+    "Grenades help menu playback title"
+    {
+        "en"    "!playback - Toggle playback state for grenades."
+    }
+
+    "Grenades help menu fastforward title"
+    {
+        "en"    "!fastforward - Skip grenade playback."
+    }
+
+    "Grenades help menu grenadetype title"
+    {
+        "en"    "!grenadetype - Toggle grenade type for playback."
+    }
+
+    "Grenades help menu switchtogrenade title"
+    {
+        "en"    "!switchtogrenade - Switch to active grenade type."
+    }
+
+    "Grenades help menu god title"
+    {
+        "en"    "!god - Toggle god mode."
+    }
+
+    "Grenades help menu noclip title"
+    {
+        "en"    "!noclip - Toggle noclip mode."
+    }
+
+    "Grenades help menu playermode title"
+    {
+        "en"    "!playermode - Toggle player visibility mode."
+    }
+
+    "Grenades help menu flashmode title"
+    {
+        "en"    "!flashmode - Toggle flashbang visibility mode."
+    }
+
+    "Grenades help menu smokemode title"
+    {
+        "en"    "!smokemode - Toggle smoke grenade visibility mode."
+    }
+
+    "Grenades help menu hegrenademode title"
+    {
+        "en"    "!hegrenademode - Toggle HE grenade visibility mode."
+    }
+
+    "Grenades help menu decoymode title"
+    {
+        "en"    "!decoymode - Toggle decoy grenade visibility mode."
+    }
+
+    "Grenades help menu molotovmode title"
+    {
+        "en"    "!molotovmode - Toggle molotov grenade visibility mode."
+    }
+
+    "Grenades help menu incendiarymode title"
+    {
+        "en"    "!incendiarymode - Toggle incendiary grenade visibility mode."
+    }
+
+    "Grenades help menu menu item"
+    {
+        "en"    "!menu - Open the grenades menu."
+    }
+
+    "Grenades help menu addspot item"
+    {
+        "en"    "!addspot - Add current spot."
+    }
+
+    "Grenades help menu removespot item"
+    {
+        "en"    "!removespot - Remove closest spot."
+    }
+
+    "Grenades help menu playback item"
+    {
+        "en"    "!playback - Toggle playback state for grenades."
+    }
+
+    "Grenades help menu fastforward item"
+    {
+        "en"    "!fastforward - Skip grenade playback."
+    }
+
+    "Grenades help menu grenadetype item"
+    {
+        "en"    "!grenadetype - Toggle grenade type for playback."
+    }
+
+    "Grenades help menu switchtogrenade item"
+    {
+        "en"    "!switchtogrenade - Switch to active grenade type."
+    }
+
+    "Grenades help menu god item"
+    {
+        "en"    "!god - Toggle god mode."
+    }
+
+    "Grenades help menu noclip item"
+    {
+        "en"    "!noclip - Toggle noclip mode."
+    }
+
+    "Grenades help menu playermode item"
+    {
+        "en"    "!playermode - Toggle player visibility mode."
+    }
+
+    "Grenades help menu flashmode item"
+    {
+        "en"    "!flashmode - Toggle flashbang visibility mode."
+    }
+
+    "Grenades help menu smokemode item"
+    {
+        "en"    "!smokemode - Toggle smoke grenade visibility mode."
+    }
+
+    "Grenades help menu hegrenademode item"
+    {
+        "en"    "!hegrenademode - Toggle HE grenade visibility mode."
+    }
+
+    "Grenades help menu decoymode item"
+    {
+        "en"    "!decoymode - Toggle decoy grenade visibility mode."
+    }
+
+    "Grenades help menu molotovmode item"
+    {
+        "en"    "!molotovmode - Toggle molotov grenade visibility mode."
+    }
+
+    "Grenades help menu incendiarymode item"
+    {
+        "en"    "!incendiarymode - Toggle incendiary grenade visibility mode."
+    }
+
+    "JEZ after this round changing map to"
+    {
+        "#format"   "{1:s}"
+        "en"    "After this round the map will change to {1}..."
+    }
+
+    "JEZ groups group command disabled"
+    {
+        "en"        "The !group command is currently disabled."
+    }
+
+    "JEZ groups groupname command disabled"
+    {
+        "en"        "The !groupname command is currently disabled."
+    }
+
+    "JEZ groups promote command disabled"
+    {
+        "en"        "The !promote command is currently disabled."
+    }
+
+    "JEZ groups groupkick command disabled"
+    {
+        "en"        "The !groupkick command is currently disabled."
+    }
+
+    "JEZ groups disband command disabled"
+    {
+        "en"        "The !disband command is currently disabled."
+    }
+
+    "JEZ groups leave command disabled"
+    {
+        "en"        "The !leave command is currently disabled."
+    }
+
+    "JEZ groups invite command disabled"
+    {
+        "en"        "The !invite command is currently disabled."
+    }
+
+    "JEZ groups ignore command disabled"
+    {
+        "en"        "The !ignore command is currently disabled."
+    }
+
+    "JEZ groups unignore command disabled"
+    {
+        "en"        "The !unignore command is currently disabled."
+    }
+
+    "JEZ RTV vote already rocked"
+    {
+        "en"    "The vote has already been rocked!"
+    }
+
+    "JEZ RTV not allowed in server"
+    {
+        "en"    "Rock the vote is not allowed in this server."
+    }
+
+    "JEZ someone has cancelled your group invite"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has cancelled your group invite."
+    }
+
+    "JEZ someone has ignored your group invite"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has ignored your group invite. You may not invite them to a group until they !unignore you."
+    }
+
+    "JEZ you have ignored a group invite from someone"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have ignored a group invite from \"{1}\". You may accept future invites by typing !unignore <player name>."
+    }
+
+    "JEZ you have cancelled someones group invite"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have cancelled a group invite from \"{1}\"."
+    }
+
+    "JEZ you have cancelled a group invite"
+    {
+        "en"    "You have cancelled a group invite."
+    }
+
+    "JEZ someone has declined your group invite"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has declined your group invite."
+    }
+
+    "JEZ you have declined a group invite from someone"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have declined a group invite from \"{1}\"."
+    }
+
+    "JEZ you have declined a group invite"
+    {
+        "en"    "You have declined a group invite."
+    }
+
+    "JEZ someone has accepted your group invite"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has accepted your group invite."
+    }
+
+    "JEZ you have accepted a group invite from someone"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have accepted a group invite from \"{1}\"."
+    }
+
+    "JEZ you have accepted a group invite"
+    {
+        "en"    "You have accepted a group invite."
+    }
+
+    "JEZ nominations are not allowed at this time"
+    {
+        "en"    "Nominations are not allowed at this time."
+    }
+
+    "JEZ nominations are disabled"
+    {
+        "en"    "Nominations are disabled."
+    }
+
+    "JEZ nominations are disabled since map votes and RTV are disabled"
+    {
+        "en"    "Nominations are disabled since map votes and RTV are disabled."
+    }
+
+    "JEZ the next map is"
+    {
+        "#format"   "{1:s}"
+        "en"    "The next map is {1}."
+    }
+
+    "JEZ the next map will be"
+    {
+        "#format"   "{1:s}"
+        "en"    "The next map will be {1}."
+    }
+
+    "JEZ the next map is currently being voted on"
+    {
+        "en"    "The next map is currently being voted on."
+    }
+
+    "JEZ the map will not change"
+    {
+        "en"    "The map will not change."
+    }
+
+    "JEZ you have nominated"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have nominated {1}."
+    }
+
+    "JEZ the vote for the next map will occur next round"
+    {
+        "en"    "The vote for the next map will occur next round."
+    }
+
+    "JEZ map will not change RTV hint"
+    {
+        "en"    "The map will not change until people RTV by typing !rtv in chat"
+    }
+
+    "JEZ the vote for the next map will occur in X rounds"
+    {
+        "#format"   "{1:d}"
+        "en"    "The vote for the next map will occur in {1} rounds."
+    }
+
+    "JEZ minutes plural"
+    {
+        "en"            "minutes"
+    }
+
+    "JEZ minutes singular"
+    {
+        "en"            "minute"
+    }
+
+    "JEZ seconds plural"
+    {
+        "en"            "seconds"
+    }
+
+    "JEZ seconds singular"
+    {
+        "en"            "second"
+    }
+
+    "JEZ rounds plural"
+    {
+        "en"            "rounds"
+    }
+
+    "JEZ rounds singular"
+    {
+        "en"            "round"
+    }
+
+    "JEZ RTV not allowed yet seconds rounds"
+    {
+        "#format"        "{1:d},{2:t},{3:d},{4:t}"
+        "en"            "You may not rock the vote yet, please try again in {1} {2} and {3} {4}."
+    }
+
+    "JEZ RTV not allowed yet seconds"
+    {
+        "#format"        "{1:d},{2:t}"
+        "en"            "You may not rock the vote yet, please try again in {1} {2}."
+    }
+
+    "JEZ RTV not allowed yet rounds"
+    {
+        "#format"        "{1:d},{2:t}"
+        "en"            "You may not rock the vote yet, please try again in {1} {2}."
+    }
+
+    "JEZ RTV not allowed try again soon"
+    {
+        "en"        "You may not rock the vote yet, please try again soon."
+    }
+
+    "JEZ RTV not allowed waiting for players"
+    {
+        "#format"        "{1:d},{2:t}"
+        "en"            "Waiting for {1} more {2} before RTV is allowed."
+    }
+
+    "JEZ RTV person still wants to rock the vote"
+    {
+        "#format"       "{1:N},{2:d},{3:d}"
+        "en"            "{1} still wants to RTV. ({2} votes, {3} required)"
+    }
+
+    "JEZ RTV person wants to rock the vote"
+    {
+        "#format"       "{1:N},{2:d},{3:d}"
+        "en"            "{1} wants to RTV. ({2} votes, {3} required)"
+    }
+
+    "JEZ the map is about to change"
+    {
+        "en"    "The map is about to change."
+    }
+
+    "JEZ time string seconds only"
+    {
+        "#format"       "{1:d},{2:t}"
+        "en"    "{1} {2}"
+    }
+
+    "JEZ time string minutes only"
+    {
+        "#format"       "{1:d},{2:t}"
+        "en"    "{1} {2}"
+    }
+
+    "JEZ vote for nextmap will occur in time string"
+    {
+        "#format"       "{1:s}"
+        "en"    "The vote for the next map will occur in {1}."
+    }
+
+    "JEZ the map will change in time string"
+    {
+        "#format"       "{1:s}"
+        "en"    "The map will change in {1}."
+    }
+
+    "JEZ vote for the next map"
+    {
+        "en"    "Vote for a new map:"
+    }
+
+    "JEZ next map not determined RTV hint"
+    {
+        "en"    "The next map has not been determined yet. If you would like to start a map vote, type !rtv in chat."
+    }
+
+    "JEZ would you like to join group"
+    {
+        "#format"       "{1:s}"
+        "en"    "Would you like to join the group \"{1}\"?"
+    }
+
+    "JEZ would you like to join group invited by"
+    {
+        "#format"       "{1:s},{2:s}"
+        "en"    "Would you like to join the group \"{1}\"? You were invited by \"{2}\"."
+    }
+
+    "JEZ time string minutes and seconds"
+    {
+        "#format"       "{1:d},{2:t},{3:d},{4:t}"
+        "en"    "{1} {2} and {3} {4}"
+    }
+
+    "JEZ group chat command syntax"
+    {
+        "en"    "Syntax: !group <unique group name>"
+    }
+
+    "JEZ ignore chat command syntax"
+    {
+        "en"    "Syntax: !ignore <part of player name>"
+    }
+
+    "JEZ unignore chat command syntax"
+    {
+        "en"    "Syntax: !unignore <part of player name>"
+    }
+
+    "JEZ you are already in a group"
+    {
+        "en"    "You are already in a group. You may type !leave if you want to leave your current group. If you are leader, you may also type !disband to disband your group."
+    }
+
+    "JEZ respond to current invite before forming group"
+    {
+        "en"    "Please respond to the current invite request before attempting to form your own group."
+    }
+
+    "JEZ unique group name required"
+    {
+        "#format"   "{1:s}"
+        "en"    "You must specify a unique group name. The group name \"{1}\" is already in use."
+    }
+
+    "JEZ group creation unknown error"
+    {
+        "en"    "An unknown error occured when attempting to create your group."
+    }
+
+    "JEZ you have created a group"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have created a group named \"{1}\". You are the group leader. You may invite others using !invite <part of their name>."
+    }
+
+    "JEZ the group has been renamed"
+    {
+        "#format"   "{1:s}"
+        "en"    "The group has been renamed to \"{1}\"."
+    }
+
+    "JEZ groupname chat command syntax"
+    {
+        "en"    "Syntax: !groupname <unique group name>"
+    }
+
+    "JEZ promote chat command syntax"
+    {
+        "en"    "Syntax: !promote <part of player name>"
+    }
+
+    "JEZ groupkick chat command syntax"
+    {
+        "en"    "Syntax: !groupkick <part of player name>"
+    }
+
+    "JEZ invite chat command syntax"
+    {
+        "en"    "Syntax: !invite <part of player name>"
+    }
+
+    "JEZ you must already be in a group to invite others"
+    {
+        "en"    "You must already be in a group to invite others. Type !group <unique group name> to create a group."
+    }
+
+    "JEZ you are not currently in a group"
+    {
+        "en"    "You are not currently in a group. You may create one by typing !group <unique group name>."
+    }
+
+    "JEZ someone has left the group"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has left the group."
+    }
+
+    "JEZ you left your group and it has been disbanded"
+    {
+        "en"    "You have left your group and it has been disbanded."
+    }
+
+    "JEZ you left your group default"
+    {
+        "en"    "You have left your group. You may now create a new one by typing !group <unique group name>."
+    }
+
+    "JEZ old group leader left you have been promoted"
+    {
+        "en"    "The old group leader has left. You have been promoted as the new leader. You may now use group admin commands."
+    }
+
+    "JEZ you may not rename group unless you are leader"
+    {
+        "en"    "You may not rename a group if you are not the leader."
+    }
+
+    "JEZ you may not promote unless you are group leader"
+    {
+        "en"    "You may not promote someone to group leader if you are not the leader."
+    }
+
+    "JEZ you may not disband unless you are group leader"
+    {
+        "en"    "You may not disband a group if you are not the leader. You may leave by typing !leave."
+    }
+
+    "JEZ you may not kick someone from the group unless you are leader"
+    {
+        "en"    "You may not kick someone from the group if you are not the leader."
+    }
+
+    "JEZ your group has been disbanded"
+    {
+        "en"    "Your group has been disbanded."
+    }
+
+    "JEZ unable to find single player matching"
+    {
+        "#format"   "{1:s}"
+        "en"    "Unable to find a single player matching \"{1}\", please enter a better match and try again."
+    }
+
+    "JEZ the player you are trying to promote is not in your group"
+    {
+        "en"    "The player you are trying to promote is not in your group. You may invite them by typing !invite <part of their name>."
+    }
+
+    "JEZ the player you are trying to kick is not in your group"
+    {
+        "en"    "The player you are trying to kick is not in your group."
+    }
+
+    "JEZ the player you are trying to invite is still connecting"
+    {
+        "en"    "The player you are trying to invite in still connecting to the server. Please wait until they are in game, and try again."
+    }
+
+    "JEZ the player you are trying to ignore is still connecting"
+    {
+        "en"    "The player you are trying to ignore in still connecting to the server. Please wait until they are in game, and try again."
+    }
+
+    "JEZ the player you are trying to unignore is still connecting"
+    {
+        "en"    "The player you are trying to unignore in still connecting to the server. Please wait until they are in game, and try again."
+    }
+
+    "JEZ you are already ignoring this player"
+    {
+        "en"    "You are already ignoring invites from this player. You may accept future invites by typing !unignore <player name>."
+    }
+
+    "JEZ you are not yet ignoring this player"
+    {
+        "en"    "You are not yet ignoring invites from this player. You may start to ignore them by typing !ignore <player name>."
+    }
+
+    "JEZ you have unignored invites from a player"
+    {
+        "#format"   "{1:s}"
+        "en"    "You are no longer ignoring group invites from {1}. You may start to ignore them again by typing !ignore <player name>."
+    }
+
+    "JEZ you have been kicked from the group"
+    {
+        "en"    "You have been kicked from the group."
+    }
+
+    "JEZ you have kicked someone from the group"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have kicked \"{1}\" from the group."
+    }
+
+    "JEZ you have ignored invites from a player"
+    {
+        "#format"   "{1:s}"
+        "en"    "You have ignored invites from {1}. You may accept future invites by typing !unignore <player name>."
+    }
+
+    "JEZ someone has been kicked from the group"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has been kicked from the group."
+    }
+
+    "JEZ you have been promoted to group leader"
+    {
+        "en"    "You have been promoted to group leader."
+    }
+
+    "JEZ someone has been promoted to group leader"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" has been promoted to group leader."
+    }
+
+    "JEZ that is already the name of your group"
+    {
+        "#format"   "{1:s}"
+        "en"    "\"{1}\" is already the name of your group."
+    }
+
+    "JEZ the player you are trying to invite is already in a group"
+    {
+        "en"    "The player you are trying to invite is already in a group. They must leave their group by typing !leave, or they may invite you to their group."
+    }
+
+    "JEZ the player you are trying to invite is already responding"
+    {
+        "en"    "The player you are trying to invite is already responding to a group invite. You may try again once they are done."
+    }
+
+    "JEZ your group invite has been sent"
+    {
+        "en"    "Your group invite has been sent."
+    }
+
+    "JEZ this is the last round"
+    {
+        "en"    "This is the last round!"
+    }
+
+    "JEZ there are X rounds left"
+    {
+        "#format"   "{1:d},{2:t}"
+        "en"    "There are {1} {2} left."
+    }
+
+    "JEZ the map will change shortly after RTV"
+    {
+        "en"    "The map will change shortly after the RTV vote."
+    }
+
+    "JEZ the player you are trying to invite is ignoring you"
+    {
+        "en"    "The player you are trying to invite is ignoring your invites. They must !unignore you before they will receive your invites."
+    }
+
+    "JEZ ignore invites from"
+    {
+        "#format"   "{1:s}"
+        "en"    "Ignore group invites from {1}"
+    }
+
+    "DM HP kill reward"
+    {
+        "#format"   "{1:d}"
+        "en"        "You have been awarded {1} HP for killing an enemy!"
+    }
+
+    "DM HP knife kill reward"
+    {
+        "#format"   "{1:d}"
+        "en"        "You have been awarded {1} HP for knifing an enemy!"
+    }
+
+    "DM HP headshot kill reward"
+    {
+        "#format"   "{1:d}"
+        "en"        "You have been awarded {1} HP for headshotting an enemy!"
+    }
+
+    "KZ must be on ground checkpoint"
+    {
+        "en"        "You must be on the ground to place a checkpoint."
+    }
+
+    "KZ autobhop not allowed right now"
+    {
+        "en"        "Auto-Bhop is not allowed right now!"
+    }
+
+    "KZ autobhop disabled"
+    {
+        "en"    "Auto-Bhop has been disabled."
+    }
+
+    "KZ autobhop enabled"
+    {
+        "en"    "Auto-Bhop has been enabled."
+    }
+
+    "KZ respawning not allowed right now"
+    {
+        "en"    "Respawning is not allowed right now."
+    }
+
+    "KZ you are being respawned"
+    {
+        "en"    "You are being respawned."
+    }
+
+    "KZ flashlight not allowed right now"
+    {
+        "en"    "Flashlight is not allowed right now."
+    }
+
+    "KZ flashlight not allowed while dead"
+    {
+        "en"    "Flashlight is not allowed while dead."
+    }
+
+    "Surf autobhop not allowed right now"
+    {
+        "en"        "Auto-Bhop is not allowed right now!"
+    }
+
+    "Surf autobhop disabled"
+    {
+        "en"    "Auto-Bhop has been disabled."
+    }
+
+    "Surf autobhop enabled"
+    {
+        "en"    "Auto-Bhop has been enabled."
+    }
+
+    "Surf respawning not allowed right now"
+    {
+        "en"    "Respawning is not allowed right now."
+    }
+
+    "Surf you are being respawned"
+    {
+        "en"    "You are being respawned."
+    }
+
+    "Surf flashlight not allowed right now"
+    {
+        "en"    "Flashlight is not allowed right now."
+    }
+
+    "Surf flashlight not allowed while dead"
+    {
+        "en"    "Flashlight is not allowed while dead."
+    }
+
+    "Grenades spot added"
+    {
+        "en"        "Current spot added."
+    }
+
+    "Grenades may not add spot during playback"
+    {
+        "en"    "You may not add a spot during playback."
+    }
+
+    "Grenades may not change this during playback"
+    {
+        "en"    "You may not change this during playback."
+    }
+
+    "Grenades must first configure one or more spots"
+    {
+        "en"    "You must first configure one or more spots."
+    }
+
+    "Grenades playback disabled no longer tracking"
+    {
+        "en"    "Playback disabled, no longer tracking grenades."
+    }
+
+    "Grenades playback enabled now tracking"
+    {
+        "en"    "Playback enabled, now tracking grenades."
+    }
+
+    "Grenades playback skipped"
+    {
+        "en"    "Playback skipped."
+    }
+
+    "Grenades may only fast forward during playback"
+    {
+        "en"    "You may only fast forward during playback."
+    }
+
+    "Grenades must be alive to do this"
+    {
+        "en"    "You must be alive to do this."
+    }
+
+    "Grenades switched to grenade"
+    {
+        "en"    "Switched to grenade."
+    }
+
+    "Grenades spot removed"
+    {
+        "en"    "Spot removed."
+    }
+
+    "Grenades may not remove spot during playback"
+    {
+        "en"    "You may not remove a spot during playback."
+    }
+
+    "Grenades no spots to remove"
+    {
+        "en"    "There are no spots to remove."
+    }
+
+
+    "Grenades may not do this when dead"
+    {
+        "en"    "You may not do this when you are dead."
+    }
+
+    "Grenades projectile mode display all"
+    {
+        "en"    "Allow All"
+    }
+
+    "Grenades projectile mode display none"
+    {
+        "en"    "Block All"
+    }
+
+    "Grenades projectile mode display self"
+    {
+        "en"    "Only Allow My Grenades"
+    }
+
+    "Grenades projectile mode display group"
+    {
+        "en"    "Only Allow My Group Grenades"
+    }
+
+    "Grenades display incendiary grenade"
+    {
+        "en"    "Incendiary Grenade"
+    }
+
+    "Grenades display decoy grenade"
+    {
+        "en"    "Decoy Grenade"
+    }
+
+    "Grenades display molotov grenade"
+    {
+        "en"    "Molotov Grenade"
+    }
+
+    "Grenades display HE grenade"
+    {
+        "en"    "HE Grenade"
+    }
+
+    "Grenades display smoke grenade"
+    {
+        "en"    "Smoke Grenade"
+    }
+
+    "Grenades display flashbang"
+    {
+        "en"    "Flashbang"
+    }
+
+    "Grenades player mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Player Mode changed to: {1}"
+    }
+
+    "Grenades flash mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Flash Mode changed to: {1}"
+    }
+
+    "Grenades smoke mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Smoke Mode changed to: {1}"
+    }
+
+    "Grenades HE grenade mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "HE Grenade Mode changed to: {1}"
+    }
+
+    "Grenades decoy mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Decoy Mode changed to: {1}"
+    }
+
+    "Grenades molotov mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Molotov Mode changed to: {1}"
+    }
+
+    "Grenades incendiary mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Incendiary Mode changed to: {1}"
+    }
+
+    "Grenades type changed"
+    {
+        "#format"   "{1:t}"
+        "en"    "Grenade type changed to: {1}"
+    }
+
+    "Grenades menu type"
+    {
+        "#format"   "{1:t}"
+        "en"    "Grenade Type: {1} (!grenadetype)"
+    }
+
+    "Grenades noclip disabled"
+    {
+        "en"    "No Clip disabled."
+    }
+
+    "Grenades noclip enabled"
+    {
+        "en"    "No Clip enabled."
+    }
+
+    "Grenades god mode changed"
+    {
+        "#format"   "{1:t}"
+        "en"        "God Mode changed to: {1}"
+    }
+
+    "Grenades menu god mode"
+    {
+        "#format"   "{1:t}"
+        "en"        "God Mode: {1} (!god)"
+    }
+
+    "Grenades menu noclip"
+    {
+        "#format"   "{1:t}"
+        "en"    "No Clip: {1} (!noclip)"
+    }
+
+    "Grenades menu flash mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Flash Mode: {1} (!flashmode)"
+    }
+
+    "Grenades menu smoke mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Smoke Mode: {1} (!smokemode)"
+    }
+
+    "Grenades menu HE grenade mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "HE Grenade Mode: {1} (!hegrenademode)"
+    }
+
+    "Grenades menu molotov mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Molotov Mode: {1} (!molotovmode)"
+    }
+
+    "Grenades menu decoy mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Decoy Mode: {1} (!decoymode)"
+    }
+
+    "Grenades menu incendiary mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Incendiary Mode: {1} (!incendiarymode)"
+    }
+
+    "Grenades menu player mode"
+    {
+        "#format"   "{1:t}"
+        "en"    "Player Mode: {1} (!playermode)"
+    }
+
+    "Grenades menu add spot"
+    {
+        "en"    "Add current spot (!addspot)"
+    }
+
+    "Grenades menu remove spot"
+    {
+        "en"    "Remove closest spot (!removespot)"
+    }
+
+    "Grenades menu fast forward"
+    {
+        "en"    "Fast forward playback (!fastforward)"
+    }
+
+    "Grenades menu switch to grenade"
+    {
+        "en"    "Switch to grenade now (!switchtogrenade)"
+    }
+
+    "Grenades player mode display all"
+    {
+        "en"    "Show Everyone"
+    }
+
+    "Grenades player mode display group"
+    {
+        "en"    "Only Show Group Members"
+    }
+
+    "Grenades player mode display none"
+    {
+        "en"    "Hide Everyone"
+    }
+
+    "Grenades menu title"
+    {
+        "#format"   "{1:d}"
+        "en"    "Spot Count: {1}"
+        "en"    "Spot Count: {1}"
+    }
+
+    "Grenades menu playback"
+    {
+        "#format"   "{1:t}"
+        "en"    "Playback: {1} (!playback)"
+    }
+
+    "Grenades menu on"
+    {
+        "en"    "ON"
+    }
+
+    "Grenades menu off"
+    {
+        "en"    "OFF"
+    }
+
+    "Grenades god mode off"
+    {
+        "en"        "OFF"
+    }
+
+    "Grenades god mode on"
+    {
+        "en"        "ON"
+    }
+
+    "Grenades god mode only take self damage"
+    {
+        "en"        "Only Take Self Damage"
+    }
+
+    "Grenades god mode only take grenade damage"
+    {
+        "en"        "Only Take Grenade Damage"
+    }
+
+    "Grenades god mode only take group damage"
+    {
+        "en"        "Only Take Group Damage"
+    }
+
+    "Grenades god mode only take group grenade damage"
+    {
+        "en"        "Only Take Group Grenade Damage"
+    }
+
+    "Multi1v1 no opponent"
+    {
+        "#format"   "{1:s},{2:i},{3:s},{4:s}"
+        "en"        "You are in arena {1}{2} {3}with {4}no opponent."
+    }
+
+    "Multi1v1 facing off"
+    {
+        "#format"   "{1:s},{2:i},{3:s},{4:s},{5:N},{6:s}"
+        "en"        "You are in arena {1}{2}{3}, facing off against {4}{5}{6}."
+    }
+
+    "Multi1v1 arenas full"
+    {
+        "#format"   "{1:s}"
+        "en"        "Sorry, all the arenas are currently {1}full."
+    }
+
+    "Multi1v1 queue position"
+    {
+        "#format"   "{1:s},{2:i},{3:s}"
+        "en"        "You are in position {1}{2} {3}in the waiting queue."
+    }
+
+    "Multi1v1 won message"
+    {
+        "#format"   "{1:s},{2:s},{3:s},{4:i},{5:s},{6:.1f},{7:s},{8:s},{9:N},{10:s},{11:s},{12:i},{13:s},{14:.1f},{15:s}"
+        "en"        "{1}You {2}(rating {3}{4}, {5}+{6}{7}) beat {8}{9} {10}(rating {11}{12}, {13}-{14}{15})."
+    }
+
+    "Multi1v1 loss message"
+    {
+        "#format"   "{1:s},{2:s},{3:s},{4:i},{5:s},{6:.1f},{7:s},{8:s},{9:N},{10:s},{11:s},{12:i},{13:s},{14:.1f},{15:s}"
+        "en"        "{1}You {2}(rating {3}{4}, {5}-{6}{7}) lost to {8}{9} {10}(rating {11}{12}, {13}+{14}{15})."
+    }
+
+    "Multi1v1 time ran out"
+    {
+        "#format"   "{1:s},{2:s},{3:s},{4:i},{5:s},{6:.1f},{7:s}"
+        "en"        "{1}You {2}(rating {3}{4}, {5}-{6}{7}) let time run out."
+    }
+
+    "Multi1v1 most wins"
+    {
+        "#format"   "{1:s},{2:N},{3:s},{4:s},{5:d},{6:s}"
+        "en"        "{1}{2} {3}had the most wins {4}({5}) {6}in arena 1 this map."
+    }
+
+    "Multi1v1 opponent left"
+    {
+        "#format"   "{1:s}"
+        "en"        "{1}Your opponent left."
+    }
+
+    "Multi1v1 hide stats"
+    {
+        "en"        "Player stats are now being hidden."
+    }
+
+    "Multi1v1 show stats"
+    {
+        "en"        "Player stats are now being displayed."
+    }
+
+    "Multi1v1 arena tag"
+    {
+        "#format"   "{1:d}"
+        "en"        "Arena {1}"
+    }
+
+    "Multi1v1 challenge prompt"
+    {
+        "#format"       "{1:N},{2:d},{3:s}"
+        "en"        "{1} challenged you to a best of {2} with {3}"
+    }
+
+    "Multi1v1 challenge accept"
+    {
+        "en"        "Accept"
+    }
+
+    "Multi1v1 challenge decline"
+    {
+        "en"        "Decline"
+    }
+
+    "Multi1v1 challenge ignore"
+    {
+        "en"        "Decline+ignore future challenges"
+    }
+
+    "Multi1v1 challenge winning score"
+    {
+        "#format"       "{1:s},{2:d},{3:d},{4:s},{5:d},{6:d},{7:s},{8:N}"
+        "en"        "You are {1}winning {2} to {3} {4}({5} rounds left, need {6} to win) against {7}{8}"
+    }
+
+    "Multi1v1 challenge losing score"
+    {
+        "#format"       "{1:s},{2:d},{3:d},{4:s},{5:d},{6:d},{7:s},{8:N}"
+        "en"        "You are {1}losing {2} to {3} {4}({5} rounds left, need {6} to win) against {7}{8}"
+    }
+
+    "Multi1v1 challenge tied score"
+    {
+        "#format"       "{1:s},{2:d},{3:d},{4:s},{5:d},{6:d},{7:s},{8:N}"
+        "en"        "You are {1}tied {2} to {3} {4}({5} rounds left, need {6} to win) against {7}{8}"
+    }
+
+    "Multi1v1 challenge final round"
+    {
+        "#format"       "{1:s}"
+        "en"        "{1}FINAL ROUND"
+    }
+
+    "Multi1v1 challenge match point"
+    {
+        "#format"       "{1:s}"
+        "en"        "{1}MATCH POINT"
+    }
+
+    "Multi1v1 challenge won"
+    {
+        "#format"       "{1:N}"
+        "en"        "You beat {1}"
+    }
+
+    "Multi1v1 challenge lost"
+    {
+        "#format"       "{1:N}"
+        "en"        "You lost to {1}"
+    }
+
+    "Multi1v1 challenge menu title"
+    {
+        "en"        "Who do you want to challenge:"
+    }
+
+    "Multi1v1 challenge nobody avaliable"
+    {
+        "en"        "There is nobody to challenge right now."
+    }
+
+    "Multi1v1 challenge unavaliable"
+    {
+        "en"        "You cannot challenge that user right now."
+    }
+
+    "Multi1v1 challenge not longer avaliable"
+    {
+        "#format"       "{1:N}"
+        "en"        "{1} is no longer avaliable for a challenge."
+    }
+
+    "Multi1v1 challenge declined"
+    {
+        "#format"       "{1:s},{2:N},{3:s}"
+        "en"        "{1}{2} declined {3}your challenge."
+    }
+
+    "Multi1v1 challenge accepted"
+    {
+        "#format"       "{1:s},{2:N},{3:s},{4:d}"
+        "en"        "{1}{2} accepted {3}your BO{4} challenge."
+    }
+
+    "Mulit1v1 challenge type menu title"
+    {
+        "en"        "What type of challenge:"
+    }
+
+    "Multi1v1 help menu guns item"
+    {
+        "en"        "!guns - Set your weapon preferences"
+    }
+
+    "Multi1v1 help menu guns page title"
+    {
+        "en"        "Weapon preferences:"
+    }
+
+    "Multi1v1 help menu guns page text"
+    {
+        "en"        "Type !guns in chat to set what weapons you want to use and what round types to allow"
+    }
+
+    "Retakes placed waiting queue"
+    {
+        "en"        "You have been placed in the waiting queue."
+    }
+
+    "Retakes queue position"
+    {
+        "#format"       "{1:d}"
+        "en"        "The game is currently full. You are at position {1} in the waiting queue."
+    }
+
+    "Retakes team scramble"
+    {
+        "#format"       "{1:s},{2:d},{3:s},{4:s}"
+        "en"        "The terrorists won {1}{2}{3} rounds in a row. {4}Teams are being scrambled!"
+    }
+
+    "Retakes terrorist win almost scramble"
+    {
+        "#format"       "{1:s},{2:d},{3:s},{4:s},{5:d},{6:s}"
+        "en"        "The terrorists have won  {1}{2}{3} rounds in a row - if they win {4}{5} more, {6}teams will be scrambled."
+    }
+
+    "Retakes terrorist win streak"
+    {
+        "#format"       "{1:s},{2:d},{3:s}"
+        "en"        "The terrorists have won {1}{2}{3} rounds in a row!"
+    }
+
+    "Retakes end win streak"
+    {
+        "#format"       "{1:s},{2:d},{3:s}"
+        "en"        "The CTs have ended a {1}{2}{3}-round long win streak!"
+    }
+
+    "Retakes callout expired"
+    {
+        "en"        "Callout period expired, only your dead teammates can hear you now."
+    }
+
+    "Retakes round info"
+    {
+        "#format"       "{1:s},{2:s},{3:s},{4:d},{5:s}{6:s},{7:d}"
+        "en"        "Retake {1}{2}: {3}{4} Ts {5}vs {6}{7} CTs"
+    }
+
+    "Retakes bomb warning"
+    {
+        "en"        "You know you have the bomb, right?"
+    }
+
+    "Retakes weapon menu title"
+    {
+        "en"        "Select your weapon preferences"
+    }
+
+    "Retakes failed to plant"
+    {
+        "#format"       "{1:s},{2:N},{3:s}"
+        "en"        "{1}{2} {3}failed to plant..."
+    }
+
+    "Retakes help menu guns item"
+    {
+        "en"        "!guns - Set your retakes weapon preferences"
+    }
+
+    "Retakes help menu guns page title"
+    {
+        "en"        "Weapon settings:"
+    }
+
+    "Retakes help menu guns page text"
+    {
+        "en"        "Type !guns in chat to set what weapons you prefer to have each round"
+    }
+
+    "Rush placed waiting queue"
+    {
+        "en"        "You have been placed in the waiting queue."
+    }
+
+    "Rush queue position"
+    {
+        "#format"       "{1:d}"
+        "en"        "The game is currently full. You are at position {1} in the waiting queue."
+    }
+
+    "Rush team scramble"
+    {
+        "#format"       "{1:s},{2:d},{3:s},{4:s}"
+        "en"        "The CTs won {1}{2}{3} rounds in a row. {4}Teams are being scrambled!"
+    }
+
+    "Rush CT win almost scramble"
+    {
+        "#format"       "{1:s},{2:d},{3:s},{4:s},{5:d},{6:s}"
+        "en"        "The CTs have won  {1}{2}{3} rounds in a row - if they win {4}{5} more, {6}teams will be scrambled."
+    }
+
+    "Rush CT win streak"
+    {
+        "#format"       "{1:s},{2:d},{3:s}"
+        "en"        "The CTs have won {1}{2}{3} rounds in a row!"
+    }
+
+    "Rush end win streak"
+    {
+        "#format"       "{1:s},{2:d},{3:s}"
+        "en"        "The terrorists have ended a {1}{2}{3}-round long win streak!"
+    }
+
+    "Rush callout expired"
+    {
+        "en"        "Callout period expired, only your dead teammates can hear you now."
+    }
+
+    "Rush round info"
+    {
+        "#format"       "{1:s},{2:s},{3:s},{4:d},{5:s}{6:s},{7:d}"
+        "en"        "Rush {1}{2}: {3}{4} Ts {5}vs {6}{7} CTs"
+    }
+
+    "Rush team already has awp"
+    {
+        "en"        "Sorry, your team already has an AWP."
+    }
+
+    "The server will restart at the end of this map"
+    {
+        "en"        "The server will restart at the end of this map."
+    }
+
+    "The server will now restart"
+    {
+        "en"        "The server will now restart!"
+    }
+
+    "JEZ yes"
+    {
+        "en"    "Yes"
+    }
+
+    "JEZ no"
+    {
+        "en"    "No"
+    }
+    
+    "JEZ advert welcome"
+    {
+        "en"    "Welcome to the server! If you have any questions, type {BLUE}!help in chat."
+    }
+}
