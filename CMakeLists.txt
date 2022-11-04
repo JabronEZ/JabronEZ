@@ -51,8 +51,13 @@ add_library(jabronez SHARED
         src/menus.h
         src/weapon_identifiers.cpp
         src/weapon_identifiers.h
+        src/spot.cpp
+        src/spot.h
         src/player.cpp
         src/player.h
+        src/god_mode.h
+        src/player_mode.h
+        src/projectile_mode.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}
