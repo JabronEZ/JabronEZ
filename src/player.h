@@ -100,11 +100,8 @@ public:
     ITimer *GetGrenadeHandlePlaybackTimer() const { return _grenadeHandlePlaybackTimer; }
     void SetGrenadeHandlePlaybackTimer(ITimer *grenadeHandlePlaybackTimer) { _grenadeHandlePlaybackTimer = grenadeHandlePlaybackTimer; }
 
-    int GetGrenadeMenuPage() const { return _grenadeMenuPage; }
-    void SetGrenadeMenuPage(int grenadeMenuPage) { _grenadeMenuPage = grenadeMenuPage; }
-
-    ProjectileMode GetGrenadeFlashMode() const { return _grenadeFlashMode; }
-    void SetGrenadeFlashMode(ProjectileMode grenadeFlashMode) { _grenadeFlashMode = grenadeFlashMode; }
+    size_t GetGrenadeMenuPage() const { return _grenadeMenuPage; }
+    void SetGrenadeMenuPage(size_t grenadeMenuPage) { _grenadeMenuPage = grenadeMenuPage; }
 
     ProjectileMode GetGrenadeSmokeMode() const { return _grenadeSmokeMode; }
     void SetGrenadeSmokeMode(ProjectileMode grenadeSmokeMode) { _grenadeSmokeMode = grenadeSmokeMode; }
@@ -149,7 +146,7 @@ private:
     ITimer *_grenadeTriggerPlaybackTimer { nullptr };
     ITimer *_grenadeGotoNextSpotOrFinishTimer { nullptr };
     ITimer *_grenadeHandlePlaybackTimer { nullptr };
-    int _grenadeMenuPage { 0 };
+    size_t _grenadeMenuPage { 0 };
     ProjectileMode _grenadeFlashMode { ProjectileMode_ALL };
     ProjectileMode _grenadeSmokeMode { ProjectileMode_ALL };
     ProjectileMode _grenadeDecoyMode { ProjectileMode_ALL };
