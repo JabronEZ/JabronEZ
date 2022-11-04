@@ -40,10 +40,10 @@ public:
             size_t *out_length,
             ...);
 
-    const char *GetGrenadeTranslationPhrase(CSWeaponID weaponId);
+    const char *GetGrenadeTranslationPhrase(GrenadeType grenadeType);
     const char *GetGodModeTranslationPhrase(GodMode godMode);
     const char *GetProjectileModeTranslationPhrase(ProjectileMode projectileMode);
-    const char *GetGrenadeModeMenuItemTranslationPhrase(CSWeaponID grenadeType);
+    const char *GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType);
     const char *GetPlayerModeTranslationPhrase(PlayerMode mode);
 
 private:

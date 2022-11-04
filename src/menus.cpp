@@ -20,6 +20,7 @@
 #include "extension.h"
 #include "player.h"
 #include "translations.h"
+#include "player_manager.h"
 
 const char *GetGrenadeModeMenuItemKey(CSWeaponID grenadeType);
 Menus::Menus()
@@ -43,7 +44,67 @@ void Menus::OnMenuSelect2(
         unsigned int item,
         unsigned int item_on_page)
 {
-    META_CONPRINTF("Menu selection! %d %d\n", item, client);
+//    if(p_Action == MenuAction_Cancel)
+//    {
+//        new s_Client = p_Param1;
+//
+//        new Handle:s_GrenadePlayer = GetGrenadePlayerByClient(s_Client);
+//
+//        if(!s_GrenadePlayer)
+//            return;
+//
+//        SetGrenadePlayerMenuOpen(s_GrenadePlayer, false);
+//    }
+    Player *player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(client);
+
+    if (player == nullptr)
+    {
+        return;
+    }
+
+    ItemDrawInfo itemInfo;
+    const char *itemKey = menu->GetItemInfo(item, &itemInfo);
+
+    if (itemKey == nullptr)
+    {
+        return;
+    }
+
+    auto pageNumber = (size_t)(((int)(floor((float)item / 6.0f))) + 1);
+    player->SetGrenadeMenuPage(pageNumber);
+
+     if (strcmp(itemKey, "add_spot") == 0)
+         player->DoAddSpot();
+     else if (strcmp(itemKey, "remove_spot") == 0)
+         player->DoRemoveSpot();
+     else if (strcmp(itemKey, "playback") == 0)
+         player->DoTogglePlayback();
+     else if (strcmp(itemKey, "fast_forward") == 0)
+         player->DoFastForward();
+     else if (strcmp(itemKey, "switch_to_grenade") == 0)
+         player->DoSwitchToGrenade();
+     else if (strcmp(itemKey, "god") == 0)
+         player->DoToggleGodMode();
+     else if (strcmp(itemKey, "noclip") == 0)
+         player->DoToggleNoClip();
+     else if (strcmp(itemKey, "player_mode") == 0)
+         player->DoTogglePlayerMode();
+     else if (strcmp(itemKey, "flash_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_FLASH);
+     else if (strcmp(itemKey, "smoke_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_SMOKE);
+     else if (strcmp(itemKey, "hegrenade_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_HEGRENADE);
+     else if (strcmp(itemKey, "decoy_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_DECOY);
+     else if (strcmp(itemKey, "molotov_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_MOLOTOV);
+     else if (strcmp(itemKey, "incendiary_mode") == 0)
+         player->DoToggleProjectileMode(GrenadeType_INCENDIARY);
+     else if (strcmp(itemKey, "grenade_type") == 0)
+         player->DoToggleGrenadeType();
+
+    OpenMenu(player, pageNumber);
 }
 
 void Menus::OnMenuEnd(SourceMod::IBaseMenu *menu, SourceMod::MenuEndReason reason)
@@ -296,35 +357,10 @@ void AppendNoClipMenuItem(
                                        ITEMDRAW_DEFAULT));
 }
 
-const char *GetGrenadeModeMenuItemKey(CSWeaponID grenadeType)
-{
-    switch (grenadeType)
-    {
-        case CSWeapon_INCGRENADE:
-            return "incendiary_mode";
-
-        case CSWeapon_DECOY:
-            return "decoy_mode";
-
-        case CSWeapon_MOLOTOV:
-            return "molotov_mode";
-
-        case CSWeapon_HEGRENADE:
-            return "hegrenade_mode";
-
-        case CSWeapon_SMOKEGRENADE:
-            return "smoke_mode";
-
-        case CSWeapon_FLASHBANG:
-            return "flash_mode";
-    }
-
-    return "";
-}
-
 void AppendGrenadeModeMenuItem(
         IBaseMenu *menu,
-        CSWeaponID grenadeType,
+        GrenadeType grenadeType,
+        const char *itemKey,
         int clientIndex,
         Player *player)
 {
@@ -340,7 +376,7 @@ void AppendGrenadeModeMenuItem(
             &clientIndex,
             g_JabronEZ.GetTranslations()->GetProjectileModeTranslationPhrase(player->GetProjectileMode(grenadeType)));
 
-    menu->AppendItem(GetGrenadeModeMenuItemKey(grenadeType), ItemDrawInfo(
+    menu->AppendItem(itemKey, ItemDrawInfo(
                                                                      grenadeModeMenuItem,
                                                                      ITEMDRAW_DEFAULT));
 }
@@ -367,7 +403,7 @@ void AppendPlayerModeMenuItem(
                                             ITEMDRAW_DEFAULT));
 }
 
-void Menus::OpenMenu(Player *player)
+void Menus::OpenMenu(Player *player, size_t pageNumber)
 {
     // TODO: We need to support starting their menu on a specific page, so that way we can support persistent menu mode.
     IMenuStyle *style = menus->GetDefaultStyle();
@@ -392,13 +428,18 @@ void Menus::OpenMenu(Player *player)
     AppendSwitchToGrenadeMenuItem(menu, clientIndex, player);
     AppendGodModeMenuItem(menu, clientIndex, player);
     AppendNoClipMenuItem(menu, clientIndex, player, grenadesMenuOn, grenadesMenuOff);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_FLASHBANG, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_SMOKEGRENADE, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_HEGRENADE, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_DECOY, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_MOLOTOV, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, CSWeapon_INCGRENADE, clientIndex, player);
+    AppendPlayerModeMenuItem(menu, clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_FLASH, "flash_mode", clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_SMOKE, "smoke_mode", clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_HEGRENADE, "hegrenade_mode", clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_DECOY, "decoy_mode", clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_MOLOTOV, "molotov_mode", clientIndex, player);
+    AppendGrenadeModeMenuItem(menu, GrenadeType_INCENDIARY, "incendiary_mode", clientIndex, player);
 
     menu->SetMenuOptionFlags(menu->GetMenuOptionFlags() | MENUFLAG_BUTTON_EXIT);
-    menu->Display(player->GetClientIndex(), MENU_TIME_FOREVER);
+
+    if (pageNumber == 1)
+        menu->Display(player->GetClientIndex(), MENU_TIME_FOREVER);
+    else
+        menu->DisplayAtItem(player->GetClientIndex(), MENU_TIME_FOREVER, 6 * (pageNumber - 1));
 }

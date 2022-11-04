@@ -79,8 +79,8 @@ public:
     ITimer *GetGrenadeLaunchTimer() const { return _grenadeLaunchTimer; }
     void SetGrenadeLaunchTimer(ITimer *grenadeLaunchTimer) { _grenadeLaunchTimer = grenadeLaunchTimer; }
 
-    CSWeaponID GetGrenadeType() const { return _grenadeType; }
-    void SetGrenadeType(CSWeaponID grenadeType) { _grenadeType = grenadeType; }
+    GrenadeType GetGrenadeType() const { return _grenadeType; }
+    void SetGrenadeType(GrenadeType grenadeType) { _grenadeType = grenadeType; }
 
     Spot GetGrenadeThrowerSpot() const { return _grenadeThrowerSpot; }
     void SetGrenadeThrowerSpot(const Spot& grenadeThrowerSpot) { _grenadeThrowerSpot = grenadeThrowerSpot; }
@@ -103,22 +103,19 @@ public:
     size_t GetGrenadeMenuPage() const { return _grenadeMenuPage; }
     void SetGrenadeMenuPage(size_t grenadeMenuPage) { _grenadeMenuPage = grenadeMenuPage; }
 
-    ProjectileMode GetGrenadeSmokeMode() const { return _grenadeSmokeMode; }
-    void SetGrenadeSmokeMode(ProjectileMode grenadeSmokeMode) { _grenadeSmokeMode = grenadeSmokeMode; }
+    ProjectileMode GetProjectileMode(GrenadeType grenadeType) const;
+    void SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectileMode);
 
-    ProjectileMode GetGrenadeDecoyMode() const { return _grenadeDecoyMode; }
-    void SetGrenadeDecoyMode(ProjectileMode grenadeDecoyMode) { _grenadeDecoyMode = grenadeDecoyMode; }
-
-    ProjectileMode GetGrenadeHEGrenadeMode() const { return _grenadeHEGrenadeMode; }
-    void SetGrenadeHEGrenadeMode(ProjectileMode grenadeHEGrenadeMode) { _grenadeHEGrenadeMode = grenadeHEGrenadeMode; }
-
-    ProjectileMode GetGrenadeMolotovMode() const { return _grenadeMolotovMode; }
-    void SetGrenadeMolotovMode(ProjectileMode grenadeMolotovMode) { _grenadeMolotovMode = grenadeMolotovMode; }
-
-    ProjectileMode GetGrenadeIncendiaryMode() const { return _grenadeIncendiaryMode; }
-    void SetGrenadeIncendiaryMode(ProjectileMode grenadeIncendiaryMode) { _grenadeIncendiaryMode = grenadeIncendiaryMode; }
-
-    ProjectileMode GetProjectileMode(CSWeaponID grenadeType) const;
+    void DoAddSpot();
+    void DoRemoveSpot();
+    void DoTogglePlayback();
+    void DoFastForward();
+    void DoSwitchToGrenade();
+    void DoToggleGodMode();
+    void DoToggleNoClip();
+    void DoTogglePlayerMode();
+    void DoToggleProjectileMode(GrenadeType grenadeType);
+    void DoToggleGrenadeType();
 
 private:
     int _clientIndex { -1 };
@@ -139,7 +136,7 @@ private:
     size_t _grenadeCurrentSpotIndex { 0 };
     ITimer *_grenadeSpotTimer { nullptr };
     ITimer *_grenadeLaunchTimer { nullptr };
-    CSWeaponID _grenadeType { CSWeapon_FLASHBANG };
+    GrenadeType _grenadeType { GrenadeType_FLASH };
     Spot _grenadeThrowerSpot;
     bool _grenadeMenuOpen { false };
     CBaseEntity *_grenadeTossedGrenade { nullptr };
@@ -153,6 +150,7 @@ private:
     ProjectileMode _grenadeHEGrenadeMode { ProjectileMode_ALL };
     ProjectileMode _grenadeMolotovMode { ProjectileMode_ALL };
     ProjectileMode _grenadeIncendiaryMode { ProjectileMode_ALL };
+    ProjectileMode _grenadeMode[GrenadeType_COUNT] { };
 };
 
 #endif

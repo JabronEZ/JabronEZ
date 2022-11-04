@@ -30,7 +30,7 @@ public:
     Menus();
     ~Menus();
 
-    void OpenMenu(Player *player);
+    void OpenMenu(Player *player, size_t pageNumber = 1);
     void DestroyMenuSafely(IBaseMenu *menu);
 
     virtual void OnMenuSelect2(IBaseMenu *menu,

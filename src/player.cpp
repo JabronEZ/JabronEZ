@@ -25,6 +25,12 @@ Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer)
     _userId = userId;
     _gamePlayer = gamePlayer;
     _grenadeSpots.clear();
+
+    for (int grenadeTypeIndex = GrenadeType_FLASH; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
+    {
+        auto grenadeType = static_cast<GrenadeType>(grenadeTypeIndex);
+        _grenadeMode[grenadeType] = ProjectileMode_ALL;
+    }
 }
 
 Player::~Player()
@@ -33,23 +39,58 @@ Player::~Player()
     _grenadeSpots.clear();
 }
 
-ProjectileMode Player::GetProjectileMode(CSWeaponID grenadeType) const
+ProjectileMode Player::GetProjectileMode(GrenadeType grenadeType) const
 {
-    switch (grenadeType)
-    {
-        case CSWeapon_FLASHBANG:
-            return GetGrenadeFlashMode();
-        case CSWeapon_SMOKEGRENADE:
-            return GetGrenadeSmokeMode();
-        case CSWeapon_DECOY:
-            return GetGrenadeDecoyMode();
-        case CSWeapon_MOLOTOV:
-            return GetGrenadeMolotovMode();
-        case CSWeapon_INCGRENADE:
-            return GetGrenadeIncendiaryMode();
-        case CSWeapon_HEGRENADE:
-            return GetGrenadeHEGrenadeMode();
-    }
+    if (grenadeType == GrenadeType_UNKNOWN)
+        return ProjectileMode_ALL;
 
-    return ProjectileMode_ALL;
+    return _grenadeMode[grenadeType];
+}
+
+void Player::SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectileMode)
+{
+    if (grenadeType == GrenadeType_UNKNOWN)
+        return;
+
+    _grenadeMode[grenadeType] = projectileMode;
+}
+
+void Player::DoAddSpot()
+{
+}
+
+void Player::DoRemoveSpot()
+{
+}
+
+void Player::DoTogglePlayback()
+{
+}
+
+void Player::DoFastForward()
+{
+}
+
+void Player::DoSwitchToGrenade()
+{
+}
+
+void Player::DoToggleGodMode()
+{
+}
+
+void Player::DoToggleNoClip()
+{
+}
+
+void Player::DoTogglePlayerMode()
+{
+}
+
+void Player::DoToggleProjectileMode(GrenadeType grenadeType)
+{
+}
+
+void Player::DoToggleGrenadeType()
+{
 }

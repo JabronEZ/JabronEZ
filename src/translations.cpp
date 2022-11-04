@@ -93,26 +93,26 @@ bool Translations::FormatTranslated(
     return true;
 }
 
-const char *Translations::GetGrenadeTranslationPhrase(CSWeaponID weaponId)
+const char *Translations::GetGrenadeTranslationPhrase(GrenadeType grenadeType)
 {
-    switch (weaponId)
+    switch (grenadeType)
     {
-        case CSWeapon_INCGRENADE:
+        case GrenadeType_INCENDIARY:
             return "Grenades display incendiary grenade";
 
-        case CSWeapon_DECOY:
+        case GrenadeType_DECOY:
             return "Grenades display decoy grenade";
 
-        case CSWeapon_MOLOTOV:
+        case GrenadeType_MOLOTOV:
             return "Grenades display molotov grenade";
 
-        case CSWeapon_HEGRENADE:
+        case GrenadeType_HEGRENADE:
             return "Grenades display HE grenade";
 
-        case CSWeapon_SMOKEGRENADE:
+        case GrenadeType_SMOKE:
             return "Grenades display smoke grenade";
 
-        case CSWeapon_FLASHBANG:
+        case GrenadeType_FLASH:
             return "Grenades display flashbang";
     }
 
@@ -164,26 +164,26 @@ const char *Translations::GetProjectileModeTranslationPhrase(ProjectileMode proj
 
     return "";
 }
-const char *Translations::GetGrenadeModeMenuItemTranslationPhrase(CSWeaponID weaponId)
+const char *Translations::GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType)
 {
-    switch (weaponId)
+    switch (grenadeType)
     {
-        case CSWeapon_INCGRENADE:
+        case GrenadeType_INCENDIARY:
             return "Grenades menu incendiary mode";
 
-        case CSWeapon_DECOY:
+        case GrenadeType_DECOY:
             return "Grenades menu decoy mode";
 
-        case CSWeapon_MOLOTOV:
+        case GrenadeType_MOLOTOV:
             return "Grenades menu molotov mode";
 
-        case CSWeapon_HEGRENADE:
+        case GrenadeType_HEGRENADE:
             return "Grenades menu HE grenade mode";
 
-        case CSWeapon_SMOKEGRENADE:
+        case GrenadeType_SMOKE:
             return "Grenades menu smoke mode";
 
-        case CSWeapon_FLASHBANG:
+        case GrenadeType_FLASH:
             return "Grenades menu flash mode";
     }
 
