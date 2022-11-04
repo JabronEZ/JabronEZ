@@ -98,12 +98,7 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
 {
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByEdict(edict);
 
-    if (player == nullptr)
-    {
-        return;
-    }
-
-    if (args.ArgC() < 1)
+    if (player == nullptr || args.ArgC() < 1)
     {
         return;
     }
