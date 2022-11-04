@@ -49,6 +49,8 @@ add_library(jabronez SHARED
         src/player_manager.h
         src/menus.cpp
         src/menus.h
+        src/weapon_identifiers.cpp
+        src/weapon_identifiers.h
         src/player.cpp
         src/player.h
         ${SMEXTCPP}
