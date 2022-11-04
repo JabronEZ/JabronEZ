@@ -20,21 +20,30 @@
 #define JABRONEZ_MENUS_H
 
 #include "smsdk_ext.h"
+#include <sh_vector.h>
+#include "weapon_identifiers.h"
 
 class Player;
 
-class Menus : IMenuHandler {
+class Menus : public IMenuHandler {
 public:
     Menus();
     ~Menus();
 
     void OpenMenu(Player *player);
+    void DestroyMenuSafely(IBaseMenu *menu);
 
-public:
     virtual void OnMenuSelect2(IBaseMenu *menu,
                                int client,
                                unsigned int item,
-                               unsigned int item_on_page);
+                               unsigned int item_on_page) override;
+
+    virtual void OnMenuDestroy(SourceMod::IBaseMenu *menu) override;
+
+    virtual void OnMenuEnd(IBaseMenu *menu, MenuEndReason reason) override;
+
+private:
+    SourceHook::CVector<IBaseMenu*> _menus;
 };
 
 #endif
