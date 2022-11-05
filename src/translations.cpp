@@ -96,28 +96,14 @@ bool Translations::FormatTranslated(
 
 const char *Translations::GetGrenadeTranslationPhrase(GrenadeType grenadeType)
 {
-    switch (grenadeType)
-    {
-        case GrenadeType_INCENDIARY:
-            return "Grenades display incendiary grenade";
-
-        case GrenadeType_DECOY:
-            return "Grenades display decoy grenade";
-
-        case GrenadeType_MOLOTOV:
-            return "Grenades display molotov grenade";
-
-        case GrenadeType_HEGRENADE:
-            return "Grenades display HE grenade";
-
-        case GrenadeType_SMOKE:
-            return "Grenades display smoke grenade";
-
-        case GrenadeType_FLASH:
-            return "Grenades display flashbang";
-    }
-
-    return "";
+    return ChooseTranslationPhraseForGrenadeType(
+            grenadeType,
+            "Grenades display HE grenade",
+            "Grenades display molotov grenade",
+            "Grenades display incendiary grenade",
+            "Grenades display decoy grenade",
+            "Grenades display flashbang",
+            "Grenades display smoke grenade");
 }
 
 const char *Translations::GetGodModeTranslationPhrase(GodMode godMode)
@@ -165,30 +151,50 @@ const char *Translations::GetProjectileModeTranslationPhrase(ProjectileMode proj
 
     return "";
 }
-const char *Translations::GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType)
+
+const char *Translations::ChooseTranslationPhraseForGrenadeType(
+        GrenadeType grenadeType,
+        const char *heGrenadePhrase,
+        const char *molotovPhrase,
+        const char *incendiaryPhrase,
+        const char *decoyPhrase,
+        const char *flashbangPhrase,
+        const char *smokePhrase)
 {
     switch (grenadeType)
     {
         case GrenadeType_INCENDIARY:
-            return "Grenades menu incendiary mode";
+            return incendiaryPhrase;
 
         case GrenadeType_DECOY:
-            return "Grenades menu decoy mode";
+            return decoyPhrase;
 
         case GrenadeType_MOLOTOV:
-            return "Grenades menu molotov mode";
+            return molotovPhrase;
 
         case GrenadeType_HEGRENADE:
-            return "Grenades menu HE grenade mode";
+            return heGrenadePhrase;
 
         case GrenadeType_SMOKE:
-            return "Grenades menu smoke mode";
+            return smokePhrase;
 
         case GrenadeType_FLASH:
-            return "Grenades menu flash mode";
+            return flashbangPhrase;
     }
 
-    return "";
+    return nullptr;
+}
+
+const char *Translations::GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType)
+{
+    return ChooseTranslationPhraseForGrenadeType(
+            grenadeType,
+            "Grenades menu HE grenade mode",
+            "Grenades menu molotov mode",
+            "Grenades menu incendiary mode",
+            "Grenades menu decoy mode",
+            "Grenades menu flash mode",
+            "Grenades menu smoke mode");
 }
 
 const char *Translations::GetPlayerModeTranslationPhrase(PlayerMode mode)
