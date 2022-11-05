@@ -25,6 +25,7 @@ class ConsoleManager;
 class Menus;
 class PlayerManager;
 class Translations;
+class HudUtilities;
 class EntityUtilities;
 
 class JabronEZ : public SDKExtension
@@ -45,6 +46,7 @@ private:
     Menus *_menus { nullptr };
     PlayerManager *_playerManager { nullptr };
     Translations *_translations { nullptr };
+    HudUtilities *_hudUtilities { nullptr };
     EntityUtilities *_entityUtilities { nullptr };
 };
 

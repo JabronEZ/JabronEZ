@@ -60,6 +60,8 @@ add_library(jabronez SHARED
         src/god_mode.h
         src/player_mode.h
         src/projectile_mode.h
+        src/hud_utilities.cpp
+        src/hud_utilities.h
         src/entity_utilities.cpp
         src/entity_utilities.h
         ${SMEXTCPP}

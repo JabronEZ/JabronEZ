@@ -22,6 +22,7 @@
 #include "menus.h"
 #include "player_manager.h"
 #include "translations.h"
+#include "hud_utilities.h"
 #include "entity_utilities.h"
 
 JabronEZ g_JabronEZ;
@@ -68,6 +69,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     _menus = new Menus();
     _playerManager = new PlayerManager();
     _translations = new Translations(translator);
+    _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
 
     if (!_translations->Init(error, maxlength))
@@ -104,6 +106,12 @@ void JabronEZ::SDK_OnUnload()
     {
         delete _translations;
         _translations = nullptr;
+    }
+
+    if (_hudUtilities != nullptr)
+    {
+        delete _hudUtilities;
+        _hudUtilities = nullptr;
     }
 
     if (_entityUtilities != nullptr)
