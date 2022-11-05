@@ -111,6 +111,9 @@ public:
     CBaseEntity *FindWeapon(const char *entityName) const;
     void RemoveWeapon(CBaseEntity *weaponEntity) const;
 
+    Vector GetAbsOrigin() const;
+    QAngle GetEyeAngles() const;
+    
     bool IsAlive() const;
     void SwitchToCurrentGrenadeType() const;
 

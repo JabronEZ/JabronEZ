@@ -121,26 +121,4 @@ JEZ_HOOK_STATIC_DECL6(
         int,
         grenadeType);
 
-JEZ_HOOK_MEMBER_DECL5(
-        CCSPlayerGiveNamedItem,
-        CBaseEntity,
-        CBaseEntity*,
-        const char *,
-        entityName,
-        int,
-        subType,
-        void *,
-        econ,
-        bool,
-        unk,
-        Vector*,
-        vec);
-
-JEZ_HOOK_MEMBER_DECL1(
-        CBasePlayerRemovePlayerItem,
-        CBaseEntity,
-        bool,
-        CBaseEntity*,
-        item);
-
 #endif

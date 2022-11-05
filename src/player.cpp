@@ -22,9 +22,11 @@
 #include "translations.h"
 #include "hud_utilities.h"
 #include "hooks.h"
+#include "virtual_callables.h"
 #include "entity_utilities.h"
 #include "console_manager.h"
 #include <dt_send.h>
+#include <iplayerinfo.h>
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers)
 {
@@ -324,4 +326,24 @@ void Player::SwitchToCurrentGrenadeType() const
                     "weapon_smokegrenade"));
 
     g_JabronEZ.GetConsoleManager()->SendClientCommand(GetGamePlayer()->GetEdict(), useCommand);
+}
+
+Vector Player::GetAbsOrigin() const
+{
+    IPlayerInfo *playerInfo = GetGamePlayer()->GetPlayerInfo();
+
+    if (playerInfo == nullptr)
+        return { 0.0f, 0.0f, 0.0f };
+
+    return playerInfo->GetAbsOrigin();
+}
+
+QAngle Player::GetEyeAngles() const
+{
+    CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return { 0.0f, 0.0f, 0.0f };
+
+    return Virtual_Callables_Call_GetEyeAngles(playerEntity);
 }

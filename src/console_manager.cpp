@@ -89,6 +89,13 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
         player->GiveNamedItem("weapon_hegrenade");
         RETURN_META(MRES_SUPERCEDE);
     }
+
+    if (strcmp(command, "sm_jez_angles") == 0)
+    {
+        auto angles = player->GetEyeAngles();
+        META_CONPRINTF("Angles: %f %f %f\n", angles.x, angles.y, angles.z);
+        RETURN_META(MRES_SUPERCEDE);
+    }
 }
 
 void ConsoleManager::SendClientCommand(edict_t *edict, const char *command)

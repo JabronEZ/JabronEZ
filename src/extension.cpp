@@ -19,6 +19,7 @@
 #include "extension.h"
 #include "console_manager.h"
 #include "hooks.h"
+#include "virtual_callables.h"
 #include "menu_manager.h"
 #include "player_manager.h"
 #include "translations.h"
@@ -53,11 +54,32 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
+    IGameConfig *sdktoolsGameConfig;
+
+    if (!gameconfs->LoadGameConfigFile("sdktools.games", &sdktoolsGameConfig, confError, sizeof(confError)))
+    {
+        if (error)
+        {
+            snprintf(error, maxlength, "Could not read sdktools.games: %s", confError);
+        }
+
+        return false;
+    }
+
     if (!Hooks_Init(
             g_pSM->GetScriptingEngine(),
             g_GameConf,
             error,
             maxlength))
+    {
+        return false;
+    }
+
+    if (!Virtual_Callables_Init(
+                g_GameConf,
+                sdktoolsGameConfig,
+                error,
+                maxlength))
     {
         return false;
     }
@@ -79,6 +101,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
 void JabronEZ::SDK_OnUnload()
 {
     Hooks_Cleanup();
+    Virtual_Callables_Cleanup();
 
     if (_consoleManager != nullptr)
     {
