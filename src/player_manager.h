@@ -27,7 +27,7 @@ class Player;
 class PlayerManager : IClientListener
 {
 public:
-    PlayerManager(IPlayerManager *smPlayerManager);
+    explicit PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers);
     ~PlayerManager();
 
     void OnClientConnected(int clientIndex) override;
@@ -40,6 +40,7 @@ private:
     void CleanupPlayer(Player *player);
 
 private:
+    IGameHelpers *_gameHelpers { nullptr };
     IPlayerManager *_smPlayerManager { nullptr };
     SourceHook::CVector<Player*> _players;
 };

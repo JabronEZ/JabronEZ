@@ -36,11 +36,13 @@ public:
     void OnClientCommand(edict_t *edict, const CCommand &args);
 
     void LoadConfiguration();
+    void SendClientCommand(edict_t *edict, const char *command);
 
 private:
     ICvar *_cvarInterface { nullptr };
     IServerGameClients *_serverClients { nullptr };
     IVEngineServer *_engineServer { nullptr };
+    IServerPluginHelpers *_pluginHelpers { nullptr };
 };
 
 #endif

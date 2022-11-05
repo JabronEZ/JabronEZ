@@ -23,12 +23,15 @@
 #include "hud_utilities.h"
 #include "hooks.h"
 #include "entity_utilities.h"
+#include "console_manager.h"
+#include <dt_send.h>
 
-Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer)
+Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers)
 {
     _clientIndex = clientIndex;
     _userId = userId;
     _gamePlayer = gamePlayer;
+    _gameHelpers = gameHelpers;
     _grenadeSpots.clear();
 
     for (int grenadeTypeIndex = GrenadeType_FLASH; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
@@ -42,6 +45,7 @@ Player::~Player()
 {
     _gamePlayer = nullptr;
     _grenadeSpots.clear();
+    _gameHelpers = nullptr;
 }
 
 ProjectileMode Player::GetProjectileMode(GrenadeType grenadeType) const
@@ -102,7 +106,7 @@ void Player::DoToggleProjectileMode(GrenadeType grenadeType)
     char message[1024];
     int clientIndex = GetClientIndex();
 
-    const char *translationPhrase = g_JabronEZ.GetTranslations()->ChooseTranslationPhraseForGrenadeType(
+    const char *translationPhrase = ChooseStringForGrenadeType(
             grenadeType,
             "Grenades HE grenade mode changed",
             "Grenades molotov mode changed",
@@ -130,6 +134,78 @@ void Player::DoToggleProjectileMode(GrenadeType grenadeType)
 
 void Player::DoToggleGrenadeType()
 {
+    int clientIndex = GetClientIndex();
+
+    if (GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades may not change this during playback",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    auto nextGrenadeType = GetNextGrenadeType(GetGrenadeType());
+    SetGrenadeType(nextGrenadeType);
+
+    // This logic deals with the fact that a player can only hold a molotov OR incendiary grenade.
+    // If they want to switch to a molotov, but they already have an incendiary grenade in their inventory,
+    // simply remove the incendiary grenade and give them a molotov (and vice versa).
+    auto molotovWeapon = FindWeapon("weapon_molotov");
+    auto incendiaryWeapon = FindWeapon("weapon_incgrenade");
+
+    if (nextGrenadeType == GrenadeType_MOLOTOV && molotovWeapon == nullptr)
+    {
+        if (incendiaryWeapon != nullptr)
+            RemoveWeapon(incendiaryWeapon);
+
+        GiveNamedItem("weapon_molotov");
+    }
+    else if (nextGrenadeType == GrenadeType_INCENDIARY && incendiaryWeapon == nullptr)
+    {
+        if (molotovWeapon != nullptr)
+            RemoveWeapon(molotovWeapon);
+
+        GiveNamedItem("weapon_incgrenade");
+    }
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            3,
+            nullptr,
+            "Grenades type changed",
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetGrenadeTranslationPhrase(nextGrenadeType));
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+
+    char useCommand[512];
+    snprintf(
+            useCommand,
+            sizeof(useCommand),
+            "use %s\n",
+            ChooseStringForGrenadeType(
+                    nextGrenadeType,
+                    "weapon_hegrenade",
+                    "weapon_molotov",
+                    "weapon_incgrenade",
+                    "weapon_decoy",
+                    "weapon_flashbang",
+                    "weapon_smokegrenade"));
+
+    g_JabronEZ.GetConsoleManager()->SendClientCommand(GetGamePlayer()->GetEdict(), useCommand);
 }
 
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
@@ -141,4 +217,56 @@ CBaseEntity *Player::GiveNamedItem(const char *entityName) const
             nullptr,
             false,
             nullptr);
+}
+
+CBaseEntity *Player::FindWeapon(const char *entityName) const
+{
+    CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return nullptr;
+
+    sm_sendprop_info_t sendpropInfo {};
+    gamehelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return nullptr;
+
+    SendTable *dataTable = sendpropInfo.prop->GetDataTable();
+
+    if (dataTable == nullptr)
+        return nullptr;
+
+    size_t offset = sendpropInfo.actual_offset;
+    size_t numberOfProps = dataTable->GetNumProps();
+
+    for (size_t propIndex = 0; propIndex < numberOfProps; propIndex++)
+    {
+        auto property = dataTable->GetProp((int)propIndex);
+        auto propertyActualOffset = offset + property->GetOffset();
+
+        auto *baseHandle = (CBaseHandle *)((uint8_t *)playerEntity + propertyActualOffset);
+
+        if (baseHandle == nullptr)
+            continue;
+
+        CBaseEntity *handleEntity = _gameHelpers->ReferenceToEntity(baseHandle->GetEntryIndex());
+
+        if (handleEntity == nullptr)
+            continue;
+
+        auto weaponClassName = _gameHelpers->GetEntityClassname(handleEntity);
+
+        if (strcmp(weaponClassName, entityName) == 0)
+            return handleEntity;
+    }
+
+    return nullptr;
+}
+
+void Player::RemoveWeapon(CBaseEntity *weaponEntity) const
+{
+    Hook_Call_CBasePlayerRemovePlayerItem(
+            g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
+            weaponEntity);
 }

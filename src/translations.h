@@ -45,14 +45,6 @@ public:
     const char *GetProjectileModeTranslationPhrase(ProjectileMode projectileMode);
     const char *GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType);
     const char *GetPlayerModeTranslationPhrase(PlayerMode mode);
-    const char *ChooseTranslationPhraseForGrenadeType(
-            GrenadeType grenadeType,
-            const char *heGrenadePhrase,
-            const char *molotovPhrase,
-            const char *incendiaryPhrase,
-            const char *decoyPhrase,
-            const char *flashbangPhrase,
-            const char *smokePhrase);
 
 private:
     ITranslator *_smTranslator { nullptr };

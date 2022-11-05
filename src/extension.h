@@ -43,6 +43,7 @@ public:
     Translations *GetTranslations() const { return _translations; }
     HudUtilities *GetHudUtilities() const { return _hudUtilities; }
     EntityUtilities *GetEntityUtilities() const { return _entityUtilities; }
+    ConsoleManager *GetConsoleManager() const { return _consoleManager; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };

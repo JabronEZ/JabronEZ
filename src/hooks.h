@@ -136,4 +136,11 @@ JEZ_HOOK_MEMBER_DECL5(
         Vector*,
         vec);
 
+JEZ_HOOK_MEMBER_DECL1(
+        CBasePlayerRemovePlayerItem,
+        CBaseEntity,
+        bool,
+        CBaseEntity*,
+        item);
+
 #endif

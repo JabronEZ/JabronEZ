@@ -29,7 +29,7 @@
 
 class Player {
 public:
-    Player(int clientIndex, int userId, IGamePlayer *gamePlayer);
+    explicit Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers);
     ~Player();
 
     int GetClientIndex() const { return _clientIndex; }
@@ -108,6 +108,9 @@ public:
 
     CBaseEntity *GiveNamedItem(const char *entityName) const;
 
+    CBaseEntity *FindWeapon(const char *entityName) const;
+    void RemoveWeapon(CBaseEntity *weaponEntity) const;
+
     void DoAddSpot();
     void DoRemoveSpot();
     void DoTogglePlayback();
@@ -120,6 +123,7 @@ public:
     void DoToggleGrenadeType();
 
 private:
+    IGameHelpers *_gameHelpers { nullptr };
     int _clientIndex { -1 };
     int _userId { -1 };
     IGamePlayer *_gamePlayer { nullptr };

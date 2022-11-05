@@ -232,6 +232,21 @@ JEZ_HOOK_MEMBER_DEF5(
             vec);
 }
 
+JEZ_HOOK_MEMBER_DEF1(
+        CBasePlayerRemovePlayerItem,
+        CBaseEntity,
+        bool,
+        CBaseEntity *,
+        item)
+{
+    auto self = JEZ_THIS_PTR(CBaseEntity);
+    META_CONPRINTF("CBasePlayer::RemovePlayerItem() %p %p\n", self, item);
+
+    return Hook_Call_CBasePlayerRemovePlayerItem(
+            self,
+            item);
+}
+
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
@@ -246,6 +261,7 @@ bool Hooks_Init(
     JEZ_HOOK_STATIC_CREATE(DecoyProjectileCreate, "CDecoyProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(HEGrenadeProjectileCreate, "CHEGrenadeProjectileCreate");
     JEZ_HOOK_MEMBER_CREATE(CCSPlayerGiveNamedItem, "CCSPlayerGiveNamedItem");
+    JEZ_HOOK_MEMBER_CREATE(CBasePlayerRemovePlayerItem, "CBasePlayerRemovePlayerItem");
 
     return true;
 }
@@ -258,4 +274,5 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(DecoyProjectileCreate);
     JEZ_HOOK_CLEANUP(HEGrenadeProjectileCreate);
     JEZ_HOOK_CLEANUP(CCSPlayerGiveNamedItem);
+    JEZ_HOOK_CLEANUP(CBasePlayerRemovePlayerItem);
 }

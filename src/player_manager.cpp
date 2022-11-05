@@ -20,9 +20,10 @@
 #include "smsdk_ext.h"
 #include "player.h"
 
-PlayerManager::PlayerManager(IPlayerManager *smPlayerManager)
+PlayerManager::PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers)
 {
     _smPlayerManager = smPlayerManager;
+    _gameHelpers = gameHelpers;
     _players.clear();
 
     _smPlayerManager->AddClientListener(this);
@@ -31,6 +32,7 @@ PlayerManager::PlayerManager(IPlayerManager *smPlayerManager)
 PlayerManager::~PlayerManager()
 {
     _smPlayerManager->RemoveClientListener(this);
+    _gameHelpers = nullptr;
 
     // We do not use CleanupPlayer() here since it would break our iterators (ie: removing in the middle of a loop).
     for (auto player : _players)
@@ -49,7 +51,7 @@ void PlayerManager::OnClientConnected(int clientIndex)
     }
 
     auto gamePlayer = _smPlayerManager->GetGamePlayer(clientIndex);
-    auto player = new Player(clientIndex, gamePlayer->GetUserId(), gamePlayer);
+    auto player = new Player(clientIndex, gamePlayer->GetUserId(), gamePlayer, _gameHelpers);
 
     META_CONPRINTF("Welcome, %s\n", gamePlayer->GetName());
 

@@ -63,7 +63,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     _menuManager = new MenuManager(menus, myself);
-    _playerManager = new PlayerManager(playerhelpers);
+    _playerManager = new PlayerManager(playerhelpers, gamehelpers);
     _translations = new Translations(translator);
     _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);

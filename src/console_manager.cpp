@@ -49,6 +49,7 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
     ConVar_Register(0, this);
 
     GET_V_IFACE_CURRENT(GetServerFactory, _serverClients, IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
+    GET_V_IFACE_ANY(GetEngineFactory, _pluginHelpers, IServerPluginHelpers, INTERFACEVERSION_ISERVERPLUGINHELPERS);
 
     SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
 
@@ -88,6 +89,11 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
         player->GiveNamedItem("weapon_hegrenade");
         RETURN_META(MRES_SUPERCEDE);
     }
+}
+
+void ConsoleManager::SendClientCommand(edict_t *edict, const char *command)
+{
+    _pluginHelpers->ClientCommand(edict, command);
 }
 
 void ConsoleManager::LoadConfiguration()

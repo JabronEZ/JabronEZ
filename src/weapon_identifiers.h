@@ -149,5 +149,15 @@ CSWeaponID GetCSWeaponIDFromItemDefinitionIndex(ItemDefinitionIndex itemDefiniti
 ItemDefinitionIndex GetItemDefinitionIndexFromCSWeaponID(CSWeaponID csWeaponId);
 GrenadeType GetGrenadeTypeFromCSWeaponID(CSWeaponID csWeaponId);
 ItemDefinitionIndex GetItemDefinitionIndexFromGrenadeType(GrenadeType grenadeType);
+GrenadeType GetNextGrenadeType(GrenadeType grenadeType);
+
+const char *ChooseStringForGrenadeType(
+        GrenadeType grenadeType,
+        const char *heGrenadeString,
+        const char *molotovString,
+        const char *incendiaryString,
+        const char *decoyString,
+        const char *flashbangString,
+        const char *smokeString);
 
 #endif

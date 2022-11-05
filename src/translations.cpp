@@ -96,7 +96,7 @@ bool Translations::FormatTranslated(
 
 const char *Translations::GetGrenadeTranslationPhrase(GrenadeType grenadeType)
 {
-    return ChooseTranslationPhraseForGrenadeType(
+    return ChooseStringForGrenadeType(
             grenadeType,
             "Grenades display HE grenade",
             "Grenades display molotov grenade",
@@ -152,42 +152,9 @@ const char *Translations::GetProjectileModeTranslationPhrase(ProjectileMode proj
     return "";
 }
 
-const char *Translations::ChooseTranslationPhraseForGrenadeType(
-        GrenadeType grenadeType,
-        const char *heGrenadePhrase,
-        const char *molotovPhrase,
-        const char *incendiaryPhrase,
-        const char *decoyPhrase,
-        const char *flashbangPhrase,
-        const char *smokePhrase)
-{
-    switch (grenadeType)
-    {
-        case GrenadeType_INCENDIARY:
-            return incendiaryPhrase;
-
-        case GrenadeType_DECOY:
-            return decoyPhrase;
-
-        case GrenadeType_MOLOTOV:
-            return molotovPhrase;
-
-        case GrenadeType_HEGRENADE:
-            return heGrenadePhrase;
-
-        case GrenadeType_SMOKE:
-            return smokePhrase;
-
-        case GrenadeType_FLASH:
-            return flashbangPhrase;
-    }
-
-    return nullptr;
-}
-
 const char *Translations::GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType)
 {
-    return ChooseTranslationPhraseForGrenadeType(
+    return ChooseStringForGrenadeType(
             grenadeType,
             "Grenades menu HE grenade mode",
             "Grenades menu molotov mode",
