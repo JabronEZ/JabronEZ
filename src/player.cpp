@@ -80,8 +80,58 @@ void Player::DoFastForward()
 {
 }
 
+bool Player::IsAlive() const
+{
+    CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return false;
+
+    sm_sendprop_info_t sendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CBasePlayer", "m_lifeState", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return false;
+
+    uint8_t lifeState = *((uint8_t *)playerEntity + sendpropInfo.actual_offset);
+    return lifeState == 0;
+}
+
 void Player::DoSwitchToGrenade()
 {
+    int clientIndex = GetClientIndex();
+
+    if(!IsAlive())
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades must be alive to do this",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    SwitchToCurrentGrenadeType();
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            2,
+            nullptr,
+            "Grenades switched to grenade",
+            &clientIndex);
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 }
 
 void Player::DoToggleGodMode()
@@ -191,21 +241,7 @@ void Player::DoToggleGrenadeType()
 
     g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 
-    char useCommand[512];
-    snprintf(
-            useCommand,
-            sizeof(useCommand),
-            "use %s\n",
-            ChooseStringForGrenadeType(
-                    nextGrenadeType,
-                    "weapon_hegrenade",
-                    "weapon_molotov",
-                    "weapon_incgrenade",
-                    "weapon_decoy",
-                    "weapon_flashbang",
-                    "weapon_smokegrenade"));
-
-    g_JabronEZ.GetConsoleManager()->SendClientCommand(GetGamePlayer()->GetEdict(), useCommand);
+    SwitchToCurrentGrenadeType();
 }
 
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
@@ -227,7 +263,7 @@ CBaseEntity *Player::FindWeapon(const char *entityName) const
         return nullptr;
 
     sm_sendprop_info_t sendpropInfo {};
-    gamehelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
+    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
 
     if (sendpropInfo.prop == nullptr)
         return nullptr;
@@ -269,4 +305,23 @@ void Player::RemoveWeapon(CBaseEntity *weaponEntity) const
     Hook_Call_CBasePlayerRemovePlayerItem(
             g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
             weaponEntity);
+}
+
+void Player::SwitchToCurrentGrenadeType() const
+{
+    char useCommand[512];
+    snprintf(
+            useCommand,
+            sizeof(useCommand),
+            "use %s\n",
+            ChooseStringForGrenadeType(
+                    GetGrenadeType(),
+                    "weapon_hegrenade",
+                    "weapon_molotov",
+                    "weapon_incgrenade",
+                    "weapon_decoy",
+                    "weapon_flashbang",
+                    "weapon_smokegrenade"));
+
+    g_JabronEZ.GetConsoleManager()->SendClientCommand(GetGamePlayer()->GetEdict(), useCommand);
 }

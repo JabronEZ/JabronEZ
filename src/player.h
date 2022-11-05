@@ -111,6 +111,9 @@ public:
     CBaseEntity *FindWeapon(const char *entityName) const;
     void RemoveWeapon(CBaseEntity *weaponEntity) const;
 
+    bool IsAlive() const;
+    void SwitchToCurrentGrenadeType() const;
+
     void DoAddSpot();
     void DoRemoveSpot();
     void DoTogglePlayback();
@@ -150,12 +153,6 @@ private:
     ITimer *_grenadeGotoNextSpotOrFinishTimer { nullptr };
     ITimer *_grenadeHandlePlaybackTimer { nullptr };
     size_t _grenadeMenuPage { 0 };
-    ProjectileMode _grenadeFlashMode { ProjectileMode_ALL };
-    ProjectileMode _grenadeSmokeMode { ProjectileMode_ALL };
-    ProjectileMode _grenadeDecoyMode { ProjectileMode_ALL };
-    ProjectileMode _grenadeHEGrenadeMode { ProjectileMode_ALL };
-    ProjectileMode _grenadeMolotovMode { ProjectileMode_ALL };
-    ProjectileMode _grenadeIncendiaryMode { ProjectileMode_ALL };
     ProjectileMode _grenadeMode[GrenadeType_COUNT] { };
 };
 
