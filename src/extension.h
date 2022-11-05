@@ -51,9 +51,5 @@ private:
 };
 
 extern JabronEZ g_JabronEZ;
-extern Vector lastOrigin;
-extern QAngle lastAngle;
-extern Vector lastVelocity;
-extern Vector lastAngularImpulse;
 
 #endif

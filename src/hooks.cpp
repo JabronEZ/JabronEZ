@@ -54,11 +54,6 @@ JEZ_HOOK_STATIC_DEF6(
             player,
             grenadeType);
 
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
-
     return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -95,11 +90,6 @@ JEZ_HOOK_STATIC_DEF6(
             angularImpulse.z,
             player,
             grenadeType);
-
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
 
     return Hook_Call_FlashbangProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
@@ -138,11 +128,6 @@ JEZ_HOOK_STATIC_DEF6(
             player,
             grenadeType);
 
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
-
     return Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -180,11 +165,6 @@ JEZ_HOOK_STATIC_DEF6(
             player,
             grenadeType);
 
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
-
     return Hook_Call_DecoyProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -221,11 +201,6 @@ JEZ_HOOK_STATIC_DEF6(
             angularImpulse.z,
             player,
             grenadeType);
-
-    lastOrigin = origin;
-    lastAngle = angle;
-    lastVelocity = velocity;
-    lastAngularImpulse = angularImpulse;
 
     return Hook_Call_HEGrenadeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }

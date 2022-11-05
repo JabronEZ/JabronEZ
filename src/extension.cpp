@@ -28,10 +28,6 @@
 JabronEZ g_JabronEZ;
 
 SMEXT_LINK(&g_JabronEZ);
-Vector lastOrigin;
-QAngle lastAngle;
-Vector lastVelocity;
-Vector lastAngularImpulse;
 
 IGameConfig *g_GameConf = nullptr;
 

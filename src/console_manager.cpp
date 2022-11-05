@@ -50,12 +50,6 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
     GET_V_IFACE_CURRENT(GetServerFactory, _serverClients, IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
 
-    _rethrowLastSmokeCommand = new ConCommand(
-            "sm_jez_rethrow_last_smoke",
-            RethrowLastSmokeCallback,
-            "Test help",
-            0);
-
     SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
 
     return true;
@@ -63,35 +57,8 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
 ConsoleManager::~ConsoleManager()
 {
-    if (_rethrowLastSmokeCommand != nullptr && _cvarInterface != nullptr)
-    {
-        _cvarInterface->UnregisterConCommand(_rethrowLastSmokeCommand);
-    }
-
     SH_REMOVE_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
-
-    _rethrowLastSmokeCommand = nullptr;
     _cvarInterface = nullptr;
-}
-
-void ConsoleManager::RethrowLastSmokeCallback(const CCommand &command)
-{
-    void *basePlayer = nullptr;
-    int playerIndex = 1;
-
-    if (playerIndex > 0)
-    {
-        cell_t reference = gamehelpers->IndexToReference(playerIndex);
-        basePlayer = gamehelpers->ReferenceToEntity(reference);
-    }
-
-    Hook_Call_SmokeProjectileCreate(
-            lastOrigin,
-            lastAngle,
-            lastVelocity,
-            lastAngularImpulse,
-            basePlayer,
-            45);
 }
 
 void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)

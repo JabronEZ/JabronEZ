@@ -22,7 +22,6 @@
 #include "smsdk_ext.h"
 
 class ICvar;
-class ConCommand;
 class ConCommandBase;
 
 class ConsoleManager : public IConCommandBaseAccessor
@@ -34,14 +33,11 @@ public:
     bool Init(ISmmAPI *ismm, char *error, size_t maxlength);
     bool RegisterConCommandBase(ConCommandBase *conCommandBase) override;
 
-    static void RethrowLastSmokeCallback(const CCommand &command);
-
     void OnClientCommand(edict_t *edict, const CCommand &args);
 
 private:
     ICvar *_cvarInterface { nullptr };
     IServerGameClients *_serverClients { nullptr };
-    ConCommand *_rethrowLastSmokeCommand { nullptr };
 };
 
 #endif
