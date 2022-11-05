@@ -27,7 +27,7 @@
 
 class Translations {
 public:
-    Translations();
+    Translations(ITranslator *smTranslator);
     ~Translations();
 
     bool Init(char *error, size_t maxlength);
@@ -47,6 +47,7 @@ public:
     const char *GetPlayerModeTranslationPhrase(PlayerMode mode);
 
 private:
+    ITranslator *_smTranslator { nullptr };
     IPhraseCollection *_phraseCollection { nullptr };
     IPhraseFile *_phraseFile { nullptr };
 };

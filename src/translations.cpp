@@ -18,8 +18,9 @@
 
 #include "translations.h"
 
-Translations::Translations()
+Translations::Translations(ITranslator *smTranslator)
 {
+    _smTranslator = smTranslator;
     _phraseCollection = nullptr;
     _phraseFile = nullptr;
 }
@@ -37,7 +38,7 @@ Translations::~Translations()
 
 bool Translations::Init(char *error, size_t maxlength)
 {
-    _phraseCollection = translator->CreatePhraseCollection();
+    _phraseCollection = _smTranslator->CreatePhraseCollection();
     _phraseFile = _phraseCollection->AddPhraseFile("jabronez.phrases");
 
     if (_phraseFile == nullptr)

@@ -66,7 +66,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
 
     _menus = new Menus();
     _playerManager = new PlayerManager();
-    _translations = new Translations();
+    _translations = new Translations(translator);
 
     if (!_translations->Init(error, maxlength))
     {
