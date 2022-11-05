@@ -230,6 +230,33 @@ JEZ_HOOK_STATIC_DEF6(
     return Hook_Call_HEGrenadeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
+JEZ_HOOK_MEMBER_DEF5(
+        CCSPlayerGiveNamedItem,
+        CBaseEntity,
+        CBaseEntity*,
+        const char *,
+        entityName,
+        int,
+        subType,
+        void *,
+        econ,
+        bool,
+        unk,
+        Vector*,
+        vec)
+{
+    auto self = JEZ_THIS_PTR(CBaseEntity);
+    META_CONPRINTF("CCSPlayer::GiveNamedItem() %p %s %d %p %d %p\n", self, entityName, subType, econ, unk, vec);
+
+    return Hook_Call_CCSPlayerGiveNamedItem(
+            self,
+            entityName,
+            subType,
+            econ,
+            unk,
+            vec);
+}
+
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
@@ -243,6 +270,7 @@ bool Hooks_Init(
     JEZ_HOOK_STATIC_CREATE(MolotovProjectileCreate, "CMolotovProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(DecoyProjectileCreate, "CDecoyProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(HEGrenadeProjectileCreate, "CHEGrenadeProjectileCreate");
+    JEZ_HOOK_MEMBER_CREATE(CCSPlayerGiveNamedItem, "CCSPlayerGiveNamedItem");
 
     return true;
 }
@@ -254,4 +282,5 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(MolotovProjectileCreate);
     JEZ_HOOK_CLEANUP(DecoyProjectileCreate);
     JEZ_HOOK_CLEANUP(HEGrenadeProjectileCreate);
+    JEZ_HOOK_CLEANUP(CCSPlayerGiveNamedItem);
 }

@@ -25,6 +25,9 @@
 
 class CDetour;
 
+// The reason that all these methods are static is due to the nature of detouring methods.
+// Primarily, the callbacks for hooks can not capture additional arguments/context.
+// Since we already have this limitation, we can prevent the need for passing around context by just embracing global scope here.
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
@@ -117,5 +120,20 @@ JEZ_HOOK_STATIC_DECL6(
         player,
         int,
         grenadeType);
+
+JEZ_HOOK_MEMBER_DECL5(
+        CCSPlayerGiveNamedItem,
+        CBaseEntity,
+        CBaseEntity*,
+        const char *,
+        entityName,
+        int,
+        subType,
+        void *,
+        econ,
+        bool,
+        unk,
+        Vector*,
+        vec);
 
 #endif

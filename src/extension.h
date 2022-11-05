@@ -25,6 +25,7 @@ class ConsoleManager;
 class Menus;
 class PlayerManager;
 class Translations;
+class EntityUtilities;
 
 class JabronEZ : public SDKExtension
 {
@@ -37,12 +38,14 @@ public:
     Menus *GetMenus() const { return _menus; }
     PlayerManager *GetPlayerManager() const { return _playerManager; }
     Translations *GetTranslations() const { return _translations; }
+    EntityUtilities *GetEntityUtilities() const { return _entityUtilities; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
     Menus *_menus { nullptr };
     PlayerManager *_playerManager { nullptr };
     Translations *_translations { nullptr };
+    EntityUtilities *_entityUtilities { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

@@ -19,6 +19,28 @@
 #ifndef JABRONEZ_HOOKS_MACROS_H
 #define JABRONEZ_HOOKS_MACROS_H
 
+#define JEZ_THIS_PTR(className) reinterpret_cast<className *>(this)
+
+#define JEZ_HOOK_MEMBER_DECL5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \
+    extern CDetour *g_Detour##name; \
+    class Hook_##name##_Class \
+    { \
+    public: \
+        ret Hook_##name##_Callback(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name); \
+        static ret (Hook_##name##_Class::* Hook_##name##_Actual)(p1type, p2type, p3type, p4type, p5type); \
+    }; \
+    extern ret Hook_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name)
+
+#define JEZ_HOOK_MEMBER_DEF5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \
+    CDetour *g_Detour##name = nullptr; \
+    ret (Hook_##name##_Class::* Hook_##name##_Class::Hook_##name##_Actual)(p1type, p2type, p3type, p4type, p5type) = nullptr; \
+    ret Hook_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name) \
+    { \
+        Hook_##name##_Class *selfAsHook = reinterpret_cast<Hook_##name##_Class *>(self); \
+        return (selfAsHook->*Hook_##name##_Class::Hook_##name##_Actual)(p1name, p2name, p3name, p4name, p5name); \
+    } \
+    ret Hook_##name##_Class::Hook_##name##_Callback(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name)
+
 #define JEZ_HOOK_STATIC_DECL6(name, ret, callConv, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name, p6type, p6name) \
     extern CDetour *g_Detour##name; \
     typedef ret (callConv *name##Function)(p1type, p2type, p3type, p4type, p5type, p6type); \
@@ -32,6 +54,15 @@
 
 #define JEZ_HOOK_STATIC_CREATE(name, functionName) \
     g_Detour##name = CDetourManager::CreateDetour((void *)&Hook_Callback_##name, (void **)&Hook_Call_##name, functionName); \
+    if (g_Detour##name == nullptr) \
+    { \
+        snprintf(error, maxlength, "Unable to hook %s", #name); \
+        return false; \
+    } \
+    g_Detour##name->EnableDetour()
+
+#define JEZ_HOOK_MEMBER_CREATE(name, functionName) \
+    g_Detour##name = CDetourManager::CreateDetour(GetCodeAddress(&Hook_##name##_Class::Hook_##name##_Callback), (void **)(&Hook_##name##_Class::Hook_##name##_Actual), functionName); \
     if (g_Detour##name == nullptr) \
     { \
         snprintf(error, maxlength, "Unable to hook %s", #name); \

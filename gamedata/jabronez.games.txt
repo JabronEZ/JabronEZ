@@ -8,6 +8,12 @@
 	{
 		"Signatures"
 		{
+		    "CCSPlayerGiveNamedItem"
+		    {
+		        "library"   "server"
+		        "linux"     "\x55\x89\xE5\x57\x56\x53\x81\xEC\xAC\x00\x00\x00\x8B\x55\x2A\x8B\x5D\x2A\x8B\x7D\x2A"
+		    }
+
 			"CSmokeGrenadeProjectileCreate"
 			{
 				"library"	"server"
