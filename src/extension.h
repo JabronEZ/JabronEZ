@@ -36,6 +36,8 @@ public:
 
     virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
 
+    virtual void OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax) override;
+
     MenuManager *GetMenuManager() const { return _menuManager; }
     PlayerManager *GetPlayerManager() const { return _playerManager; }
     Translations *GetTranslations() const { return _translations; }

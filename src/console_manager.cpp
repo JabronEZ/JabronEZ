@@ -26,8 +26,9 @@
 
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *, const CCommand &);
 
-ConsoleManager::ConsoleManager()
+ConsoleManager::ConsoleManager(IVEngineServer *engineServer)
 {
+    _engineServer = engineServer;
     _cvarInterface = nullptr;
     _serverClients = nullptr;
 }
@@ -58,6 +59,7 @@ ConsoleManager::~ConsoleManager()
 {
     SH_REMOVE_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
     _cvarInterface = nullptr;
+    _engineServer = nullptr;
 }
 
 void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
@@ -80,6 +82,15 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
     if (strcmp(command, "sm_jez_give_flash") == 0)
     {
         player->GiveNamedItem("weapon_flashbang");
+        player->GiveNamedItem("weapon_molotov");
+        player->GiveNamedItem("weapon_decoy");
+        player->GiveNamedItem("weapon_smokegrenade");
+        player->GiveNamedItem("weapon_hegrenade");
         RETURN_META(MRES_SUPERCEDE);
     }
+}
+
+void ConsoleManager::LoadConfiguration()
+{
+    _engineServer->ServerCommand("exec jabronez\n");
 }

@@ -119,12 +119,21 @@ void JabronEZ::SDK_OnUnload()
 
 bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late)
 {
-    _consoleManager = new ConsoleManager();
+    _consoleManager = new ConsoleManager(engine);
 
     if (!_consoleManager->Init(ismm, error, maxlength))
     {
         return false;
     }
 
+    if (late)
+        _consoleManager->LoadConfiguration();
+
     return true;
+}
+
+void JabronEZ::OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax)
+{
+    if (_consoleManager != nullptr)
+        _consoleManager->LoadConfiguration();
 }

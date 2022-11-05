@@ -27,7 +27,7 @@ class ConCommandBase;
 class ConsoleManager : public IConCommandBaseAccessor
 {
 public:
-    ConsoleManager();
+    explicit ConsoleManager(IVEngineServer *engineServer);
     ~ConsoleManager();
 
     bool Init(ISmmAPI *ismm, char *error, size_t maxlength);
@@ -35,9 +35,12 @@ public:
 
     void OnClientCommand(edict_t *edict, const CCommand &args);
 
+    void LoadConfiguration();
+
 private:
     ICvar *_cvarInterface { nullptr };
     IServerGameClients *_serverClients { nullptr };
+    IVEngineServer *_engineServer { nullptr };
 };
 
 #endif
