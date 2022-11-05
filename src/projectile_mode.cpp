@@ -16,18 +16,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_PROJECTILE_MODE_H
-#define JABRONEZ_PROJECTILE_MODE_H
+#include "projectile_mode.h"
 
-enum ProjectileMode
+ProjectileMode GetNextProjectileMode(ProjectileMode projectileMode)
 {
-    ProjectileMode_ALL = 0, // allow anyone to flash me
-    ProjectileMode_NONE, // don't allow anyone to flash me
-    ProjectileMode_SELF, // only allow us to flash ourselves,
-    ProjectileMode_GROUP,
-    ProjectileMode_COUNT
-};
+    int projectileModeIndex = (int)projectileMode;
+    int nextProjectileModeIndex = projectileModeIndex + 1;
 
-ProjectileMode GetNextProjectileMode(ProjectileMode projectileMode);
+    if (nextProjectileModeIndex >= ProjectileMode_COUNT)
+        return ProjectileMode_ALL;
 
-#endif
+    return (ProjectileMode)nextProjectileModeIndex;
+}

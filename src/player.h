@@ -106,6 +106,8 @@ public:
     ProjectileMode GetProjectileMode(GrenadeType grenadeType) const;
     void SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectileMode);
 
+    CBaseEntity *GiveNamedItem(const char *entityName) const;
+
     void DoAddSpot();
     void DoRemoveSpot();
     void DoTogglePlayback();

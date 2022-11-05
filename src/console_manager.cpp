@@ -29,7 +29,6 @@ SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *,
 ConsoleManager::ConsoleManager()
 {
     _cvarInterface = nullptr;
-    _rethrowLastSmokeCommand = nullptr;
     _serverClients = nullptr;
 }
 
@@ -74,7 +73,13 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
 
     if (strcmp(command, "sm_jez_menu") == 0)
     {
-        g_JabronEZ.GetMenus()->OpenMenu(player);
+        g_JabronEZ.GetMenuManager()->OpenMenu(player);
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp(command, "sm_jez_give_flash") == 0)
+    {
+        player->GiveNamedItem("weapon_flashbang");
         RETURN_META(MRES_SUPERCEDE);
     }
 }

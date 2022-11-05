@@ -18,6 +18,11 @@
 
 #include "player.h"
 #include "spot.h"
+#include "extension.h"
+#include "translations.h"
+#include "hud_utilities.h"
+#include "hooks.h"
+#include "entity_utilities.h"
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer)
 {
@@ -89,8 +94,51 @@ void Player::DoTogglePlayerMode()
 
 void Player::DoToggleProjectileMode(GrenadeType grenadeType)
 {
+    if (grenadeType == GrenadeType_UNKNOWN)
+        return;
+
+    auto nextProjectileMode = GetNextProjectileMode(GetProjectileMode(grenadeType));
+
+    char message[1024];
+    int clientIndex = GetClientIndex();
+
+    const char *translationPhrase = g_JabronEZ.GetTranslations()->ChooseTranslationPhraseForGrenadeType(
+            grenadeType,
+            "Grenades HE grenade mode changed",
+            "Grenades molotov mode changed",
+            "Grenades incendiary mode changed",
+            "Grenades decoy mode changed",
+            "Grenades flash mode changed",
+            "Grenades smoke mode changed");
+
+    if (translationPhrase == nullptr)
+        return;
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            3,
+            nullptr,
+            translationPhrase,
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetProjectileModeTranslationPhrase(nextProjectileMode));
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+    SetProjectileMode(grenadeType, nextProjectileMode);
 }
 
 void Player::DoToggleGrenadeType()
 {
+}
+
+CBaseEntity *Player::GiveNamedItem(const char *entityName) const
+{
+    return Hook_Call_CCSPlayerGiveNamedItem(
+            g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
+            entityName,
+            0,
+            nullptr,
+            false,
+            nullptr);
 }
