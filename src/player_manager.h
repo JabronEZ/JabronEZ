@@ -27,7 +27,7 @@ class Player;
 class PlayerManager : IClientListener
 {
 public:
-    PlayerManager();
+    PlayerManager(IPlayerManager *smPlayerManager);
     ~PlayerManager();
 
     void OnClientConnected(int clientIndex) override;
@@ -40,6 +40,7 @@ private:
     void CleanupPlayer(Player *player);
 
 private:
+    IPlayerManager *_smPlayerManager { nullptr };
     SourceHook::CVector<Player*> _players;
 };
 

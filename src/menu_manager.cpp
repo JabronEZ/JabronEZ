@@ -16,19 +16,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "menus.h"
 #include "extension.h"
+#include "menu_manager.h"
 #include "player.h"
-#include "translations.h"
 #include "player_manager.h"
+#include "translations.h"
 
-const char *GetGrenadeModeMenuItemKey(CSWeaponID grenadeType);
-Menus::Menus()
+MenuManager::MenuManager(
+        IMenuManager *smMenuManager,
+        IExtension *extension)
 {
+    _smMenuManager = smMenuManager;
+    _extension = extension;
     _menus.clear();
 }
 
-Menus::~Menus()
+MenuManager::~MenuManager()
 {
     for (auto menu: _menus)
     {
@@ -38,7 +41,7 @@ Menus::~Menus()
     _menus.clear();
 }
 
-void Menus::OnMenuSelect2(
+void MenuManager::OnMenuSelect2(
         IBaseMenu *menu,
         int client,
         unsigned int item,
@@ -107,12 +110,12 @@ void Menus::OnMenuSelect2(
     OpenMenu(player, pageNumber);
 }
 
-void Menus::OnMenuEnd(SourceMod::IBaseMenu *menu, SourceMod::MenuEndReason reason)
+void MenuManager::OnMenuEnd(SourceMod::IBaseMenu *menu, SourceMod::MenuEndReason reason)
 {
     DestroyMenuSafely(menu);
 }
 
-void Menus::DestroyMenuSafely(SourceMod::IBaseMenu *menu)
+void MenuManager::DestroyMenuSafely(SourceMod::IBaseMenu *menu)
 {
     if (menu->GetHandle() == BAD_HANDLE)
     {
@@ -122,12 +125,12 @@ void Menus::DestroyMenuSafely(SourceMod::IBaseMenu *menu)
     HandleSecurity sec;
 
     sec.pIdentity = nullptr;
-    sec.pOwner = myself->GetIdentity();
+    sec.pOwner = _extension->GetIdentity();
 
     handlesys->FreeHandle(menu->GetHandle(), &sec);
 }
 
-void Menus::OnMenuDestroy(SourceMod::IBaseMenu *menu)
+void MenuManager::OnMenuDestroy(SourceMod::IBaseMenu *menu)
 {
     for (size_t menuIndex = 0; menuIndex < _menus.size(); menuIndex++)
     {
@@ -403,11 +406,11 @@ void AppendPlayerModeMenuItem(
                                             ITEMDRAW_DEFAULT));
 }
 
-void Menus::OpenMenu(Player *player, size_t pageNumber)
+void MenuManager::OpenMenu(Player *player, size_t pageNumber)
 {
     // TODO: We need to support starting their menu on a specific page, so that way we can support persistent menu mode.
-    IMenuStyle *style = menus->GetDefaultStyle();
-    IBaseMenu *menu = style->CreateMenu(this, myself->GetIdentity());
+    IMenuStyle *style = _smMenuManager->GetDefaultStyle();
+    IBaseMenu *menu = style->CreateMenu(this, _extension->GetIdentity());
     _menus.push_back(menu);
 
     player->SetGrenadeMenuOpen(true);

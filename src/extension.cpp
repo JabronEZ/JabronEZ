@@ -17,9 +17,9 @@
  */
 
 #include "extension.h"
-#include "hooks.h"
 #include "console_manager.h"
-#include "menus.h"
+#include "hooks.h"
+#include "menu_manager.h"
 #include "player_manager.h"
 #include "translations.h"
 #include "hud_utilities.h"
@@ -62,8 +62,8 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
-    _menus = new Menus();
-    _playerManager = new PlayerManager();
+    _menuManager = new MenuManager(menus, myself);
+    _playerManager = new PlayerManager(playerhelpers);
     _translations = new Translations(translator);
     _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
@@ -86,10 +86,10 @@ void JabronEZ::SDK_OnUnload()
         _consoleManager = nullptr;
     }
 
-    if (_menus != nullptr)
+    if (_menuManager != nullptr)
     {
-        delete _menus;
-        _menus = nullptr;
+        delete _menuManager;
+        _menuManager = nullptr;
     }
 
     if (_playerManager != nullptr)

@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_MENUS_H
-#define JABRONEZ_MENUS_H
+#ifndef JABRONEZ_MENU_MANAGER_H
+#define JABRONEZ_MENU_MANAGER_H
 
 #include "smsdk_ext.h"
 #include <sh_vector.h>
@@ -25,10 +25,10 @@
 
 class Player;
 
-class Menus : public IMenuHandler {
+class MenuManager : public IMenuHandler {
 public:
-    Menus();
-    ~Menus();
+    MenuManager(IMenuManager *smMenuManager, IExtension *extension);
+    ~MenuManager();
 
     void OpenMenu(Player *player, size_t pageNumber = 1);
     void DestroyMenuSafely(IBaseMenu *menu);
@@ -43,6 +43,8 @@ public:
     virtual void OnMenuEnd(IBaseMenu *menu, MenuEndReason reason) override;
 
 private:
+    IMenuManager *_smMenuManager { nullptr };
+    IExtension *_extension { nullptr };
     SourceHook::CVector<IBaseMenu*> _menus;
 };
 

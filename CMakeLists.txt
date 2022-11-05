@@ -47,8 +47,8 @@ add_library(jabronez SHARED
         src/console_manager.h
         src/player_manager.cpp
         src/player_manager.h
-        src/menus.cpp
-        src/menus.h
+        src/menu_manager.cpp
+        src/menu_manager.h
         src/translations.cpp
         src/translations.h
         src/weapon_identifiers.cpp

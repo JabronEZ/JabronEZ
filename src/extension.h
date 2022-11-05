@@ -22,7 +22,7 @@
 #include "smsdk_ext.h"
 
 class ConsoleManager;
-class Menus;
+class MenuManager;
 class PlayerManager;
 class Translations;
 class HudUtilities;
@@ -36,14 +36,15 @@ public:
 
     virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
 
-    Menus *GetMenus() const { return _menus; }
+    MenuManager *GetMenuManager() const { return _menuManager; }
     PlayerManager *GetPlayerManager() const { return _playerManager; }
     Translations *GetTranslations() const { return _translations; }
+    HudUtilities *GetHudUtilities() const { return _hudUtilities; }
     EntityUtilities *GetEntityUtilities() const { return _entityUtilities; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
-    Menus *_menus { nullptr };
+    MenuManager *_menuManager { nullptr };
     PlayerManager *_playerManager { nullptr };
     Translations *_translations { nullptr };
     HudUtilities *_hudUtilities { nullptr };

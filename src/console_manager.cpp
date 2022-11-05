@@ -17,12 +17,12 @@
  */
 
 #include "console_manager.h"
-#include "smsdk_ext.h"
-#include "hooks.h"
 #include "extension.h"
-#include "menus.h"
-#include "player_manager.h"
+#include "hooks.h"
+#include "menu_manager.h"
 #include "player.h"
+#include "player_manager.h"
+#include "smsdk_ext.h"
 
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *, const CCommand &);
 
