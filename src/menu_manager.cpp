@@ -407,7 +407,6 @@ void AppendPlayerModeMenuItem(
 
 void MenuManager::OpenMenu(Player *player, size_t pageNumber)
 {
-    // TODO: We need to support starting their menu on a specific page, so that way we can support persistent menu mode.
     IMenuStyle *style = _smMenuManager->GetDefaultStyle();
     IBaseMenu *menu = style->CreateMenu(this, _extension->GetIdentity());
     _menus.push_back(menu);
