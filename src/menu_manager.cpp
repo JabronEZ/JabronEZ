@@ -354,10 +354,9 @@ void AppendNoClipMenuItem(
             &clientIndex,
             player->GetNoClip() ? onPhrase : offPhrase);
 
-    // TODO: This should be disabled if the player is dead.
     menu->AppendItem("noclip", ItemDrawInfo(
                                        noClipMenuItem,
-                                       ITEMDRAW_DEFAULT));
+                                       player->IsAlive() ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED));
 }
 
 void AppendGrenadeModeMenuItem(
