@@ -132,14 +132,28 @@ void DrawSpotsTimer::DrawLine(Player *player, Vector point1, Vector point2, Colo
 
 void DrawSpotsTimer::DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const
 {
+    // Here is a visualization of each of the points on the rectangle:
+    //         H               G
+    //          +-------------+
+    //         /|            /|
+    //        / |           / |
+    //       /  |          /  |
+    //    F +-------------+ B |
+    //      |   |         |   |
+    //      |   +---------|---+
+    //      |  / E        |  /  C
+    //      | /           | /
+    //      |/            |/
+    //      +-------------+
+    //    D                A
     auto pointA = Vector(point1.x, point1.y, point1.z);
     auto pointH = Vector(point2.x, point2.y, point2.z);
-    auto pointB = Vector(pointA.x, pointA.y, pointH.z);
-    auto pointC = Vector(pointA.x, pointH.y, pointA.z);
-    auto pointD = Vector(pointH.x, pointA.y, pointA.z);
-    auto pointE = Vector(pointH.x, pointH.y, pointA.z);
-    auto pointF = Vector(pointH.x, pointA.y, pointH.z);
-    auto pointG = Vector(pointA.x, pointH.y, pointH.z);
+    auto pointB = Vector(point1.x, point1.y, point2.z);
+    auto pointC = Vector(point1.x, point2.y, point1.z);
+    auto pointD = Vector(point2.x, point1.y, point1.z);
+    auto pointE = Vector(point2.x, point2.y, point1.z);
+    auto pointF = Vector(point2.x, point1.y, point2.z);
+    auto pointG = Vector(point1.x, point2.y, point2.z);
 
     DrawLine(player, pointA, pointB, color);
     DrawLine(player, pointA, pointC, color);
