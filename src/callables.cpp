@@ -16,27 +16,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "virtual_callables.h"
+#include "callables.h"
 #include "extension.h"
 
-JEZ_VIRTUAL_CALLABLES_DEF0(
+JEZ_CALLABLES_MEMBER_OFFSET_DEF0(
         GetEyeAngles,
         CBaseEntity,
         const QAngle &);
 
-JEZ_VIRTUAL_CALLABLES_DEF0(
+JEZ_CALLABLES_MEMBER_OFFSET_DEF0(
         TE_GetServerClass,
         void,
         ServerClass *);
 
-JEZ_VIRTUAL_CALLABLES_DEF1(
+JEZ_CALLABLES_MEMBER_OFFSET_DEF1(
         CBasePlayerRemovePlayerItem,
         CBaseEntity,
         bool,
         CBaseEntity *,
         item);
 
-JEZ_VIRTUAL_CALLABLES_DEF5(
+JEZ_CALLABLES_MEMBER_OFFSET_DEF5(
         CCSPlayerGiveNamedItem,
         CBaseEntity,
         CBaseEntity*,
@@ -51,20 +51,26 @@ JEZ_VIRTUAL_CALLABLES_DEF5(
         Vector*,
         vec);
 
-bool Virtual_Callables_Init(
+JEZ_CALLABLES_MEMBER_SIG_DEF0_VOID(
+        CS_RespawnPlayer,
+        CBaseEntity);
+
+bool Callables_Init(
         IGameConfig *gameConfig,
         IGameConfig *sdktoolsGameConfig,
+        IGameConfig *cstrikeGameConfig,
         char *error,
         size_t maxlength)
 {
-    JEZ_VIRTUAL_CALLABLE_CREATE(GetEyeAngles, "EyeAngles", sdktoolsGameConfig);
-    JEZ_VIRTUAL_CALLABLE_CREATE(CBasePlayerRemovePlayerItem, "RemovePlayerItem", sdktoolsGameConfig);
-    JEZ_VIRTUAL_CALLABLE_CREATE(CCSPlayerGiveNamedItem, "GiveNamedItem", sdktoolsGameConfig);
-    JEZ_VIRTUAL_CALLABLE_CREATE(TE_GetServerClass, "TE_GetServerClass", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(GetEyeAngles, "EyeAngles", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(CBasePlayerRemovePlayerItem, "RemovePlayerItem", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(CCSPlayerGiveNamedItem, "GiveNamedItem", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(TE_GetServerClass, "TE_GetServerClass", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_SIG_CREATE(CS_RespawnPlayer, "RoundRespawn", cstrikeGameConfig);
 
     return true;
 }
 
-void Virtual_Callables_Cleanup()
+void Callables_Cleanup()
 {
 }

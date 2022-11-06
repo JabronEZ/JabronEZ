@@ -17,7 +17,7 @@
  */
 
 #include "temporary_entity_creator.h"
-#include "virtual_callables.h"
+#include "callables.h"
 #include <server_class.h>
 
 TemporaryEntityCreator::TemporaryEntityCreator(
@@ -39,7 +39,7 @@ TemporaryEntityCreator::~TemporaryEntityCreator()
 
 ServerClass *TemporaryEntityCreator::GetServerClass() const
 {
-    return Virtual_Callables_Call_TE_GetServerClass(_temporaryEntity);
+    return Callables_Call_TE_GetServerClass(_temporaryEntity);
 }
 
 int TemporaryEntityCreator::FindPropertyOffset(const char *propertyName) const

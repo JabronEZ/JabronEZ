@@ -115,6 +115,7 @@ public:
     QAngle GetEyeAngles() const;
     
     bool IsAlive() const;
+    void RespawnPlayer();
     void SwitchToCurrentGrenadeType() const;
     Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;
 

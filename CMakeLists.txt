@@ -43,9 +43,9 @@ add_library(jabronez SHARED
         src/hooks.cpp
         src/hooks.h
         src/hooks_macros.h
-        src/virtual_callables.cpp
-        src/virtual_callables.h
-        src/virtual_callables_macros.h
+        src/callables.cpp
+        src/callables.h
+        src/callables_macros.h
         src/console_manager.cpp
         src/console_manager.h
         src/player_manager.cpp

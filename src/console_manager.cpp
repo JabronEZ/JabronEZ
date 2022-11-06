@@ -96,6 +96,14 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
         META_CONPRINTF("Angles: %f %f %f\n", angles.x, angles.y, angles.z);
         RETURN_META(MRES_SUPERCEDE);
     }
+
+    if (strcmp(command, "sm_jez_respawn") == 0)
+    {
+        if (!player->IsAlive())
+            player->RespawnPlayer();
+
+        RETURN_META(MRES_SUPERCEDE);
+    }
 }
 
 void ConsoleManager::SendClientCommand(edict_t *edict, const char *command)

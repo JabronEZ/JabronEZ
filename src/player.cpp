@@ -21,7 +21,7 @@
 #include "extension.h"
 #include "translations.h"
 #include "hud_utilities.h"
-#include "virtual_callables.h"
+#include "callables.h"
 #include "entity_utilities.h"
 #include "console_manager.h"
 #include <dt_send.h>
@@ -217,6 +217,16 @@ bool Player::IsAlive() const
 
     uint8_t lifeState = *((uint8_t *)playerEntity + sendpropInfo.actual_offset);
     return lifeState == 0;
+}
+
+void Player::RespawnPlayer()
+{
+    CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return;
+
+    Callables_Call_CS_RespawnPlayer(playerEntity);
 }
 
 void Player::DoSwitchToGrenade()
