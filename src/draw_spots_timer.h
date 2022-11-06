@@ -16,35 +16,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_PLAYER_MANAGER_H
-#define JABRONEZ_PLAYER_MANAGER_H
+#ifndef JABRONEZ_DRAW_SPOTS_TIMER_H
+#define JABRONEZ_DRAW_SPOTS_TIMER_H
 
 #include "smsdk_ext.h"
 #include <sh_vector.h>
+#include "weapon_identifiers.h"
 
 class Player;
 
-class PlayerManager : IClientListener
-{
+class DrawSpotsTimer : public ITimedEvent {
 public:
-    explicit PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers);
-    ~PlayerManager();
+    explicit DrawSpotsTimer(ITimerSystem *timerSystem);
+    ~DrawSpotsTimer();
 
-    void OnClientConnected(int clientIndex) override;
-    void OnClientDisconnecting(int clientIndex) override;
+    void Init();
+    ResultType OnTimer(ITimer *timer, void *data) override;
+    void OnTimerEnd(ITimer *timer, void *data) override;
 
-    Player *GetPlayerByClientIndex(int clientIndex) const;
-    Player *GetPlayerByEdict(edict_t *edict) const;
-
-    const SourceHook::CVector<Player *> &GetPlayers() const;
+    void DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const;
 
 private:
-    void CleanupPlayer(Player *player);
-
-private:
-    IGameHelpers *_gameHelpers { nullptr };
-    IPlayerManager *_smPlayerManager { nullptr };
-    SourceHook::CVector<Player*> _players;
+    ITimerSystem *_timerSystem { nullptr };
+    ITimer *_timer { nullptr };
 };
 
 #endif

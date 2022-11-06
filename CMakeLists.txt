@@ -68,6 +68,8 @@ add_library(jabronez SHARED
         src/hud_utilities.h
         src/entity_utilities.cpp
         src/entity_utilities.h
+        src/draw_spots_timer.cpp
+        src/draw_spots_timer.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}

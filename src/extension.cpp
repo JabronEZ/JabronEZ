@@ -25,6 +25,7 @@
 #include "translations.h"
 #include "hud_utilities.h"
 #include "entity_utilities.h"
+#include "draw_spots_timer.h"
 
 JabronEZ g_JabronEZ;
 
@@ -89,11 +90,15 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     _translations = new Translations(translator);
     _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
+    _drawSpotsTimer = new DrawSpotsTimer(timersys);
 
     if (!_translations->Init(error, maxlength))
     {
         return false;
     }
+
+    if (late)
+        _drawSpotsTimer->Init();
 
     return true;
 }
@@ -159,4 +164,7 @@ void JabronEZ::OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax)
 {
     if (_consoleManager != nullptr)
         _consoleManager->LoadConfiguration();
+
+    if (_drawSpotsTimer != nullptr)
+        _drawSpotsTimer->Init();
 }

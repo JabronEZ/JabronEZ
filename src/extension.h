@@ -27,16 +27,17 @@ class PlayerManager;
 class Translations;
 class HudUtilities;
 class EntityUtilities;
+class DrawSpotsTimer;
 
 class JabronEZ : public SDKExtension
 {
 public:
-    virtual bool SDK_OnLoad(char *error, size_t maxlength, bool late);
-    virtual void SDK_OnUnload();
+    bool SDK_OnLoad(char *error, size_t maxlength, bool late) override;
+    void SDK_OnUnload() override;
 
-    virtual bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late);
+    bool SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late) override;
 
-    virtual void OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax) override;
+    void OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax) override;
 
     MenuManager *GetMenuManager() const { return _menuManager; }
     PlayerManager *GetPlayerManager() const { return _playerManager; }
@@ -44,6 +45,7 @@ public:
     HudUtilities *GetHudUtilities() const { return _hudUtilities; }
     EntityUtilities *GetEntityUtilities() const { return _entityUtilities; }
     ConsoleManager *GetConsoleManager() const { return _consoleManager; }
+    DrawSpotsTimer *GetDrawSpotsTimer() const { return _drawSpotsTimer; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
@@ -52,6 +54,7 @@ private:
     Translations *_translations { nullptr };
     HudUtilities *_hudUtilities { nullptr };
     EntityUtilities *_entityUtilities { nullptr };
+    DrawSpotsTimer *_drawSpotsTimer { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

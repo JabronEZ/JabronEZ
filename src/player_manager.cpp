@@ -119,3 +119,8 @@ Player *PlayerManager::GetPlayerByEdict(edict_t *edict) const
 
     return nullptr;
 }
+
+const SourceHook::CVector<Player *> &PlayerManager::GetPlayers() const
+{
+    return _players;
+}
