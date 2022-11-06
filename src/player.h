@@ -116,6 +116,7 @@ public:
     
     bool IsAlive() const;
     void SwitchToCurrentGrenadeType() const;
+    Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;
 
     void DoAddSpot();
     void DoRemoveSpot();

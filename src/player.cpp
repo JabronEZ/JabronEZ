@@ -21,7 +21,6 @@
 #include "extension.h"
 #include "translations.h"
 #include "hud_utilities.h"
-#include "hooks.h"
 #include "virtual_callables.h"
 #include "entity_utilities.h"
 #include "console_manager.h"
@@ -68,10 +67,131 @@ void Player::SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectil
 
 void Player::DoAddSpot()
 {
+    int clientIndex = GetClientIndex();
+
+    if(GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades may not add spot during playback",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    auto origin = GetAbsOrigin();
+    auto eyeAngles = GetEyeAngles();
+
+    auto spot = Spot(origin, eyeAngles);
+    _grenadeSpots.push_back(spot);
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            2,
+            nullptr,
+            "Grenades spot added",
+            &clientIndex);
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 }
 
 void Player::DoRemoveSpot()
 {
+    auto spotCount = _grenadeSpots.size();
+    int clientIndex = GetClientIndex();
+
+    if (GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades may not remove spot during playback",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    size_t closestSpotIndex;
+    auto closestSpot = GetClosestGrenadeSpot(&closestSpotIndex);
+
+    if (spotCount == 0 || closestSpotIndex >= spotCount)
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades no spots to remove",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    _grenadeSpots.erase(_grenadeSpots.iterAt(closestSpotIndex));
+
+    if (_grenadeSpots.empty())
+        SetGrenadePlaybackEnabled(false);
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            2,
+            nullptr,
+            "Grenades spot removed",
+            &clientIndex);
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+}
+
+Spot Player::GetClosestGrenadeSpot(size_t *outSpotIndex) const
+{
+    auto origin = GetAbsOrigin();
+    auto spotCount = _grenadeSpots.size();
+    Spot closestSpot = Spot(Vector(0.0f, 0.0f, 0.0f), QAngle(0.0f, 0.0f, 0.0f));
+    float shortestDistance = -1.0f;
+    size_t closestSpotIndex = spotCount;
+
+    for(size_t spotIndex = 0; spotIndex < spotCount; spotIndex++)
+    {
+        auto spot = _grenadeSpots.at(spotIndex);
+        auto distance = spot.GetOrigin().DistTo(origin);
+
+        if(shortestDistance < 0 || distance < shortestDistance)
+        {
+            shortestDistance = distance;
+            closestSpot = spot;
+            closestSpotIndex = spotIndex;
+        }
+    }
+
+    if (outSpotIndex != nullptr)
+        *outSpotIndex = closestSpotIndex;
+
+    return closestSpot;
 }
 
 void Player::DoTogglePlayback()
@@ -248,7 +368,7 @@ void Player::DoToggleGrenadeType()
 
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
 {
-    return Hook_Call_CCSPlayerGiveNamedItem(
+    return Virtual_Callables_Call_CCSPlayerGiveNamedItem(
             g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
             entityName,
             0,
@@ -304,7 +424,7 @@ CBaseEntity *Player::FindWeapon(const char *entityName) const
 
 void Player::RemoveWeapon(CBaseEntity *weaponEntity) const
 {
-    Hook_Call_CBasePlayerRemovePlayerItem(
+    Virtual_Callables_Call_CBasePlayerRemovePlayerItem(
             g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
             weaponEntity);
 }
