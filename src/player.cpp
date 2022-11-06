@@ -378,7 +378,7 @@ void Player::DoToggleGrenadeType()
 
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
 {
-    return Virtual_Callables_Call_CCSPlayerGiveNamedItem(
+    return Callables_Call_CCSPlayerGiveNamedItem(
             g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
             entityName,
             0,
@@ -434,7 +434,7 @@ CBaseEntity *Player::FindWeapon(const char *entityName) const
 
 void Player::RemoveWeapon(CBaseEntity *weaponEntity) const
 {
-    Virtual_Callables_Call_CBasePlayerRemovePlayerItem(
+    Callables_Call_CBasePlayerRemovePlayerItem(
             g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true),
             weaponEntity);
 }
@@ -475,5 +475,5 @@ QAngle Player::GetEyeAngles() const
     if (playerEntity == nullptr)
         return { 0.0f, 0.0f, 0.0f };
 
-    return Virtual_Callables_Call_GetEyeAngles(playerEntity);
+    return Callables_Call_GetEyeAngles(playerEntity);
 }
