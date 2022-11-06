@@ -28,6 +28,8 @@ TemporaryEntities::TemporaryEntities(IGameHelpers *gameHelpers, IVEngineServer *
 
 TemporaryEntities::~TemporaryEntities()
 {
+    CleanupCreators();
+
     _gameHelpers = nullptr;
     _engineServer = nullptr;
 }
@@ -66,6 +68,8 @@ bool TemporaryEntities::Init(
         return false;
     }
 
+    CleanupCreators();
+
     void *currentTempEnt = _headOfList;
     while (currentTempEnt != nullptr)
     {
@@ -76,6 +80,16 @@ bool TemporaryEntities::Init(
     }
 
     return true;
+}
+
+void TemporaryEntities::CleanupCreators()
+{
+    for (auto creator : _creators)
+    {
+        delete creator;
+    }
+
+    _creators.clear();
 }
 
 TemporaryEntityCreator *TemporaryEntities::FindByName(const char *name) const

@@ -32,6 +32,7 @@ public:
 
 public:
     bool Init(IGameConfig *sdktoolsGameConfig, char *error, size_t maxlength);
+    void CleanupCreators();
     TemporaryEntityCreator *FindByName(const char *name) const;
 
 private:
