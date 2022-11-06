@@ -119,7 +119,7 @@ void DrawSpotsTimer::DrawLine(Player *player, Vector point1, Vector point2, Colo
     beamPoints->SetPropertyChar("g", (char)color.g());
     beamPoints->SetPropertyChar("b", (char)color.b());
     beamPoints->SetPropertyChar("a", (char)color.a());
-    beamPoints->SetPropertyInt("m_nSpeed", 0.0f);
+    beamPoints->SetPropertyInt("m_nSpeed", 0);
     beamPoints->SetPropertyInt("m_nFadeLength", 0);
 
     SourceHook::CVector<Player*> recipients;
