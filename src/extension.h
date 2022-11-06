@@ -28,6 +28,7 @@ class Translations;
 class HudUtilities;
 class EntityUtilities;
 class DrawSpotsTimer;
+class TemporaryEntities;
 
 class JabronEZ : public SDKExtension
 {
@@ -46,6 +47,7 @@ public:
     EntityUtilities *GetEntityUtilities() const { return _entityUtilities; }
     ConsoleManager *GetConsoleManager() const { return _consoleManager; }
     DrawSpotsTimer *GetDrawSpotsTimer() const { return _drawSpotsTimer; }
+    TemporaryEntities *GetTemporaryEntities() const { return _temporaryEntities; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
@@ -55,6 +57,7 @@ private:
     HudUtilities *_hudUtilities { nullptr };
     EntityUtilities *_entityUtilities { nullptr };
     DrawSpotsTimer *_drawSpotsTimer { nullptr };
+    TemporaryEntities *_temporaryEntities { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

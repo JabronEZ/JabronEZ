@@ -20,10 +20,14 @@
 #include "extension.h"
 #include "player_manager.h"
 #include "player.h"
+#include "temporary_entities.h"
+#include "temporary_entity_creator.h"
+#include "recipient_filter.h"
 
-DrawSpotsTimer::DrawSpotsTimer(ITimerSystem *timerSystem)
+DrawSpotsTimer::DrawSpotsTimer(ITimerSystem *timerSystem, IVEngineServer *engineServer)
 {
     _timerSystem = timerSystem;
+    _engineServer = engineServer;
     _timer = nullptr;
 }
 
@@ -37,7 +41,7 @@ DrawSpotsTimer::~DrawSpotsTimer()
 
 void DrawSpotsTimer::Init()
 {
-    META_CONPRINTF("DrawSpotsTimer::Init()\n");
+    _laserBeamSprite = _engineServer->PrecacheModel("materials/sprites/laserbeam.vmt", false);
 
     _timer = _timerSystem->CreateTimer(
             this,
@@ -48,8 +52,6 @@ void DrawSpotsTimer::Init()
 
 ResultType DrawSpotsTimer::OnTimer(ITimer *timer, void *data)
 {
-    META_CONPRINTF("DrawSpotsTimer::OnTimer()\n");
-
     auto players = g_JabronEZ.GetPlayerManager()->GetPlayers();
     auto playerCount = players.size();
     auto yellowColor = Color(255, 255, 0, 200);
@@ -98,10 +100,57 @@ ResultType DrawSpotsTimer::OnTimer(ITimer *timer, void *data)
 
 void DrawSpotsTimer::OnTimerEnd(ITimer *timer, void *data)
 {
-    META_CONPRINTF("DrawSpotsTimer::OnTimerEnd()\n");
+}
+
+void DrawSpotsTimer::DrawLine(Player *player, Vector point1, Vector point2, Color color) const
+{
+    auto beamPoints = g_JabronEZ.GetTemporaryEntities()->FindByName("BeamPoints");
+    beamPoints->SetPropertyVector("m_vecStartPoint", point1);
+    beamPoints->SetPropertyVector("m_vecEndPoint", point2);
+    beamPoints->SetPropertyInt("m_nModelIndex", _laserBeamSprite);
+    beamPoints->SetPropertyInt("m_nHaloIndex", _laserBeamSprite);
+    beamPoints->SetPropertyInt("m_nStartFrame", 0);
+    beamPoints->SetPropertyInt("m_nFrameRate", 0);
+    beamPoints->SetPropertyFloat("m_fLife", 0.5f);
+    beamPoints->SetPropertyFloat("m_fWidth", 5.0f);
+    beamPoints->SetPropertyFloat("m_fEndWidth", 5.0f);
+    beamPoints->SetPropertyFloat("m_fAmplitude", 0.0f);
+    beamPoints->SetPropertyChar("r", (char)color.r());
+    beamPoints->SetPropertyChar("g", (char)color.g());
+    beamPoints->SetPropertyChar("b", (char)color.b());
+    beamPoints->SetPropertyChar("a", (char)color.a());
+    beamPoints->SetPropertyInt("m_nSpeed", 0.0f);
+    beamPoints->SetPropertyInt("m_nFadeLength", 0);
+
+    SourceHook::CVector<Player*> recipients;
+    recipients.clear();
+    recipients.push_back(player);
+
+    RecipientFilter filter = RecipientFilter(recipients, false, false);
+    beamPoints->Send(filter, 0.0f);
 }
 
 void DrawSpotsTimer::DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const
 {
-    META_CONPRINTF("DrawSpotsTimer::DrawRectangle() %p [%f %f %f] [%f %f %f] [%d %d %d %d]\n", player, point1.x, point1.y, point1.z, point2.x, point2.y, point2.z, color.r(), color.g(), color.b(), color.a());
+    auto pointA = Vector(point1.x, point1.y, point1.z);
+    auto pointH = Vector(point2.x, point2.y, point2.z);
+    auto pointB = Vector(pointA.x, pointA.y, pointH.z);
+    auto pointC = Vector(pointA.x, pointH.y, pointA.z);
+    auto pointD = Vector(pointH.x, pointA.y, pointA.z);
+    auto pointE = Vector(pointH.x, pointH.y, pointA.z);
+    auto pointF = Vector(pointH.x, pointA.y, pointH.z);
+    auto pointG = Vector(pointA.x, pointH.y, pointH.z);
+
+    DrawLine(player, pointA, pointB, color);
+    DrawLine(player, pointA, pointC, color);
+    DrawLine(player, pointA, pointD, color);
+    DrawLine(player, pointH, pointE, color);
+    DrawLine(player, pointH, pointF, color);
+    DrawLine(player, pointH, pointG, color);
+    DrawLine(player, pointC, pointE, color);
+    DrawLine(player, pointG, pointC, color);
+    DrawLine(player, pointG, pointB, color);
+    DrawLine(player, pointF, pointB, color);
+    DrawLine(player, pointF, pointD, color);
+    DrawLine(player, pointD, pointE, color);
 }

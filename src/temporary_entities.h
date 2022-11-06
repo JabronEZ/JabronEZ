@@ -16,32 +16,33 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_DRAW_SPOTS_TIMER_H
-#define JABRONEZ_DRAW_SPOTS_TIMER_H
+#ifndef JABRONEZ_TEMPORARY_ENTITIES_H
+#define JABRONEZ_TEMPORARY_ENTITIES_H
 
 #include "smsdk_ext.h"
 #include <sh_vector.h>
-#include "weapon_identifiers.h"
 
-class Player;
+class TemporaryEntityCreator;
 
-class DrawSpotsTimer : public ITimedEvent {
+class TemporaryEntities
+{
 public:
-    explicit DrawSpotsTimer(ITimerSystem *timerSystem, IVEngineServer *engineServer);
-    ~DrawSpotsTimer();
+    explicit TemporaryEntities(IGameHelpers *gameHelpers, IVEngineServer *engineServer);
+    ~TemporaryEntities();
 
-    void Init();
-    ResultType OnTimer(ITimer *timer, void *data) override;
-    void OnTimerEnd(ITimer *timer, void *data) override;
-
-    void DrawLine(Player *player, Vector point1, Vector point2, Color color) const;
-    void DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const;
+public:
+    bool Init(IGameConfig *sdktoolsGameConfig, char *error, size_t maxlength);
+    TemporaryEntityCreator *FindByName(const char *name) const;
 
 private:
-    ITimerSystem *_timerSystem { nullptr };
+    IGameHelpers *_gameHelpers { nullptr };
     IVEngineServer *_engineServer { nullptr };
-    ITimer *_timer { nullptr };
-    int _laserBeamSprite { -1 };
+
+    void *_headOfList { nullptr };
+    int _getTENameOffset { -1 };
+    int _getTENextOffset { -1 };
+
+    SourceHook::CVector<TemporaryEntityCreator*> _creators;
 };
 
 #endif

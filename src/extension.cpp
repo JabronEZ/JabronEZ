@@ -26,6 +26,7 @@
 #include "hud_utilities.h"
 #include "entity_utilities.h"
 #include "draw_spots_timer.h"
+#include "temporary_entities.h"
 
 JabronEZ g_JabronEZ;
 
@@ -90,9 +91,15 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     _translations = new Translations(translator);
     _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
-    _drawSpotsTimer = new DrawSpotsTimer(timersys);
+    _drawSpotsTimer = new DrawSpotsTimer(timersys, engine);
+    _temporaryEntities = new TemporaryEntities(gamehelpers, engine);
 
     if (!_translations->Init(error, maxlength))
+    {
+        return false;
+    }
+
+    if (!_temporaryEntities->Init(sdktoolsGameConfig, error, maxlength))
     {
         return false;
     }
@@ -142,6 +149,12 @@ void JabronEZ::SDK_OnUnload()
     {
         delete _entityUtilities;
         _entityUtilities = nullptr;
+    }
+
+    if (_temporaryEntities != nullptr)
+    {
+        delete _temporaryEntities;
+        _temporaryEntities = nullptr;
     }
 }
 

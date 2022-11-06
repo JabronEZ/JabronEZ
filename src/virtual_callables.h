@@ -43,6 +43,11 @@ JEZ_VIRTUAL_CALLABLES_DECL1(
         CBaseEntity*,
         item);
 
+JEZ_VIRTUAL_CALLABLES_DECL0(
+        TE_GetServerClass,
+        void,
+        ServerClass *);
+
 JEZ_VIRTUAL_CALLABLES_DECL5(
         CCSPlayerGiveNamedItem,
         CBaseEntity,

@@ -24,6 +24,11 @@ JEZ_VIRTUAL_CALLABLES_DEF0(
         CBaseEntity,
         const QAngle &);
 
+JEZ_VIRTUAL_CALLABLES_DEF0(
+        TE_GetServerClass,
+        void,
+        ServerClass *);
+
 JEZ_VIRTUAL_CALLABLES_DEF1(
         CBasePlayerRemovePlayerItem,
         CBaseEntity,
@@ -55,6 +60,7 @@ bool Virtual_Callables_Init(
     JEZ_VIRTUAL_CALLABLE_CREATE(GetEyeAngles, "EyeAngles", sdktoolsGameConfig);
     JEZ_VIRTUAL_CALLABLE_CREATE(CBasePlayerRemovePlayerItem, "RemovePlayerItem", sdktoolsGameConfig);
     JEZ_VIRTUAL_CALLABLE_CREATE(CCSPlayerGiveNamedItem, "GiveNamedItem", sdktoolsGameConfig);
+    JEZ_VIRTUAL_CALLABLE_CREATE(TE_GetServerClass, "TE_GetServerClass", sdktoolsGameConfig);
 
     return true;
 }

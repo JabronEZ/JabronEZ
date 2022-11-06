@@ -16,32 +16,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_DRAW_SPOTS_TIMER_H
-#define JABRONEZ_DRAW_SPOTS_TIMER_H
+#ifndef JABRONEZ_RECIPIENT_FILTER_H
+#define JABRONEZ_RECIPIENT_FILTER_H
 
 #include "smsdk_ext.h"
 #include <sh_vector.h>
-#include "weapon_identifiers.h"
 
 class Player;
 
-class DrawSpotsTimer : public ITimedEvent {
+class RecipientFilter : public IRecipientFilter
+{
 public:
-    explicit DrawSpotsTimer(ITimerSystem *timerSystem, IVEngineServer *engineServer);
-    ~DrawSpotsTimer();
+    explicit RecipientFilter(const SourceHook::CVector<Player*>& players, bool isReliable, bool isInitMessage);
+    virtual ~RecipientFilter();
 
-    void Init();
-    ResultType OnTimer(ITimer *timer, void *data) override;
-    void OnTimerEnd(ITimer *timer, void *data) override;
-
-    void DrawLine(Player *player, Vector point1, Vector point2, Color color) const;
-    void DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const;
+    bool IsReliable( void ) const override;
+    bool IsInitMessage( void ) const override;
+    int GetRecipientCount() const override;
+    int GetRecipientIndex(int slot) const override;
 
 private:
-    ITimerSystem *_timerSystem { nullptr };
-    IVEngineServer *_engineServer { nullptr };
-    ITimer *_timer { nullptr };
-    int _laserBeamSprite { -1 };
+    SourceHook::CVector<Player*> _players;
+    bool _isReliable;
+    bool _isInitMessage;
 };
 
 #endif

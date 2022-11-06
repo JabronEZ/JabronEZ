@@ -16,32 +16,38 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_DRAW_SPOTS_TIMER_H
-#define JABRONEZ_DRAW_SPOTS_TIMER_H
+#include "recipient_filter.h"
+#include "player.h"
 
-#include "smsdk_ext.h"
-#include <sh_vector.h>
-#include "weapon_identifiers.h"
+RecipientFilter::RecipientFilter(const SourceHook::CVector<Player *>& players, bool isReliable, bool isInitMessage)
+{
+    _players = players;
+    _isReliable = isReliable;
+    _isInitMessage = isInitMessage;
+}
 
-class Player;
+RecipientFilter::~RecipientFilter()
+{
+    _players.clear();
+}
 
-class DrawSpotsTimer : public ITimedEvent {
-public:
-    explicit DrawSpotsTimer(ITimerSystem *timerSystem, IVEngineServer *engineServer);
-    ~DrawSpotsTimer();
+int RecipientFilter::GetRecipientCount() const
+{
+    return (int)_players.size();
+}
 
-    void Init();
-    ResultType OnTimer(ITimer *timer, void *data) override;
-    void OnTimerEnd(ITimer *timer, void *data) override;
+int RecipientFilter::GetRecipientIndex(int slot) const
+{
+    return _players.at(slot)->GetClientIndex();
+}
 
-    void DrawLine(Player *player, Vector point1, Vector point2, Color color) const;
-    void DrawRectangle(Player *player, Vector point1, Vector point2, Color color) const;
+bool RecipientFilter::IsReliable() const
+{
+    return _isReliable;
+}
 
-private:
-    ITimerSystem *_timerSystem { nullptr };
-    IVEngineServer *_engineServer { nullptr };
-    ITimer *_timer { nullptr };
-    int _laserBeamSprite { -1 };
-};
+bool RecipientFilter::IsInitMessage() const
+{
+    return _isInitMessage;
+}
 
-#endif

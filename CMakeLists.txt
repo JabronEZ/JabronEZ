@@ -70,6 +70,12 @@ add_library(jabronez SHARED
         src/entity_utilities.h
         src/draw_spots_timer.cpp
         src/draw_spots_timer.h
+        src/temporary_entities.cpp
+        src/temporary_entities.h
+        src/temporary_entity_creator.cpp
+        src/temporary_entity_creator.h
+        src/recipient_filter.cpp
+        src/recipient_filter.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}
