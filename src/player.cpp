@@ -24,15 +24,20 @@
 #include "callables.h"
 #include "entity_utilities.h"
 #include "console_manager.h"
+#include "menu_manager.h"
+#include "handle_playback_timer.h"
+#include "grenade_trigger_playback_timer.h"
+#include "grenade_goto_next_spot_or_finish_timer.h"
 #include <dt_send.h>
 #include <iplayerinfo.h>
 
-Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers)
+Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers, ITimerSystem *timerSystem)
 {
     _clientIndex = clientIndex;
     _userId = userId;
     _gamePlayer = gamePlayer;
     _gameHelpers = gameHelpers;
+    _timerSystem = timerSystem;
     _grenadeSpots.clear();
 
     for (int grenadeTypeIndex = GrenadeType_FLASH; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
@@ -196,10 +201,97 @@ Spot Player::GetClosestGrenadeSpot(size_t *outSpotIndex) const
 
 void Player::DoTogglePlayback()
 {
+    auto spots = GetGrenadeSpots();
+    auto spotCount = spots.size();
+    int clientIndex = GetClientIndex();
+
+    if (GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades may not change this during playback",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    if (spotCount == 0)
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades must first configure one or more spots",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+        return;
+    }
+
+    auto playbackEnabled = GetGrenadePlaybackEnabled();
+    SetGrenadePlaybackEnabled(!playbackEnabled);
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            2,
+            nullptr,
+            playbackEnabled ? "Grenades playback disabled no longer tracking" : "Grenades playback enabled now tracking",
+            &clientIndex);
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 }
 
 void Player::DoFastForward()
 {
+    int clientIndex = GetClientIndex();
+
+    if (GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
+    {
+        FinishGrenadeTesterPlayback();
+
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades playback skipped",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+    }
+    else
+    {
+        char message[1024];
+
+        g_JabronEZ.GetTranslations()->FormatTranslated(
+                message,
+                sizeof(message),
+                "%T",
+                2,
+                nullptr,
+                "Grenades may only fast forward during playback",
+                &clientIndex);
+
+        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+    }
 }
 
 bool Player::IsAlive() const
@@ -219,7 +311,7 @@ bool Player::IsAlive() const
     return lifeState == 0;
 }
 
-void Player::RespawnPlayer()
+void Player::RespawnPlayer() const
 {
     CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
 
@@ -476,4 +568,230 @@ QAngle Player::GetEyeAngles() const
         return { 0.0f, 0.0f, 0.0f };
 
     return Callables_Call_GetEyeAngles(playerEntity);
+}
+
+void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType)
+{
+    auto currentGrenadeType = GetGrenadeType();
+
+    if(currentGrenadeType != grenadeType || GetGrenadePlaybackStarted() || !GetGrenadePlaybackEnabled() || GetGrenadeAwaitingDetonation())
+        return;
+
+    SetGrenadeAwaitingDetonation(true);
+    RefreshGrenadesMenu();
+
+    SetGrenadeProjectileOrigin(origin);
+    SetGrenadeProjectileAngle(angle);
+    SetGrenadeProjectileVelocity(velocity);
+    SetGrenadeProjectileAngularImpulse(angularImpulse);
+
+    SetGrenadeThrowerSpot(Spot(GetAbsOrigin(), GetEyeAngles()));
+}
+
+void Player::FinishGrenadeTesterPlayback(bool restorePosition)
+{
+    if (_grenadeTriggerPlaybackTimer != nullptr)
+    {
+        _grenadeTriggerPlaybackTimer->KillTimerSafely();
+        _grenadeTriggerPlaybackTimer = nullptr;
+    }
+
+    if (_grenadeGotoNextSpotOrFinishTimer != nullptr)
+    {
+        _grenadeGotoNextSpotOrFinishTimer->KillTimerSafely();
+        _grenadeGotoNextSpotOrFinishTimer = nullptr;
+    }
+
+    if (_grenadeHandlePlaybackTimer != nullptr)
+    {
+        _grenadeHandlePlaybackTimer->KillTimerSafely();
+        _grenadeHandlePlaybackTimer = nullptr;
+    }
+
+    SetGrenadeCurrentSpotIndex(0);
+    SetGrenadePlaybackStarted(false);
+    SetGrenadeAwaitingDetonation(false);
+
+    RefreshGrenadesMenu();
+
+    if(!restorePosition)
+        return;
+
+    if(!IsAlive())
+        RespawnPlayer();
+
+    auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return;
+
+    auto throwerSpot = GetGrenadeThrowerSpot();
+
+    auto origin = throwerSpot.GetOrigin();
+    auto eyeAngles = throwerSpot.GetEyeAngles();
+    auto velocity = Vector(0.0f, 0.0f, 0.0f);
+
+    Callables_Call_Teleport(playerEntity, &origin, &eyeAngles, &velocity);
+}
+
+void Player::StartGrenadeTesterPlayback()
+{
+    SetGrenadeCurrentSpotIndex(0);
+    SetGrenadePlaybackStarting(false);
+    SetGrenadePlaybackStarted(true);
+
+    HandleGrenadeTesterPlayback();
+}
+
+void Player::RefreshGrenadesMenu()
+{
+    if (!IsGrenadeMenuOpen())
+        return;
+
+    auto pageNumber = GetGrenadeMenuPage();
+
+    if(pageNumber == 0)
+        pageNumber = 1;
+
+    g_JabronEZ.GetMenuManager()->OpenMenu(this, pageNumber);
+}
+
+void Player::HandleGrenadeTesterPlayback()
+{
+    CBaseEntity *playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+
+    if (playerEntity == nullptr)
+        return;
+
+    SetGrenadeTossedGrenade(0);
+
+    if (!IsOnActualTeam())
+        return;
+
+    if (!IsAlive())
+        RespawnPlayer();
+
+    RefreshGrenadesMenu();
+
+    auto spotIndex = GetGrenadeCurrentSpotIndex();
+    auto spots = GetGrenadeSpots();
+    auto spot = spots.at(spotIndex);
+
+    auto spotOrigin = spot.GetOrigin();
+    auto spotAngles = spot.GetEyeAngles();
+    auto spotVelocity = Vector(0.0f, 0.0f, 0.0f);
+    Callables_Call_Teleport(playerEntity, &spotOrigin, &spotAngles, &spotVelocity);
+
+    auto existingTimer = GetGrenadeHandlePlaybackTimer();
+
+    if (existingTimer != nullptr)
+    {
+        existingTimer->KillTimerSafely();
+        SetGrenadeHandlePlaybackTimer(nullptr);
+    }
+
+    SetGrenadeHandlePlaybackTimer(new HandlePlaybackTimer(this, _timerSystem, _gameHelpers));
+}
+
+bool Player::IsOnActualTeam() const
+{
+    auto gamePlayer = GetGamePlayer();
+
+    if (gamePlayer == nullptr)
+        return false;
+
+    auto playerInfo = gamePlayer->GetPlayerInfo();
+
+    if (playerInfo == nullptr)
+        return false;
+
+    auto teamIndex = playerInfo->GetTeamIndex();
+
+    return teamIndex == 2 || teamIndex == 3;
+}
+
+float GetDelayPostDetonation(GrenadeType grenadeType)
+{
+    if(grenadeType == GrenadeType_MOLOTOV || grenadeType == GrenadeType_INCENDIARY)
+        return 9.0f;
+
+    if(grenadeType == GrenadeType_DECOY)
+        return 7.0f;
+
+    return 3.0f;
+}
+
+void Player::OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference)
+{
+    if (!GetGrenadePlaybackEnabled())
+        return;
+
+    auto postDetonationDelay = GetDelayPostDetonation(grenadeType);
+
+    if (GetGrenadeAwaitingDetonation())
+    {
+        auto selectedGrenadeType = GetGrenadeType();
+
+        if (selectedGrenadeType != grenadeType)
+            return;
+
+        SetGrenadeAwaitingDetonation(false);
+        SetGrenadePlaybackStarting(true);
+
+        // if(p_GrenadeType == CSWeapon_SMOKEGRENADE)
+        //     MarkShortSmoke(p_ProjectileIndex);
+        //
+        // if(p_GrenadeType == CSWeapon_DECOY)
+        //     MarkShortDecoy(p_ProjectileIndex);
+
+        auto existingTriggerPlaybackTimer = GetGrenadeTriggerPlaybackTimer();
+
+        if (existingTriggerPlaybackTimer != nullptr)
+        {
+            existingTriggerPlaybackTimer->KillTimerSafely();
+            SetGrenadeTriggerPlaybackTimer(nullptr);
+        }
+
+        SetGrenadeTriggerPlaybackTimer(new GrenadeTriggerPlaybackTimer(this, postDetonationDelay, _timerSystem));
+        return;
+    }
+
+    if (GetGrenadePlaybackStarted())
+    {
+        auto tossedGrenadeReference = GetGrenadeTossedGrenade();
+
+        if (tossedGrenadeReference != projectileReference)
+            return;
+
+        SetGrenadeTossedGrenade(0);
+
+        auto existingGotoNextSpotTimer = GetGrenadeGotoNextSpotOrFinishTimer();
+
+        if (existingGotoNextSpotTimer != nullptr)
+        {
+            existingGotoNextSpotTimer->KillTimerSafely();
+            SetGrenadeGotoNextSpotOrFinishTimer(nullptr);
+        }
+
+        SetGrenadeGotoNextSpotOrFinishTimer(new GrenadeGotoNextSpotOrFinishTimer(this, postDetonationDelay, _timerSystem));
+        return;
+    }
+}
+
+void Player::GotoNextSpotOrFinishPlayback()
+{
+    if (!IsOnActualTeam())
+        return;
+
+    auto currentSpotIndex = GetGrenadeCurrentSpotIndex();
+    auto spots = GetGrenadeSpots();
+    auto spotCount = spots.size();
+
+    if (currentSpotIndex + 1 >= spotCount)
+        FinishGrenadeTesterPlayback();
+    else
+    {
+        SetGrenadeCurrentSpotIndex(currentSpotIndex + 1);
+        HandleGrenadeTesterPlayback();
+    }
 }

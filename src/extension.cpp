@@ -27,6 +27,7 @@
 #include "entity_utilities.h"
 #include "draw_spots_timer.h"
 #include "temporary_entities.h"
+#include "game_events_manager.h"
 
 JabronEZ g_JabronEZ;
 
@@ -100,12 +101,13 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     _menuManager = new MenuManager(menus, myself);
-    _playerManager = new PlayerManager(playerhelpers, gamehelpers);
+    _playerManager = new PlayerManager(playerhelpers, gamehelpers, timersys);
     _translations = new Translations(translator);
     _hudUtilities = new HudUtilities(gamehelpers);
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
     _drawSpotsTimer = new DrawSpotsTimer(timersys, engine);
     _temporaryEntities = new TemporaryEntities(gamehelpers, engine);
+    _gameEventsManager->SetGameHelpers(gamehelpers);
 
     if (!_translations->Init(error, maxlength))
     {
@@ -176,6 +178,13 @@ bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, b
     _consoleManager = new ConsoleManager(engine);
 
     if (!_consoleManager->Init(ismm, error, maxlength))
+    {
+        return false;
+    }
+
+    _gameEventsManager = new GameEventsManager();
+
+    if (!_gameEventsManager->Init(ismm, error, maxlength))
     {
         return false;
     }

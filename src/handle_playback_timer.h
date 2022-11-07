@@ -16,38 +16,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_PLAYER_MANAGER_H
-#define JABRONEZ_PLAYER_MANAGER_H
+#ifndef JABRONEZ_HANDLE_PLAYBACK_TIMER_H
+#define JABRONEZ_HANDLE_PLAYBACK_TIMER_H
 
 #include "smsdk_ext.h"
-#include <sh_vector.h>
+#include "player_timer.h"
 
 class Player;
 
-class PlayerManager : IClientListener
-{
+class HandlePlaybackTimer : public PlayerTimer {
 public:
-    explicit PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers, ITimerSystem *timerSystem);
-    ~PlayerManager();
+    explicit HandlePlaybackTimer(Player *player, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
+    ~HandlePlaybackTimer() override;
 
-    void OnClientConnected(int clientIndex) override;
-    void OnClientDisconnecting(int clientIndex) override;
-
-    Player *GetPlayerByClientIndex(int clientIndex) const;
-    Player *GetPlayerByEdict(edict_t *edict) const;
-    Player *GetPlayerByUserId(int userId) const;
-    Player *GetPlayerByBaseEntity(CBaseEntity *entity) const;
-
-    const SourceHook::CVector<Player *> &GetPlayers() const;
-
-private:
-    void CleanupPlayer(Player *player);
+    void OnPlayerTimer() override;
+    void OnPlayerTimerEnd() override;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };
-    ITimerSystem *_timerSystem { nullptr };
-    IPlayerManager *_smPlayerManager { nullptr };
-    SourceHook::CVector<Player*> _players;
 };
 
 #endif

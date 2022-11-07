@@ -27,9 +27,13 @@
 #include "player_mode.h"
 #include "weapon_identifiers.h"
 
+class GrenadeTriggerPlaybackTimer;
+class HandlePlaybackTimer;
+class GrenadeGotoNextSpotOrFinishTimer;
+
 class Player {
 public:
-    explicit Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers);
+    explicit Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers, ITimerSystem *timerSystem);
     ~Player();
 
     int GetClientIndex() const { return _clientIndex; }
@@ -73,32 +77,28 @@ public:
     size_t GetGrenadeCurrentSpotIndex() const { return _grenadeCurrentSpotIndex; }
     void SetGrenadeCurrentSpotIndex(size_t grenadeCurrentSpotIndex) { _grenadeCurrentSpotIndex = grenadeCurrentSpotIndex; }
 
-    ITimer *GetGrenadeSpotTimer() const { return _grenadeSpotTimer; }
-    void SetGrenadeSpotTimer(ITimer *grenadeSpotTimer) { _grenadeSpotTimer = grenadeSpotTimer; }
-
-    ITimer *GetGrenadeLaunchTimer() const { return _grenadeLaunchTimer; }
-    void SetGrenadeLaunchTimer(ITimer *grenadeLaunchTimer) { _grenadeLaunchTimer = grenadeLaunchTimer; }
-
     GrenadeType GetGrenadeType() const { return _grenadeType; }
     void SetGrenadeType(GrenadeType grenadeType) { _grenadeType = grenadeType; }
 
     Spot GetGrenadeThrowerSpot() const { return _grenadeThrowerSpot; }
     void SetGrenadeThrowerSpot(const Spot& grenadeThrowerSpot) { _grenadeThrowerSpot = grenadeThrowerSpot; }
 
-    bool GetGrenadeMenuOpen() const { return _grenadeMenuOpen; }
-    void SetGrenadeMenuOpen(bool grenadeMenuOpen) { _grenadeMenuOpen = grenadeMenuOpen; }
+    cell_t GetGrenadeTossedGrenade() const { return _grenadeTossedGrenade; }
+    void SetGrenadeTossedGrenade(cell_t grenadeTossedGrenade) { _grenadeTossedGrenade = grenadeTossedGrenade; }
 
-    CBaseEntity *GetGrenadeTossedGrenade() const { return _grenadeTossedGrenade; }
-    void SetGrenadeTossedGrenade(CBaseEntity *grenadeTossedGrenade) { _grenadeTossedGrenade = grenadeTossedGrenade; }
+    GrenadeTriggerPlaybackTimer *GetGrenadeTriggerPlaybackTimer() const { return _grenadeTriggerPlaybackTimer; }
+    void SetGrenadeTriggerPlaybackTimer(GrenadeTriggerPlaybackTimer *grenadeTriggerPlaybackTimer) { _grenadeTriggerPlaybackTimer = grenadeTriggerPlaybackTimer; }
 
-    ITimer *GetGrenadeTriggerPlaybackTimer() const { return _grenadeTriggerPlaybackTimer; }
-    void SetGrenadeTriggerPlaybackTimer(ITimer *grenadeTriggerPlaybackTimer) { _grenadeTriggerPlaybackTimer = grenadeTriggerPlaybackTimer; }
+    GrenadeGotoNextSpotOrFinishTimer *GetGrenadeGotoNextSpotOrFinishTimer() const { return _grenadeGotoNextSpotOrFinishTimer; }
+    void SetGrenadeGotoNextSpotOrFinishTimer(GrenadeGotoNextSpotOrFinishTimer *grenadeGotoNextSpotOrFinishTimer) { _grenadeGotoNextSpotOrFinishTimer = grenadeGotoNextSpotOrFinishTimer; }
 
-    ITimer *GetGrenadeGotoNextSpotOrFinishTimer() const { return _grenadeGotoNextSpotOrFinishTimer; }
-    void SetGrenadeGotoNextSpotOrFinishTimer(ITimer *grenadeGotoNextSpotOrFinishTimer) { _grenadeGotoNextSpotOrFinishTimer = grenadeGotoNextSpotOrFinishTimer; }
+    HandlePlaybackTimer *GetGrenadeHandlePlaybackTimer() const { return _grenadeHandlePlaybackTimer; }
+    void SetGrenadeHandlePlaybackTimer(HandlePlaybackTimer *grenadeHandlePlaybackTimer) { _grenadeHandlePlaybackTimer = grenadeHandlePlaybackTimer; }
 
-    ITimer *GetGrenadeHandlePlaybackTimer() const { return _grenadeHandlePlaybackTimer; }
-    void SetGrenadeHandlePlaybackTimer(ITimer *grenadeHandlePlaybackTimer) { _grenadeHandlePlaybackTimer = grenadeHandlePlaybackTimer; }
+    bool IsGrenadeMenuOpen() const { return _grenadeMenu != nullptr; }
+
+    void SetGrenadeMenu(IBaseMenu *menu) { _grenadeMenu = menu; }
+    IBaseMenu *GetGrenadeMenu() const { return _grenadeMenu; }
 
     size_t GetGrenadeMenuPage() const { return _grenadeMenuPage; }
     void SetGrenadeMenuPage(size_t grenadeMenuPage) { _grenadeMenuPage = grenadeMenuPage; }
@@ -113,11 +113,20 @@ public:
 
     Vector GetAbsOrigin() const;
     QAngle GetEyeAngles() const;
-    
+
+    void OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType);
+    void OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference);
+
     bool IsAlive() const;
-    void RespawnPlayer();
+    void RespawnPlayer() const;
     void SwitchToCurrentGrenadeType() const;
     Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;
+    bool IsOnActualTeam() const;
+
+    void StartGrenadeTesterPlayback();
+    void FinishGrenadeTesterPlayback(bool restorePosition = true);
+    void HandleGrenadeTesterPlayback();
+    void RefreshGrenadesMenu();
 
     void DoAddSpot();
     void DoRemoveSpot();
@@ -130,8 +139,11 @@ public:
     void DoToggleProjectileMode(GrenadeType grenadeType);
     void DoToggleGrenadeType();
 
+    void GotoNextSpotOrFinishPlayback();
+
 private:
     IGameHelpers *_gameHelpers { nullptr };
+    ITimerSystem *_timerSystem { nullptr };
     int _clientIndex { -1 };
     int _userId { -1 };
     IGamePlayer *_gamePlayer { nullptr };
@@ -148,15 +160,13 @@ private:
     Vector _grenadeProjectileVelocity;
     Vector _grenadeProjectileAngularImpulse;
     size_t _grenadeCurrentSpotIndex { 0 };
-    ITimer *_grenadeSpotTimer { nullptr };
-    ITimer *_grenadeLaunchTimer { nullptr };
     GrenadeType _grenadeType { GrenadeType_FLASH };
     Spot _grenadeThrowerSpot;
-    bool _grenadeMenuOpen { false };
-    CBaseEntity *_grenadeTossedGrenade { nullptr };
-    ITimer *_grenadeTriggerPlaybackTimer { nullptr };
-    ITimer *_grenadeGotoNextSpotOrFinishTimer { nullptr };
-    ITimer *_grenadeHandlePlaybackTimer { nullptr };
+    cell_t _grenadeTossedGrenade { 0 };
+    GrenadeTriggerPlaybackTimer *_grenadeTriggerPlaybackTimer { nullptr };
+    GrenadeGotoNextSpotOrFinishTimer *_grenadeGotoNextSpotOrFinishTimer { nullptr };
+    HandlePlaybackTimer *_grenadeHandlePlaybackTimer { nullptr };
+    IBaseMenu *_grenadeMenu { nullptr };
     size_t _grenadeMenuPage { 0 };
     ProjectileMode _grenadeMode[GrenadeType_COUNT] { };
 };

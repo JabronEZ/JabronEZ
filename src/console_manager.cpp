@@ -45,6 +45,7 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
     // without any particular warning/error.
     // For more information, see: https://wiki.alliedmods.net/Porting_To_Orange_Box
     GET_V_IFACE_CURRENT(GetEngineFactory, _cvarInterface, ICvar, CVAR_INTERFACE_VERSION);
+
     g_pCVar = _cvarInterface;
     ConVar_Register(0, this);
 

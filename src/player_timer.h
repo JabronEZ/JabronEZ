@@ -16,38 +16,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_MENU_MANAGER_H
-#define JABRONEZ_MENU_MANAGER_H
+#ifndef JABRONEZ_PLAYER_TIMER_H
+#define JABRONEZ_PLAYER_TIMER_H
 
 #include "smsdk_ext.h"
-#include <sh_vector.h>
-#include "weapon_identifiers.h"
 
 class Player;
 
-class MenuManager : public IMenuHandler {
+class PlayerTimer : public ITimedEvent {
 public:
-    MenuManager(IMenuManager *smMenuManager, IExtension *extension);
-    ~MenuManager();
+    explicit PlayerTimer(Player *player, float interval, ITimerSystem *timerSystem);
+    virtual ~PlayerTimer();
 
-    void OpenMenu(Player *player, size_t pageNumber = 1);
-    void DestroyMenuSafely(IBaseMenu *menu);
+    ResultType OnTimer(ITimer *timer, void *data) final;
+    void OnTimerEnd(ITimer *timer, void *data) final;
 
-    virtual void OnMenuSelect2(IBaseMenu *menu,
-                               int client,
-                               unsigned int item,
-                               unsigned int item_on_page) override;
+    virtual void OnPlayerTimer() = 0;
+    virtual void OnPlayerTimerEnd() = 0;
 
-    virtual void OnMenuDestroy(SourceMod::IBaseMenu *menu) override;
+    void KillTimerSafely();
 
-    virtual void OnMenuEnd(IBaseMenu *menu, MenuEndReason reason) override;
-
-    void NotifyPlayerMenuDestroyed(IBaseMenu *menu);
+    Player *GetPlayer() const;
 
 private:
-    IMenuManager *_smMenuManager { nullptr };
-    IExtension *_extension { nullptr };
-    SourceHook::CVector<IBaseMenu*> _menus;
+    ITimerSystem *_timerSystem { nullptr };
+    ITimer *_timer { nullptr };
+
+    // Timers specific to a player should never assume that the underlying `Player *` is still connected!
+    int _userId { -1 };
+    bool _isKilled { false };
+    bool _isInTimerCallback { false };
 };
 
 #endif

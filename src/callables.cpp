@@ -55,6 +55,16 @@ JEZ_CALLABLES_MEMBER_SIG_DEF0_VOID(
         CS_RespawnPlayer,
         CBaseEntity);
 
+JEZ_CALLABLES_MEMBER_OFFSET_DEF3_VOID(
+        Teleport,
+        CBaseEntity,
+        const Vector *,
+        newPosition,
+        const QAngle *,
+        newAngles,
+        const Vector *,
+        newVelocity);
+
 bool Callables_Init(
         IGameConfig *gameConfig,
         IGameConfig *sdktoolsGameConfig,
@@ -67,6 +77,7 @@ bool Callables_Init(
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(CCSPlayerGiveNamedItem, "GiveNamedItem", sdktoolsGameConfig);
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(TE_GetServerClass, "TE_GetServerClass", sdktoolsGameConfig);
     JEZ_CALLABLE_MEMBER_SIG_CREATE(CS_RespawnPlayer, "RoundRespawn", cstrikeGameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(Teleport, "Teleport", sdktoolsGameConfig);
 
     return true;
 }

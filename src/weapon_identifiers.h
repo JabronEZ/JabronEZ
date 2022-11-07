@@ -150,6 +150,7 @@ ItemDefinitionIndex GetItemDefinitionIndexFromCSWeaponID(CSWeaponID csWeaponId);
 GrenadeType GetGrenadeTypeFromCSWeaponID(CSWeaponID csWeaponId);
 ItemDefinitionIndex GetItemDefinitionIndexFromGrenadeType(GrenadeType grenadeType);
 GrenadeType GetNextGrenadeType(GrenadeType grenadeType);
+GrenadeType GetGrenadeTypeFromItemDefinitionIndex(ItemDefinitionIndex itemDefinitionIndex);
 
 const char *ChooseStringForGrenadeType(
         GrenadeType grenadeType,

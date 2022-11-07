@@ -19,11 +19,14 @@
 #include "player_manager.h"
 #include "smsdk_ext.h"
 #include "player.h"
+#include "entity_utilities.h"
+#include "extension.h"
 
-PlayerManager::PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers)
+PlayerManager::PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers, ITimerSystem *timerSystem)
 {
     _smPlayerManager = smPlayerManager;
     _gameHelpers = gameHelpers;
+    _timerSystem = timerSystem;
     _players.clear();
 
     _smPlayerManager->AddClientListener(this);
@@ -51,9 +54,7 @@ void PlayerManager::OnClientConnected(int clientIndex)
     }
 
     auto gamePlayer = _smPlayerManager->GetGamePlayer(clientIndex);
-    auto player = new Player(clientIndex, gamePlayer->GetUserId(), gamePlayer, _gameHelpers);
-
-    META_CONPRINTF("Welcome, %s\n", gamePlayer->GetName());
+    auto player = new Player(clientIndex, gamePlayer->GetUserId(), gamePlayer, _gameHelpers, _timerSystem);
 
     _players.push_back(player);
 }
@@ -72,9 +73,26 @@ void PlayerManager::OnClientDisconnecting(int clientIndex)
         return;
     }
 
-    META_CONPRINTF("Goodbye, %s\n", player->GetGamePlayer()->GetName());
-
     CleanupPlayer(player);
+}
+
+Player *PlayerManager::GetPlayerByBaseEntity(CBaseEntity *entity) const
+{
+    // TODO: This can definitely be optimized.
+    if (entity == nullptr)
+        return nullptr;
+
+    auto maxClient = _smPlayerManager->GetMaxClients();
+
+    for (auto clientIndex = 1; clientIndex <= maxClient; clientIndex++)
+    {
+        auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(clientIndex, true);
+
+        if (entity == playerEntity)
+            return GetPlayerByClientIndex(clientIndex);
+    }
+
+    return nullptr;
 }
 
 Player *PlayerManager::GetPlayerByClientIndex(int clientIndex) const
@@ -82,6 +100,19 @@ Player *PlayerManager::GetPlayerByClientIndex(int clientIndex) const
     for (auto player : _players)
     {
         if (player->GetClientIndex() == clientIndex)
+        {
+            return player;
+        }
+    }
+
+    return nullptr;
+}
+
+Player *PlayerManager::GetPlayerByUserId(int userId) const
+{
+    for (auto player : _players)
+    {
+        if (player->GetUserId() == userId)
         {
             return player;
         }

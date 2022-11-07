@@ -19,6 +19,23 @@
 #include "hooks.h"
 #include <CDetour/detours.h>
 #include "extension.h"
+#include "player_manager.h"
+#include "player.h"
+#include "weapon_identifiers.h"
+
+void TriggerOnProjectileCreated(
+        void *playerEntity,
+        const Vector &origin,
+        const QAngle &angle,
+        const Vector &velocity,
+        const Vector &angularImpulse,
+        int grenadeItemDefinitionIndex)
+{
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(reinterpret_cast<CBaseEntity*>(playerEntity));
+
+    if (player != nullptr)
+        player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
+}
 
 JEZ_HOOK_STATIC_DEF6(
         SmokeProjectileCreate,
@@ -33,28 +50,12 @@ JEZ_HOOK_STATIC_DEF6(
         const Vector&,
         angularImpulse,
         void*,
-        player,
+        playerEntity,
         int,
         grenadeType)
 {
-    META_CONPRINTF(
-            "Smoke thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
-            origin.x,
-            origin.y,
-            origin.z,
-            angle.x,
-            angle.y,
-            angle.z,
-            velocity.x,
-            velocity.y,
-            velocity.z,
-            angularImpulse.x,
-            angularImpulse.y,
-            angularImpulse.z,
-            player,
-            grenadeType);
-
-    return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+    TriggerOnProjectileCreated(playerEntity, origin, angle, velocity, angularImpulse, grenadeType);
+    return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, playerEntity, grenadeType);
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -74,23 +75,7 @@ JEZ_HOOK_STATIC_DEF6(
         int,
         grenadeType)
 {
-    META_CONPRINTF(
-            "Flashbang thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
-            origin.x,
-            origin.y,
-            origin.z,
-            angle.x,
-            angle.y,
-            angle.z,
-            velocity.x,
-            velocity.y,
-            velocity.z,
-            angularImpulse.x,
-            angularImpulse.y,
-            angularImpulse.z,
-            player,
-            grenadeType);
-
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
     return Hook_Call_FlashbangProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -111,23 +96,7 @@ JEZ_HOOK_STATIC_DEF6(
         int,
         grenadeType)
 {
-    META_CONPRINTF(
-            "Molotov thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
-            origin.x,
-            origin.y,
-            origin.z,
-            angle.x,
-            angle.y,
-            angle.z,
-            velocity.x,
-            velocity.y,
-            velocity.z,
-            angularImpulse.x,
-            angularImpulse.y,
-            angularImpulse.z,
-            player,
-            grenadeType);
-
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
     return Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -148,23 +117,7 @@ JEZ_HOOK_STATIC_DEF6(
         int,
         grenadeType)
 {
-    META_CONPRINTF(
-            "Decoy thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
-            origin.x,
-            origin.y,
-            origin.z,
-            angle.x,
-            angle.y,
-            angle.z,
-            velocity.x,
-            velocity.y,
-            velocity.z,
-            angularImpulse.x,
-            angularImpulse.y,
-            angularImpulse.z,
-            player,
-            grenadeType);
-
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
     return Hook_Call_DecoyProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 
@@ -185,23 +138,7 @@ JEZ_HOOK_STATIC_DEF6(
         int,
         grenadeType)
 {
-    META_CONPRINTF(
-            "HE grenade thrown: [%f %f %f] [%f %f %f] [%f %f %f] [%f %f %f] %p %d\n",
-            origin.x,
-            origin.y,
-            origin.z,
-            angle.x,
-            angle.y,
-            angle.z,
-            velocity.x,
-            velocity.y,
-            velocity.z,
-            angularImpulse.x,
-            angularImpulse.y,
-            angularImpulse.z,
-            player,
-            grenadeType);
-
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
     return Hook_Call_HEGrenadeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
 }
 

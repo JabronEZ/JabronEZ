@@ -58,6 +58,24 @@
     }; \
     extern ret Callables_Call_##name(className *self, p1type p1name)
 
+#define JEZ_CALLABLES_MEMBER_OFFSET_DECL3(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name) \
+    extern int CallablesOffset##name; \
+    class Callables_##name##_Class \
+    { \
+    public: \
+        static ret (Callables_##name##_Class::* Callables_##name##_Actual)(p1type, p2type, p3type); \
+    }; \
+    extern ret Callables_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name)
+
+#define JEZ_CALLABLES_MEMBER_OFFSET_DECL3_VOID(name, className, p1type, p1name, p2type, p2name, p3type, p3name) \
+    extern int CallablesOffset##name; \
+    class Callables_##name##_Class \
+    { \
+    public: \
+        static void (Callables_##name##_Class::* Callables_##name##_Actual)(p1type, p2type, p3type); \
+    }; \
+    extern void Callables_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name)
+
 #define JEZ_CALLABLES_MEMBER_OFFSET_DECL5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \
     extern int CallablesOffset##name; \
     class Callables_##name##_Class \
@@ -111,6 +129,18 @@
         *((void **)(&Callables_##name##_Class::Callables_##name##_Actual)) = methodAddress; \
         Callables_##name##_Class *selfAsHook = reinterpret_cast<Callables_##name##_Class *>(self); \
         return (selfAsHook->*Callables_##name##_Class::Callables_##name##_Actual)(p1name); \
+    }
+
+#define JEZ_CALLABLES_MEMBER_OFFSET_DEF3_VOID(name, className, p1type, p1name, p2type, p2name, p3type, p3name) \
+    int g_CallablesOffset##name = -1; \
+    void (Callables_##name##_Class::* Callables_##name##_Class::Callables_##name##_Actual)(p1type, p2type, p3type) = nullptr; \
+    void Callables_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name) \
+    { \
+        uint32_t *vtableAddress = *(reinterpret_cast<uint32_t**>(self)); \
+        uint32_t *methodAddress = reinterpret_cast<uint32_t*>(*(vtableAddress + (uint32_t)g_CallablesOffset##name)); \
+        *((void **)(&Callables_##name##_Class::Callables_##name##_Actual)) = methodAddress; \
+        Callables_##name##_Class *selfAsHook = reinterpret_cast<Callables_##name##_Class *>(self); \
+        (selfAsHook->*Callables_##name##_Class::Callables_##name##_Actual)(p1name, p2name, p3name); \
     }
 
 #define JEZ_CALLABLES_MEMBER_OFFSET_DEF5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \

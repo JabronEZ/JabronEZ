@@ -29,6 +29,7 @@ class HudUtilities;
 class EntityUtilities;
 class DrawSpotsTimer;
 class TemporaryEntities;
+class GameEventsManager;
 
 class JabronEZ : public SDKExtension
 {
@@ -48,6 +49,7 @@ public:
     ConsoleManager *GetConsoleManager() const { return _consoleManager; }
     DrawSpotsTimer *GetDrawSpotsTimer() const { return _drawSpotsTimer; }
     TemporaryEntities *GetTemporaryEntities() const { return _temporaryEntities; }
+    GameEventsManager *GetGameEventsManager() const { return _gameEventsManager; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
@@ -58,6 +60,7 @@ private:
     EntityUtilities *_entityUtilities { nullptr };
     DrawSpotsTimer *_drawSpotsTimer { nullptr };
     TemporaryEntities *_temporaryEntities { nullptr };
+    GameEventsManager *_gameEventsManager { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

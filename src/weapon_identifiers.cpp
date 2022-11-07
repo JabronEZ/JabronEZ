@@ -125,6 +125,26 @@ GrenadeType GetNextGrenadeType(GrenadeType grenadeType)
     return GrenadeType_FLASH;
 }
 
+GrenadeType GetGrenadeTypeFromItemDefinitionIndex(ItemDefinitionIndex itemDefinitionIndex)
+{
+    switch (itemDefinitionIndex)
+    {
+        case ItemDefinitionIndex_DECOY:
+            return GrenadeType_DECOY;
+        case ItemDefinitionIndex_FLASH:
+            return GrenadeType_FLASH;
+        case ItemDefinitionIndex_MOLOTOV:
+            return GrenadeType_MOLOTOV;
+        case ItemDefinitionIndex_INCENDIARY:
+            return GrenadeType_INCENDIARY;
+        case ItemDefinitionIndex_SMOKE:
+            return GrenadeType_SMOKE;
+        case ItemDefinitionIndex_HEGRENADE:
+            return GrenadeType_HEGRENADE;
+    }
+
+    return GrenadeType_UNKNOWN;
+}
 
 const char *ChooseStringForGrenadeType(
         GrenadeType grenadeType,

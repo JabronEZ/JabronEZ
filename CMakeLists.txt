@@ -76,6 +76,16 @@ add_library(jabronez SHARED
         src/temporary_entity_creator.h
         src/recipient_filter.cpp
         src/recipient_filter.h
+        src/player_timer.cpp
+        src/player_timer.h
+        src/handle_playback_timer.cpp
+        src/handle_playback_timer.h
+        src/grenade_trigger_playback_timer.cpp
+        src/grenade_trigger_playback_timer.h
+        src/grenade_goto_next_spot_or_finish_timer.cpp
+        src/grenade_goto_next_spot_or_finish_timer.h
+        src/game_events_manager.cpp
+        src/game_events_manager.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}

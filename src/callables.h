@@ -68,4 +68,14 @@ JEZ_CALLABLES_MEMBER_SIG_DECL0_VOID(
         CS_RespawnPlayer,
         CBaseEntity);
 
+JEZ_CALLABLES_MEMBER_OFFSET_DECL3_VOID(
+        Teleport,
+        CBaseEntity,
+        const Vector *,
+        newPosition,
+        const QAngle *,
+        newAngles,
+        const Vector *,
+        newVelocity);
+
 #endif

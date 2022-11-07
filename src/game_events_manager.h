@@ -16,38 +16,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_PLAYER_MANAGER_H
-#define JABRONEZ_PLAYER_MANAGER_H
+#ifndef JABRONEZ_GAME_EVENTS_MANAGER_H
+#define JABRONEZ_GAME_EVENTS_MANAGER_H
 
 #include "smsdk_ext.h"
-#include <sh_vector.h>
+#include <igameevents.h>
 
-class Player;
+class ICvar;
+class ConCommandBase;
 
-class PlayerManager : IClientListener
+class GameEventsManager : public IGameEventListener2
 {
 public:
-    explicit PlayerManager(IPlayerManager *smPlayerManager, IGameHelpers *gameHelpers, ITimerSystem *timerSystem);
-    ~PlayerManager();
+    explicit GameEventsManager();
+    ~GameEventsManager() override;
 
-    void OnClientConnected(int clientIndex) override;
-    void OnClientDisconnecting(int clientIndex) override;
+    bool Init(ISmmAPI *ismm, char *error, size_t maxlength);
 
-    Player *GetPlayerByClientIndex(int clientIndex) const;
-    Player *GetPlayerByEdict(edict_t *edict) const;
-    Player *GetPlayerByUserId(int userId) const;
-    Player *GetPlayerByBaseEntity(CBaseEntity *entity) const;
+    void FireGameEvent(IGameEvent *event) override;
+    int	GetEventDebugID() override;
 
-    const SourceHook::CVector<Player *> &GetPlayers() const;
+    void SetGameHelpers(IGameHelpers *pHelpers) { _gameHelpers = gamehelpers; }
 
 private:
-    void CleanupPlayer(Player *player);
-
-private:
+    IGameEventManager2 *_gameEventsManager { nullptr };
     IGameHelpers *_gameHelpers { nullptr };
-    ITimerSystem *_timerSystem { nullptr };
-    IPlayerManager *_smPlayerManager { nullptr };
-    SourceHook::CVector<Player*> _players;
 };
 
 #endif

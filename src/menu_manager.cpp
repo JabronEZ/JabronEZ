@@ -47,17 +47,6 @@ void MenuManager::OnMenuSelect2(
         unsigned int item,
         unsigned int item_on_page)
 {
-//    if(p_Action == MenuAction_Cancel)
-//    {
-//        new s_Client = p_Param1;
-//
-//        new Handle:s_GrenadePlayer = GetGrenadePlayerByClient(s_Client);
-//
-//        if(!s_GrenadePlayer)
-//            return;
-//
-//        SetGrenadePlayerMenuOpen(s_GrenadePlayer, false);
-//    }
     Player *player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(client);
 
     if (player == nullptr)
@@ -112,11 +101,24 @@ void MenuManager::OnMenuSelect2(
 
 void MenuManager::OnMenuEnd(SourceMod::IBaseMenu *menu, SourceMod::MenuEndReason reason)
 {
+    //    if(p_Action == MenuAction_Cancel)
+    //    {
+    //        new s_Client = p_Param1;
+    //
+    //        new Handle:s_GrenadePlayer = GetGrenadePlayerByClient(s_Client);
+    //
+    //        if(!s_GrenadePlayer)
+    //            return;
+    //
+    //    }
+
     DestroyMenuSafely(menu);
 }
 
 void MenuManager::DestroyMenuSafely(SourceMod::IBaseMenu *menu)
 {
+    NotifyPlayerMenuDestroyed(menu);
+
     if (menu->GetHandle() == BAD_HANDLE)
     {
         return;
@@ -411,7 +413,8 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
     IBaseMenu *menu = style->CreateMenu(this, _extension->GetIdentity());
     _menus.push_back(menu);
 
-    player->SetGrenadeMenuOpen(true);
+    player->SetGrenadeMenu(menu);
+    player->SetGrenadeMenuPage(pageNumber);
 
     int clientIndex = player->GetClientIndex();
     int spotCount = (int) player->GetGrenadeSpots().size();
@@ -443,4 +446,23 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
         menu->Display(player->GetClientIndex(), MENU_TIME_FOREVER);
     else
         menu->DisplayAtItem(player->GetClientIndex(), MENU_TIME_FOREVER, 6 * (pageNumber - 1));
+}
+
+void MenuManager::NotifyPlayerMenuDestroyed(IBaseMenu *menu)
+{
+    // TODO: This is kind of not very good, to be honest. I think we should instead store the user's ID in the menu instance somehow.
+    auto playerManager = g_JabronEZ.GetPlayerManager();
+
+    if (playerManager == nullptr)
+        return;
+
+    auto players = playerManager->GetPlayers();
+
+    for (auto player : players)
+    {
+        if (player->GetGrenadeMenu() == menu)
+        {
+            player->SetGrenadeMenu(nullptr);
+        }
+    }
 }
