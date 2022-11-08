@@ -8,6 +8,20 @@ if (SMSDK STREQUAL "" OR HL2SDK STREQUAL "" OR MMSOURCE STREQUAL "")
     message("WARNING! You are missing one or more variables that are required (SMSDK, HL2SDK, MMSOURCE), make sure you pass them in when using CMAKE!")
 endif()
 
+# Although this might not be necessary, we want to match how AMBuild works as closely as possible, so clear out the default values that CMake provides.
+if (WIN32)
+    set(CMAKE_C_FLAGS "")
+    set(CMAKE_C_FLAGS_DEBUG "")
+    set(CMAKE_C_FLAGS_RELEASE "")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "")
+    set(CMAKE_C_FLAGS_MINSIZEREL "")
+    set(CMAKE_CXX_FLAGS "")
+    set(CMAKE_CXX_FLAGS_DEBUG "")
+    set(CMAKE_CXX_FLAGS_RELEASE "")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "")
+endif()
+
 if (SMSDK STREQUAL "")
     set(SMEXTCPP "")
     set(CDETOURCPP "")
@@ -105,13 +119,13 @@ add_library(jabronez SHARED
 
 if (WIN32)
     target_compile_definitions(jabronez PRIVATE
-            _CRT_SECURE_NO_DEPRECATE
-            _CRT_SECURE_NO_WARNINGS
-            _CRT_NONSTDC_NO_DEPRECATE
-            _ITERATOR_DEBUG_LEVEL=0
-            WIN32
-            _WINDOWS
-            SOURCEMOD_BUILD
+             _CRT_SECURE_NO_DEPRECATE
+             _CRT_SECURE_NO_WARNINGS
+             _CRT_NONSTDC_NO_DEPRECATE
+             _ITERATOR_DEBUG_LEVEL=0
+             WIN32
+             _WINDOWS
+             SOURCEMOD_BUILD
             SOURCE_ENGINE=12
             SE_EPISODEONE=1
             SE_DARKMESSIAH=2
@@ -131,18 +145,34 @@ if (WIN32)
             HAVE_STRING_H
             )
 
+    if (BUILD_TYPE_LOWERCASE STREQUAL "debug")
+        target_compile_definitions(jabronez PRIVATE
+                _DEBUG
+                DEBUG
+                )
+
+        target_compile_options(jabronez PRIVATE
+                /MTd
+                /Od
+                /RTC1
+                )
+
+        target_link_options(jabronez PRIVATE
+                /NODEFAULTLIB:libcmt
+                )
+    else()
+        target_compile_options(jabronez PRIVATE
+                /MT
+                )
+    endif()
+
     target_compile_options(jabronez PRIVATE
-            /MT
             /W3
             /Oy-
             /Z7
             $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
             $<$<COMPILE_LANGUAGE:CXX>:/GR->
             $<$<COMPILE_LANGUAGE:CXX>:/TP>
-            )
-
-    target_link_options(jabronez PRIVATE
-            /INCREMENTAL:NO
             )
 
     target_link_libraries(jabronez PRIVATE
