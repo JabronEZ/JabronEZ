@@ -32,7 +32,13 @@ endif()
 
 set(HL2PUB "${HL2SDK}/public")
 set(METAMOD "${MMSOURCE}/core")
-set(HL2LIB "${HL2SDK}/lib/linux")
+
+if (WIN32)
+    set(HL2LIB "${HL2SDK}/lib/public")
+else()
+    set(HL2LIB "${HL2SDK}/lib/linux")
+endif ()
+
 string(TOLOWER "${CMAKE_BUILD_TYPE}" BUILD_TYPE_LOWERCASE)
 
 project(jabronez)
@@ -97,89 +103,148 @@ add_library(jabronez SHARED
         ${LIBUDIS86C}
 )
 
-target_compile_definitions(jabronez PRIVATE
-        _LINUX
-        POSIX
-        stricmp=strcasecmp
-        _stricmp=strcasecmp
-        _strnicmp=strncasecmp
-        strnicmp=strncasecmp
-        _snprintf=snprintf
-        _vsnprintf=vsnprintf
-        _alloca=alloca
-        strcmpi=strcasecmp
-        COMPILER_GCC
-        SOURCE_ENGINE=12
-        SE_EPISODEONE=1
-        SE_DARKMESSIAH=2
-        SE_ORANGEBOX=3
-        SE_BLOODYGOODTIME=4
-        SE_EYE=5
-        SE_CSS=6
-        SE_ORANGEBOXVALVE=7
-        SE_LEFT4DEAD=8
-        SE_LEFT4DEAD2=9
-        SE_ALIENSWARM=10
-        SE_PORTAL2=11
-        SE_CSGO=12
-        SOURCEMOD_BUILD
-        HAVE_STDINT_H
-        HAVE_STRING_H
-)
-
-target_compile_options(jabronez PRIVATE
-        -fvisibility=hidden
-        $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>
-        $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
-        -Wall
-        -Werror
-        $<$<COMPILE_LANGUAGE:CXX>:-Wno-overloaded-virtual>
-        -Wno-switch
-        -Wno-unused
-        $<$<COMPILE_LANGUAGE:CXX>:-Wno-non-virtual-dtor>
-        $<$<COMPILE_LANGUAGE:CXX>:-Wno-delete-non-virtual-dtor>
-        -fno-exceptions
-        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-        -Wno-deprecated-register
-        -msse
-        -m32
-        -mfpmath=sse
-)
-
-target_link_options(jabronez PRIVATE
-        -shared
-        -static-libgcc
-        -m32
-)
-
-target_link_libraries(jabronez PRIVATE
-        stdc++
-        m
-        dl
-)
-
-if (BUILD_TYPE_LOWERCASE STREQUAL "debug")
+if (WIN32)
     target_compile_definitions(jabronez PRIVATE
-            _DEBUG
-            DEBUG
-    )
+            _CRT_SECURE_NO_DEPRECATE
+            _CRT_SECURE_NO_WARNINGS
+            _CRT_NONSTDC_NO_DEPRECATE
+            _ITERATOR_DEBUG_LEVEL=0
+            WIN32
+            _WINDOWS
+            SOURCEMOD_BUILD
+            SOURCE_ENGINE=12
+            SE_EPISODEONE=1
+            SE_DARKMESSIAH=2
+            SE_ORANGEBOX=3
+            SE_BLOODYGOODTIME=4
+            SE_EYE=5
+            SE_CSS=6
+            SE_ORANGEBOXVALVE=7
+            SE_LEFT4DEAD=8
+            SE_LEFT4DEAD2=9
+            SE_ALIENSWARM=10
+            SE_PORTAL2=11
+            SE_CSGO=12
+            COMPILER_MSVC
+            COMPILER_MSVC32
+            NETWORK_VARS_ENABLED
+            HAVE_STRING_H
+            )
 
     target_compile_options(jabronez PRIVATE
-            -g
-            -ggdb3
-    )
+            /MT
+            /W3
+            /Oy-
+            /Z7
+            $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+            $<$<COMPILE_LANGUAGE:CXX>:/GR->
+            $<$<COMPILE_LANGUAGE:CXX>:/TP>
+            )
+
+    target_link_options(jabronez PRIVATE
+            /INCREMENTAL:NO
+            )
+
+    target_link_libraries(jabronez PRIVATE
+            kernel32.lib
+            user32.lib
+            gdi32.lib
+            winspool.lib
+            comdlg32.lib
+            advapi32.lib
+            shell32.lib
+            ole32.lib
+            oleaut32.lib
+            uuid.lib
+            odbc32.lib
+            odbccp32.lib
+            legacy_stdio_definitions.lib
+            )
 else()
     target_compile_definitions(jabronez PRIVATE
-            NDEBUG
-    )
+            _LINUX
+            POSIX
+            stricmp=strcasecmp
+            _stricmp=strcasecmp
+            _strnicmp=strncasecmp
+            strnicmp=strncasecmp
+            _snprintf=snprintf
+            _vsnprintf=vsnprintf
+            _alloca=alloca
+            strcmpi=strcasecmp
+            COMPILER_GCC
+            SOURCE_ENGINE=12
+            SE_EPISODEONE=1
+            SE_DARKMESSIAH=2
+            SE_ORANGEBOX=3
+            SE_BLOODYGOODTIME=4
+            SE_EYE=5
+            SE_CSS=6
+            SE_ORANGEBOXVALVE=7
+            SE_LEFT4DEAD=8
+            SE_LEFT4DEAD2=9
+            SE_ALIENSWARM=10
+            SE_PORTAL2=11
+            SE_CSGO=12
+            SOURCEMOD_BUILD
+            HAVE_STDINT_H
+            HAVE_STRING_H
+            )
 
     target_compile_options(jabronez PRIVATE
-            -O3
-            -funroll-loops
-            -pipe
-            -fno-strict-aliasing
-    )
-endif()
+            -fvisibility=hidden
+            $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>
+            $<$<COMPILE_LANGUAGE:CXX>:-std=c++14>
+            -Wall
+            -Werror
+            $<$<COMPILE_LANGUAGE:CXX>:-Wno-overloaded-virtual>
+            -Wno-switch
+            -Wno-unused
+            $<$<COMPILE_LANGUAGE:CXX>:-Wno-non-virtual-dtor>
+            $<$<COMPILE_LANGUAGE:CXX>:-Wno-delete-non-virtual-dtor>
+            -fno-exceptions
+            $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+            -Wno-deprecated-register
+            -msse
+            -m32
+            -mfpmath=sse
+            )
+
+    target_link_options(jabronez PRIVATE
+            -shared
+            -static-libgcc
+            -m32
+            )
+
+    target_link_libraries(jabronez PRIVATE
+            stdc++
+            m
+            dl
+            )
+
+    if (BUILD_TYPE_LOWERCASE STREQUAL "debug")
+        target_compile_definitions(jabronez PRIVATE
+                _DEBUG
+                DEBUG
+                )
+
+        target_compile_options(jabronez PRIVATE
+                -g
+                -ggdb3
+                )
+    else()
+        target_compile_definitions(jabronez PRIVATE
+                NDEBUG
+                )
+
+        target_compile_options(jabronez PRIVATE
+                -O3
+                -funroll-loops
+                -pipe
+                -fno-strict-aliasing
+                )
+    endif()
+endif ()
 
 target_include_directories(jabronez PRIVATE
 	src
@@ -201,14 +266,29 @@ target_include_directories(jabronez PRIVATE
         ${SMSDK}/sourcepawn/include
 )
 
-target_link_libraries(jabronez PRIVATE
-        ${HL2LIB}/tier1_i486.a
-        ${HL2LIB}/mathlib_i486.a
-        ${HL2LIB}/interfaces_i486.a
-        ${HL2LIB}/libvstdlib.so
-        ${HL2LIB}/libtier0.so
-        )
+if (WIN32)
+    target_link_libraries(jabronez PRIVATE
+            ${HL2LIB}/tier0.lib
+            ${HL2LIB}/tier1.lib
+            ${HL2LIB}/vstdlib.lib
+            ${HL2LIB}/mathlib.lib
+            ${HL2LIB}/interfaces.lib
+            )
+else()
+    target_link_libraries(jabronez PRIVATE
+            ${HL2LIB}/tier1_i486.a
+            ${HL2LIB}/mathlib_i486.a
+            ${HL2LIB}/interfaces_i486.a
+            ${HL2LIB}/libvstdlib.so
+            ${HL2LIB}/libtier0.so
+            )
+endif()
 
 set_target_properties(jabronez PROPERTIES PREFIX "")
 set_target_properties(jabronez PROPERTIES OUTPUT_NAME "jabronez.ext")
-set_target_properties(jabronez PROPERTIES SUFFIX ".so")
+
+if (WIN32)
+    set_target_properties(jabronez PROPERTIES SUFFIX ".dll")
+else()
+    set_target_properties(jabronez PROPERTIES SUFFIX ".so")
+endif ()
