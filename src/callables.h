@@ -68,7 +68,7 @@ JEZ_CALLABLES_MEMBER_SIG_DECL0_VOID(
         CS_RespawnPlayer,
         CBaseEntity);
 
-JEZ_CALLABLES_MEMBER_OFFSET_DECL3_VOID(
+JEZ_CALLABLES_MEMBER_OFFSET_DECL4_VOID(
         Teleport,
         CBaseEntity,
         const Vector *,
@@ -76,6 +76,8 @@ JEZ_CALLABLES_MEMBER_OFFSET_DECL3_VOID(
         const QAngle *,
         newAngles,
         const Vector *,
-        newVelocity);
+        newVelocity,
+        bool,
+        useSlowHighAccuracyContacts);
 
 #endif

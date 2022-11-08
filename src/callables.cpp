@@ -55,7 +55,7 @@ JEZ_CALLABLES_MEMBER_SIG_DEF0_VOID(
         CS_RespawnPlayer,
         CBaseEntity);
 
-JEZ_CALLABLES_MEMBER_OFFSET_DEF3_VOID(
+JEZ_CALLABLES_MEMBER_OFFSET_DEF4_VOID(
         Teleport,
         CBaseEntity,
         const Vector *,
@@ -63,7 +63,9 @@ JEZ_CALLABLES_MEMBER_OFFSET_DEF3_VOID(
         const QAngle *,
         newAngles,
         const Vector *,
-        newVelocity);
+        newVelocity,
+        bool,
+        useSlowHighAccuracyContacts);
 
 bool Callables_Init(
         IGameConfig *gameConfig,

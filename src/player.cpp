@@ -631,7 +631,7 @@ void Player::FinishGrenadeTesterPlayback(bool restorePosition)
     auto eyeAngles = throwerSpot.GetEyeAngles();
     auto velocity = Vector(0.0f, 0.0f, 0.0f);
 
-    Callables_Call_Teleport(playerEntity, &origin, &eyeAngles, &velocity);
+    Callables_Call_Teleport(playerEntity, &origin, &eyeAngles, &velocity, true);
 }
 
 void Player::StartGrenadeTesterPlayback()
@@ -680,7 +680,7 @@ void Player::HandleGrenadeTesterPlayback()
     auto spotOrigin = spot.GetOrigin();
     auto spotAngles = spot.GetEyeAngles();
     auto spotVelocity = Vector(0.0f, 0.0f, 0.0f);
-    Callables_Call_Teleport(playerEntity, &spotOrigin, &spotAngles, &spotVelocity);
+    Callables_Call_Teleport(playerEntity, &spotOrigin, &spotAngles, &spotVelocity, true);
 
     auto existingTimer = GetGrenadeHandlePlaybackTimer();
 
