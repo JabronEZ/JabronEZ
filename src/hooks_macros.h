@@ -93,7 +93,6 @@
         snprintf(error, maxlength, "Unable to hook %s", #name); \
         return false; \
     } \
-    META_CONPRINTF("Hooked %p to %p for %s\n", Hook_Original_##originalName, Hook_Callback_##callbackName, #name); \
     g_Detour##name->EnableDetour()
 
 #define JEZ_HOOK_MEMBER_CREATE(name, functionName) \

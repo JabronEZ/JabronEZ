@@ -22,6 +22,11 @@
 #include "player_manager.h"
 #include "player.h"
 #include "weapon_identifiers.h"
+#include "smsdk_ext.h"
+#include "entity_utilities.h"
+
+SH_DECL_MANUALHOOK0_void(CMolotovProjectileDetonate, 0, 0, 0);
+int g_MolotovProjectileDetonateHookId = 0;
 
 void TriggerOnProjectileCreated(
         void *playerEntity,
@@ -35,6 +40,35 @@ void TriggerOnProjectileCreated(
 
     if (player != nullptr)
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
+}
+
+void Hook_Callback_CMolotovProjectileDetonate()
+{
+    auto projectileEntity = META_IFACEPTR(CBaseEntity);
+    auto isIncendiary = g_JabronEZ.GetEntityUtilities()->IsIncendiaryGrenade(projectileEntity);
+    auto throwerEntity = g_JabronEZ.GetEntityUtilities()->GetProjectileThrower(projectileEntity);
+
+    if (throwerEntity != nullptr)
+    {
+        auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(throwerEntity);
+
+        if (player != nullptr)
+            player->OnGrenadeDetonationEvent(isIncendiary ? GrenadeType_INCENDIARY : GrenadeType_MOLOTOV, gamehelpers->EntityToReference(projectileEntity));
+    }
+
+    RETURN_META(MRES_IGNORED);
+}
+
+void MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile)
+{
+    if (molotovProjectile == nullptr)
+        return;
+
+    if (g_MolotovProjectileDetonateHookId == 0)
+    {
+        void *molotovVtable = *(void**)molotovProjectile;
+        g_MolotovProjectileDetonateHookId = SH_ADD_MANUALDVPHOOK(CMolotovProjectileDetonate, molotovVtable, SH_STATIC(Hook_Callback_CMolotovProjectileDetonate), false);
+    }
 }
 
 #ifdef _WIN32
@@ -157,6 +191,8 @@ CBaseEntity* Hook_Callback_FullStackProjectileCreate(
     auto grenadeType = GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex);
     TriggerOnProjectileCreated(player, originLocal, angleLocal, velocity, angularImpulse, grenadeItemDefinitionIndex);
 
+    CBaseEntity *molotovProjectile;
+
     switch (grenadeType)
     {
         case GrenadeType_FLASH:
@@ -169,7 +205,9 @@ CBaseEntity* Hook_Callback_FullStackProjectileCreate(
             return Hook_Call_HEGrenadeProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
         case GrenadeType_MOLOTOV:
         case GrenadeType_INCENDIARY:
-            return Hook_Call_MolotovProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+            molotovProjectile = Hook_Call_MolotovProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+            MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
+            return molotovProjectile;
         default:
             return nullptr;
     }
@@ -257,7 +295,11 @@ JEZ_HOOK_STATIC_DEF6(
         grenadeItemDefinitionIndex)
 {
     TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
-    return Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+    auto molotovProjectile = Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+
+    MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
+
+    return molotovProjectile;
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -311,6 +353,15 @@ bool Hooks_Init(
 {
     CDetourManager::Init(sourcePawnEngine, gameConfig);
 
+    int molotovProjectileDetonate;
+    if (!gameConfig->GetOffset("CMolotovProjectileDetonate", &molotovProjectileDetonate))
+    {
+        snprintf(error, maxlength, "Unable to find offset for %s\n", "CMolotovProjectileDetonate");
+        return false;
+    }
+
+    SH_MANUALHOOK_RECONFIGURE(CMolotovProjectileDetonate, molotovProjectileDetonate, 0, 0);
+
 #ifdef _WIN32
     JEZ_HOOK_STATIC_CREATE_EX(SmokeProjectileCreate, ProjectileCreate, SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
     JEZ_HOOK_STATIC_CREATE_EX(FlashbangProjectileCreate, ProjectileCreate, FlashbangProjectileCreate, "CFlashbangProjectileCreate");
@@ -335,4 +386,10 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(MolotovProjectileCreate);
     JEZ_HOOK_CLEANUP(DecoyProjectileCreate);
     JEZ_HOOK_CLEANUP(HEGrenadeProjectileCreate);
+
+    if (g_MolotovProjectileDetonateHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(g_MolotovProjectileDetonateHookId);
+        g_MolotovProjectileDetonateHookId = 0;
+    }
 }

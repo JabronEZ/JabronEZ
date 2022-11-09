@@ -510,7 +510,7 @@ CBaseEntity *Player::FindWeapon(const char *entityName) const
         if (baseHandle == nullptr)
             continue;
 
-        CBaseEntity *handleEntity = _gameHelpers->ReferenceToEntity(baseHandle->GetEntryIndex());
+        CBaseEntity *handleEntity = g_JabronEZ.GetEntityUtilities()->GetEntityFromHandle(baseHandle);
 
         if (handleEntity == nullptr)
             continue;

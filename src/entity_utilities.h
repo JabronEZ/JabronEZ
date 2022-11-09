@@ -30,7 +30,10 @@ public:
             IPlayerManager *smPlayerManager);
     ~EntityUtilities();
 
-    CBaseEntity *GetEntityByIndex(int entityIndex, bool isPlayer);
+    CBaseEntity *GetEntityByIndex(int entityIndex, bool isPlayer) const;
+    bool IsIncendiaryGrenade(CBaseEntity *entity) const;
+    CBaseEntity *GetProjectileThrower(CBaseEntity *entity) const;
+    CBaseEntity *GetEntityFromHandle(CBaseHandle *handle) const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

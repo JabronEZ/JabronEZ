@@ -6,6 +6,15 @@
 
 	"csgo"
 	{
+	    "Offsets"
+	    {
+	        "CMolotovProjectileDetonate"
+	        {
+	            "windows"   "238"
+	            "linux"     "239"
+	        }
+	    }
+
 		"Signatures"
 		{
 			"CSmokeGrenadeProjectileCreate"

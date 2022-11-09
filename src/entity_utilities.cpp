@@ -32,7 +32,67 @@ EntityUtilities::~EntityUtilities()
     _gameHelpers = nullptr;
 }
 
-CBaseEntity *EntityUtilities::GetEntityByIndex(int entityIndex, bool isPlayer)
+bool EntityUtilities::IsIncendiaryGrenade(CBaseEntity *entity) const
+{
+    if (entity == nullptr)
+        return false;
+
+    sm_sendprop_info_t sendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CMolotovProjectile", "m_bIsIncGrenade", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return false;
+
+    uint8_t isIncendiary = *((uint8_t *)entity + sendpropInfo.actual_offset);
+    return isIncendiary != 0;
+}
+
+CBaseEntity *EntityUtilities::GetEntityFromHandle(CBaseHandle *handle) const
+{
+    return _gameHelpers->ReferenceToEntity(handle->GetEntryIndex());
+}
+
+CBaseEntity *EntityUtilities::GetProjectileThrower(CBaseEntity *entity) const
+{
+    if (entity == nullptr)
+        return nullptr;
+
+    sm_sendprop_info_t throwerSendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CBaseCSGrenadeProjectile", "m_hThrower", &throwerSendpropInfo);
+
+    sm_sendprop_info_t ownerSendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &ownerSendpropInfo);
+
+    if (throwerSendpropInfo.prop != nullptr)
+    {
+        auto *throwerHandle = (CBaseHandle *)((uint8_t *)entity + throwerSendpropInfo.actual_offset);
+
+        if (throwerHandle != nullptr)
+        {
+            auto throwerEntity = GetEntityFromHandle(throwerHandle);
+
+            if (throwerEntity != nullptr)
+                return throwerEntity;
+        }
+    }
+
+    if (ownerSendpropInfo.prop != nullptr)
+    {
+        auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + ownerSendpropInfo.actual_offset);
+
+        if (ownerHandle != nullptr)
+        {
+            auto ownerEntity = GetEntityFromHandle(ownerHandle);
+
+            if (ownerEntity != nullptr)
+                return ownerEntity;
+        }
+    }
+
+    return nullptr;
+}
+
+CBaseEntity *EntityUtilities::GetEntityByIndex(int entityIndex, bool isPlayer) const
 {
     edict_t *edict = _gameHelpers->EdictOfIndex(entityIndex);
 
