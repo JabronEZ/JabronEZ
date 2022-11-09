@@ -65,20 +65,35 @@
     extern CDetour *g_Detour##name; \
     typedef ret (callConv *name##Function)(p1type, p2type, p3type, p4type, p5type, p6type); \
     ret callConv Hook_Callback_##name(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name, p6type p6name); \
-    extern name##Function Hook_Call_##name;
+    extern name##Function Hook_Original_##name; \
+    extern ret Hook_Call_##name(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name, p6type p6name);
 
 #define JEZ_HOOK_STATIC_DEF6(name, ret, callConv, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name, p6type, p6name) \
     CDetour *g_Detour##name = nullptr; \
-    name##Function Hook_Call_##name = nullptr; \
+    name##Function Hook_Original_##name = nullptr; \
+    ret Hook_Call_##name(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name, p6type p6name) \
+    { \
+        return Hook_Original_##name(p1name, p2name, p3name, p4name, p5name, p6name); \
+    } \
     ret callConv Hook_Callback_##name(p1type p1name, p2type p2name, p3type p3name, p4type p4name, p5type p5name, p6type p6name)
 
 #define JEZ_HOOK_STATIC_CREATE(name, functionName) \
-    g_Detour##name = CDetourManager::CreateDetour((void *)&Hook_Callback_##name, (void **)&Hook_Call_##name, functionName); \
+    g_Detour##name = CDetourManager::CreateDetour((void *)&Hook_Callback_##name, (void **)&Hook_Original_##name, functionName); \
     if (g_Detour##name == nullptr) \
     { \
         snprintf(error, maxlength, "Unable to hook %s", #name); \
         return false; \
     } \
+    g_Detour##name->EnableDetour()
+
+#define JEZ_HOOK_STATIC_CREATE_EX(name, callbackName, originalName, functionName) \
+    g_Detour##name = CDetourManager::CreateDetour((void *)&Hook_Callback_##callbackName, (void **)&Hook_Original_##originalName, functionName); \
+    if (g_Detour##name == nullptr) \
+    { \
+        snprintf(error, maxlength, "Unable to hook %s", #name); \
+        return false; \
+    } \
+    META_CONPRINTF("Hooked %p to %p for %s\n", Hook_Original_##originalName, Hook_Callback_##callbackName, #name); \
     g_Detour##name->EnableDetour()
 
 #define JEZ_HOOK_MEMBER_CREATE(name, functionName) \

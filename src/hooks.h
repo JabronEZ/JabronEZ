@@ -36,6 +36,28 @@ bool Hooks_Init(
 
 void Hooks_Cleanup();
 
+#ifdef _WIN32
+extern CDetour *g_DetourSmokeProjectileCreate;
+extern CDetour *g_DetourFlashbangProjectileCreate;
+extern CDetour *g_DetourMolotovProjectileCreate;
+extern CDetour *g_DetourDecoyProjectileCreate;
+extern CDetour *g_DetourHEGrenadeProjectileCreate;
+
+extern void *Hook_Original_SmokeProjectileCreate;
+extern void *Hook_Original_FlashbangProjectileCreate;
+extern void *Hook_Original_MolotovProjectileCreate;
+extern void *Hook_Original_DecoyProjectileCreate;
+extern void *Hook_Original_HEGrenadeProjectileCreate;
+
+CBaseEntity *Hook_Call_SmokeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_FlashbangProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_MolotovProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_DecoyProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_HEGrenadeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+
+CBaseEntity* __cdecl Hook_Callback_ProjectileCreate(const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity* Hook_Call_Internal_ProjectileCreate(void *originalAddress, const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+#else
 JEZ_HOOK_STATIC_DECL6(
         SmokeProjectileCreate,
         CBaseEntity*,
@@ -51,7 +73,7 @@ JEZ_HOOK_STATIC_DECL6(
         void*,
         player,
         int,
-        grenadeType);
+        grenadeItemDefinitionIndex);
 
 JEZ_HOOK_STATIC_DECL6(
         FlashbangProjectileCreate,
@@ -68,7 +90,7 @@ JEZ_HOOK_STATIC_DECL6(
         void*,
         player,
         int,
-        grenadeType);
+        grenadeItemDefinitionIndex);
 
 JEZ_HOOK_STATIC_DECL6(
         MolotovProjectileCreate,
@@ -85,7 +107,7 @@ JEZ_HOOK_STATIC_DECL6(
         void*,
         player,
         int,
-        grenadeType);
+        grenadeItemDefinitionIndex);
 
 JEZ_HOOK_STATIC_DECL6(
         DecoyProjectileCreate,
@@ -102,7 +124,7 @@ JEZ_HOOK_STATIC_DECL6(
         void*,
         player,
         int,
-        grenadeType);
+        grenadeItemDefinitionIndex);
 
 JEZ_HOOK_STATIC_DECL6(
         HEGrenadeProjectileCreate,
@@ -119,6 +141,7 @@ JEZ_HOOK_STATIC_DECL6(
         void*,
         player,
         int,
-        grenadeType);
+        grenadeItemDefinitionIndex);
+#endif
 
 #endif

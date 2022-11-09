@@ -37,6 +37,166 @@ void TriggerOnProjectileCreated(
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
 }
 
+#ifdef _WIN32
+CDetour *g_DetourSmokeProjectileCreate = nullptr;
+CDetour *g_DetourFlashbangProjectileCreate = nullptr;
+CDetour *g_DetourMolotovProjectileCreate = nullptr;
+CDetour *g_DetourDecoyProjectileCreate = nullptr;
+CDetour *g_DetourHEGrenadeProjectileCreate = nullptr;
+
+void *Hook_Original_SmokeProjectileCreate = nullptr;
+void *Hook_Original_FlashbangProjectileCreate = nullptr;
+void *Hook_Original_MolotovProjectileCreate = nullptr;
+void *Hook_Original_DecoyProjectileCreate = nullptr;
+void *Hook_Original_HEGrenadeProjectileCreate = nullptr;
+
+CBaseEntity *Hook_Call_SmokeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    return Hook_Call_Internal_ProjectileCreate(
+            Hook_Original_SmokeProjectileCreate,
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+CBaseEntity *Hook_Call_FlashbangProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    return Hook_Call_Internal_ProjectileCreate(
+            Hook_Original_FlashbangProjectileCreate,
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+CBaseEntity *Hook_Call_MolotovProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    return Hook_Call_Internal_ProjectileCreate(
+            Hook_Original_MolotovProjectileCreate,
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+CBaseEntity *Hook_Call_DecoyProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    return Hook_Call_Internal_ProjectileCreate(
+            Hook_Original_DecoyProjectileCreate,
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+CBaseEntity *Hook_Call_HEGrenadeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    return Hook_Call_Internal_ProjectileCreate(
+            Hook_Original_HEGrenadeProjectileCreate,
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+CBaseEntity* Hook_Call_Internal_ProjectileCreate(
+        void *originalAddress,
+        const Vector &origin,
+        const QAngle &angle,
+        const Vector &velocity,
+        const Vector &angularImpulse,
+        void* player,
+        int grenadeItemDefinitionIndex)
+{
+    static void *oldECX = nullptr;
+    static void *oldEDX = nullptr;
+    static void *returnValue = nullptr;
+
+    __asm
+    {
+        mov oldECX, ecx;
+        mov oldEDX, edx;
+        mov ecx, origin;
+        mov edx, angle;
+        push grenadeItemDefinitionIndex;
+        push player;
+        push angularImpulse;
+        push velocity;
+        call originalAddress;
+        mov returnValue, eax;
+        add esp, 16
+        mov ecx, oldECX;
+        mov edx, oldEDX;
+    }
+
+    return reinterpret_cast<CBaseEntity*>(returnValue);
+}
+
+CBaseEntity* Hook_Callback_FullStackProjectileCreate(
+        Vector *origin,
+        QAngle *angle,
+        const Vector &velocity,
+        const Vector &angularImpulse,
+        void* player,
+        int grenadeItemDefinitionIndex)
+{
+    Vector originLocal = Vector(origin->x, origin->y, origin->z);
+    QAngle angleLocal = QAngle(angle->x, angle->y, angle->z);
+
+    auto grenadeType = GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex);
+    TriggerOnProjectileCreated(player, originLocal, angleLocal, velocity, angularImpulse, grenadeItemDefinitionIndex);
+
+    switch (grenadeType)
+    {
+        case GrenadeType_FLASH:
+            return Hook_Call_FlashbangProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+        case GrenadeType_SMOKE:
+            return Hook_Call_SmokeProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+        case GrenadeType_DECOY:
+            return Hook_Call_DecoyProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+        case GrenadeType_HEGRENADE:
+            return Hook_Call_HEGrenadeProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+        case GrenadeType_MOLOTOV:
+        case GrenadeType_INCENDIARY:
+            return Hook_Call_MolotovProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
+        default:
+            return nullptr;
+    }
+}
+
+CBaseEntity* __cdecl Hook_Callback_ProjectileCreate(const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex)
+{
+    // Do not attempt to combine this and the function above, for MSVC will be rude and attempt to mess with ECX and EDX.
+    static Vector *origin;
+    static QAngle *angle;
+
+    __asm
+    {
+        mov origin, ecx;
+        mov angle, edx;
+    }
+
+    return Hook_Callback_FullStackProjectileCreate(
+            origin,
+            angle,
+            velocity,
+            angularImpulse,
+            player,
+            grenadeItemDefinitionIndex);
+}
+
+#else
 JEZ_HOOK_STATIC_DEF6(
         SmokeProjectileCreate,
         CBaseEntity*,
@@ -52,10 +212,10 @@ JEZ_HOOK_STATIC_DEF6(
         void*,
         playerEntity,
         int,
-        grenadeType)
+        grenadeItemDefinitionIndex)
 {
-    TriggerOnProjectileCreated(playerEntity, origin, angle, velocity, angularImpulse, grenadeType);
-    return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, playerEntity, grenadeType);
+    TriggerOnProjectileCreated(playerEntity, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
+    return Hook_Call_SmokeProjectileCreate(origin, angle, velocity, angularImpulse, playerEntity, grenadeItemDefinitionIndex);
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -73,10 +233,10 @@ JEZ_HOOK_STATIC_DEF6(
         void*,
         player,
         int,
-        grenadeType)
+        grenadeItemDefinitionIndex)
 {
-    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
-    return Hook_Call_FlashbangProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
+    return Hook_Call_FlashbangProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -94,10 +254,10 @@ JEZ_HOOK_STATIC_DEF6(
         void*,
         player,
         int,
-        grenadeType)
+        grenadeItemDefinitionIndex)
 {
-    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
-    return Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
+    return Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -115,10 +275,10 @@ JEZ_HOOK_STATIC_DEF6(
         void*,
         player,
         int,
-        grenadeType)
+        grenadeItemDefinitionIndex)
 {
-    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
-    return Hook_Call_DecoyProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
+    return Hook_Call_DecoyProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
 }
 
 JEZ_HOOK_STATIC_DEF6(
@@ -136,11 +296,12 @@ JEZ_HOOK_STATIC_DEF6(
         void*,
         player,
         int,
-        grenadeType)
+        grenadeItemDefinitionIndex)
 {
-    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeType);
-    return Hook_Call_HEGrenadeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeType);
+    TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
+    return Hook_Call_HEGrenadeProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
 }
+#endif
 
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
@@ -150,11 +311,19 @@ bool Hooks_Init(
 {
     CDetourManager::Init(sourcePawnEngine, gameConfig);
 
+#ifdef _WIN32
+    JEZ_HOOK_STATIC_CREATE_EX(SmokeProjectileCreate, ProjectileCreate, SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
+    JEZ_HOOK_STATIC_CREATE_EX(FlashbangProjectileCreate, ProjectileCreate, FlashbangProjectileCreate, "CFlashbangProjectileCreate");
+    JEZ_HOOK_STATIC_CREATE_EX(MolotovProjectileCreate, ProjectileCreate, MolotovProjectileCreate, "CMolotovProjectileCreate");
+    JEZ_HOOK_STATIC_CREATE_EX(DecoyProjectileCreate, ProjectileCreate, DecoyProjectileCreate, "CDecoyProjectileCreate");
+    JEZ_HOOK_STATIC_CREATE_EX(HEGrenadeProjectileCreate, ProjectileCreate, HEGrenadeProjectileCreate,"CHEGrenadeProjectileCreate");
+#else
     JEZ_HOOK_STATIC_CREATE(SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(FlashbangProjectileCreate, "CFlashbangProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(MolotovProjectileCreate, "CMolotovProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(DecoyProjectileCreate, "CDecoyProjectileCreate");
     JEZ_HOOK_STATIC_CREATE(HEGrenadeProjectileCreate, "CHEGrenadeProjectileCreate");
+#endif
 
     return true;
 }
