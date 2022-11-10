@@ -126,7 +126,7 @@ public:
     void DoToggleNoClip();
     void GotoNextSpotOrFinishPlayback();
 
-    int OnCanAcquire(void *econView, int type, void *item);
+    int OnCanAcquire(void *econView, int type, int originalResult);
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

@@ -681,20 +681,17 @@ void Player::GotoNextSpotOrFinishPlayback()
     }
 }
 
-int Player::OnCanAcquire(void *econItemView, int type, void *item)
+int Player::OnCanAcquire(void *econItemView, int type, int originalResult)
 {
     void *weaponData = Callables_Call_CEconItemViewGetCCSWeaponData(econItemView);
 
-    if (weaponData == nullptr)
-    {
-        META_CONPRINTF("No weapon data :(\n");
-        return -1;
-    }
+    if (weaponData == nullptr || originalResult != 2)
+        return originalResult;
 
-    auto className = *(const char**)((uint8_t*)weaponData + 4);
+    auto className = *(const char**)((uint8_t*)weaponData + Callables_Offset_CCSWeaponDataClassName);
 
     if (strcmp(className, "weapon_molotov") == 0 || strcmp(className, "weapon_incgrenade") == 0)
         return 0;
 
-    return -1;
+    return originalResult;
 }

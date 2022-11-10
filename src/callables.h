@@ -85,4 +85,6 @@ JEZ_CALLABLES_MEMBER_SIG_DECL0(
         void,
         void*);
 
+extern int Callables_Offset_CCSWeaponDataClassName;
+
 #endif

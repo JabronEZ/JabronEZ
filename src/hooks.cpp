@@ -387,21 +387,17 @@ JEZ_HOOK_MEMBER_DEF3(
         int,
         acquireType,
         void *,
-        item)
+        unk)
 {
     auto self = reinterpret_cast<CBaseEntity*>(this);
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
+    auto originalResult = Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, unk);
 
     if (player == nullptr)
-        return Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, item);
+        return originalResult;
 
-    auto result = player->OnCanAcquire(econItemView, acquireType, item);
-
-    if (result == -1)
-        return Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, item);
-
-    return result;
+    return player->OnCanAcquire(econItemView, acquireType, originalResult);
 }
 
 bool Hooks_Init(
