@@ -62,17 +62,8 @@ public:
     bool GetGrenadeAwaitingDetonation() const { return _grenadeAwaitingDetonation; }
     void SetGrenadeAwaitingDetonation(bool grenadeAwaitingDetonation) { _grenadeAwaitingDetonation = grenadeAwaitingDetonation; }
 
-    Vector GetGrenadeProjectileOrigin() const { return _grenadeProjectileOrigin; }
-    void SetGrenadeProjectileOrigin(Vector grenadeProjectileOrigin) { _grenadeProjectileOrigin = grenadeProjectileOrigin; }
-
-    QAngle GetGrenadeProjectileAngle() const { return _grenadeProjectileAngle; }
-    void SetGrenadeProjectileAngle(QAngle grenadeProjectileAngle) { _grenadeProjectileAngle = grenadeProjectileAngle; }
-
-    Vector GetGrenadeProjectileVelocity() const { return _grenadeProjectileVelocity; }
-    void SetGrenadeProjectileVelocity(Vector grenadeProjectileVelocity) { _grenadeProjectileVelocity = grenadeProjectileVelocity; }
-
-    Vector GetGrenadeProjectileAngularImpulse() const { return _grenadeProjectileAngularImpulse; }
-    void SetGrenadeProjectileAngularImpulse(Vector grenadeProjectileAngularImpulse) { _grenadeProjectileAngularImpulse = grenadeProjectileAngularImpulse; }
+    ProjectileParameters GetProjectileParameters() const { return _projectileParameters; }
+    void SetProjectileParameters(const ProjectileParameters& projectileParameters) { _projectileParameters = projectileParameters; }
 
     size_t GetGrenadeCurrentSpotIndex() const { return _grenadeCurrentSpotIndex; }
     void SetGrenadeCurrentSpotIndex(size_t grenadeCurrentSpotIndex) { _grenadeCurrentSpotIndex = grenadeCurrentSpotIndex; }
@@ -155,10 +146,7 @@ private:
     bool _grenadePlaybackStarted { false };
     bool _grenadePlaybackStarting { false };
     bool _grenadeAwaitingDetonation { false };
-    Vector _grenadeProjectileOrigin;
-    QAngle _grenadeProjectileAngle;
-    Vector _grenadeProjectileVelocity;
-    Vector _grenadeProjectileAngularImpulse;
+    ProjectileParameters _projectileParameters { Vector(0.0f, 0.0f, 0.0f), QAngle(0.0f, 0.0f, 0.0f), Vector(0.0f, 0.0f, 0.0f), Vector(0.0f, 0.0f, 0.0f) };
     size_t _grenadeCurrentSpotIndex { 0 };
     GrenadeType _grenadeType { GrenadeType_FLASH };
     Spot _grenadeThrowerSpot;

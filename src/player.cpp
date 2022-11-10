@@ -580,11 +580,7 @@ void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, cons
     SetGrenadeAwaitingDetonation(true);
     RefreshGrenadesMenu();
 
-    SetGrenadeProjectileOrigin(origin);
-    SetGrenadeProjectileAngle(angle);
-    SetGrenadeProjectileVelocity(velocity);
-    SetGrenadeProjectileAngularImpulse(angularImpulse);
-
+    SetProjectileParameters(ProjectileParameters(origin, angle, velocity, angularImpulse));
     SetGrenadeThrowerSpot(Spot(GetAbsOrigin(), GetEyeAngles()));
 }
 

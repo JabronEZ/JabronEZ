@@ -71,10 +71,12 @@ void HandlePlaybackTimer::OnPlayerTimer()
     auto grenadeType = player->GetGrenadeType();
 
     // TODO: We should probably make a structure out of these.
-    auto projectileOrigin = player->GetGrenadeProjectileOrigin();
-    auto projectileAngle = player->GetGrenadeProjectileAngle();
-    auto projectileVelocity = player->GetGrenadeProjectileVelocity();
-    auto projectileAngularImpulse = player->GetGrenadeProjectileAngularImpulse();
+    ProjectileParameters projectileParameters = player->GetProjectileParameters();
+
+    auto projectileOrigin = projectileParameters.GetOrigin();
+    auto projectileAngle = projectileParameters.GetAngle();
+    auto projectileVelocity = projectileParameters.GetVelocity();
+    auto projectileAngularImpulse = projectileParameters.GetAngularImpulse();
 
     auto grenadeEntity = ThrowGrenade(grenadeType, player, projectileOrigin, projectileAngle, projectileVelocity, projectileAngularImpulse);
 
