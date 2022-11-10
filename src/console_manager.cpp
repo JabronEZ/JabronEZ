@@ -85,6 +85,7 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
     {
         player->GiveNamedItem("weapon_flashbang");
         player->GiveNamedItem("weapon_molotov");
+        player->GiveNamedItem("weapon_incgrenade");
         player->GiveNamedItem("weapon_decoy");
         player->GiveNamedItem("weapon_smokegrenade");
         player->GiveNamedItem("weapon_hegrenade");
