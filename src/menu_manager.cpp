@@ -79,22 +79,6 @@ void MenuManager::OnMenuSelect2(
          player->DoToggleGodMode();
      else if (strcmp(itemKey, "noclip") == 0)
          player->DoToggleNoClip();
-     else if (strcmp(itemKey, "player_mode") == 0)
-         player->DoTogglePlayerMode();
-     else if (strcmp(itemKey, "flash_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_FLASH);
-     else if (strcmp(itemKey, "smoke_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_SMOKE);
-     else if (strcmp(itemKey, "hegrenade_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_HEGRENADE);
-     else if (strcmp(itemKey, "decoy_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_DECOY);
-     else if (strcmp(itemKey, "molotov_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_MOLOTOV);
-     else if (strcmp(itemKey, "incendiary_mode") == 0)
-         player->DoToggleProjectileMode(GrenadeType_INCENDIARY);
-     else if (strcmp(itemKey, "grenade_type") == 0)
-         player->DoToggleGrenadeType();
 
     OpenMenu(player, pageNumber);
 }
@@ -264,32 +248,6 @@ void AppendFastForwardMenuItem(
                                                      : ITEMDRAW_DISABLED));
 }
 
-void AppendGrenadeTypeMenuItem(
-        IBaseMenu *menu,
-        int clientIndex,
-        Player *player)
-{
-    char grenadeTypeMenuItem[512];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            grenadeTypeMenuItem,
-            sizeof(grenadeTypeMenuItem),
-            "%T",
-            3,
-            nullptr,
-            "Grenades menu type",
-            &clientIndex,
-            g_JabronEZ.GetTranslations()->GetGrenadeTranslationPhrase(player->GetGrenadeType()));
-
-    menu->AppendItem("grenade_type", ItemDrawInfo(
-                                             grenadeTypeMenuItem,
-                                             player->GetGrenadePlaybackStarted()
-                                                             || player->GetGrenadePlaybackStarting()
-                                                             || player->GetGrenadeAwaitingDetonation()
-                                                     ? ITEMDRAW_DISABLED
-                                                     : ITEMDRAW_DEFAULT));
-}
-
 void AppendSwitchToGrenadeMenuItem(
         IBaseMenu *menu,
         int clientIndex,
@@ -361,52 +319,6 @@ void AppendNoClipMenuItem(
                                        player->IsAlive() ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED));
 }
 
-void AppendGrenadeModeMenuItem(
-        IBaseMenu *menu,
-        GrenadeType grenadeType,
-        const char *itemKey,
-        int clientIndex,
-        Player *player)
-{
-    char grenadeModeMenuItem[512];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            grenadeModeMenuItem,
-            sizeof(grenadeModeMenuItem),
-            "%T",
-            3,
-            nullptr,
-            g_JabronEZ.GetTranslations()->GetGrenadeModeMenuItemTranslationPhrase(grenadeType),
-            &clientIndex,
-            g_JabronEZ.GetTranslations()->GetProjectileModeTranslationPhrase(player->GetProjectileMode(grenadeType)));
-
-    menu->AppendItem(itemKey, ItemDrawInfo(
-                                                                     grenadeModeMenuItem,
-                                                                     ITEMDRAW_DEFAULT));
-}
-
-void AppendPlayerModeMenuItem(
-        IBaseMenu *menu,
-        int clientIndex,
-        Player *player)
-{
-    char playerModeMenuItem[512];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            playerModeMenuItem,
-            sizeof(playerModeMenuItem),
-            "%T",
-            3,
-            nullptr,
-            "Grenades menu player mode",
-            &clientIndex,
-            g_JabronEZ.GetTranslations()->GetPlayerModeTranslationPhrase(player->GetPlayerMode()));
-
-    menu->AppendItem("player_mode", ItemDrawInfo(
-                                            playerModeMenuItem,
-                                            ITEMDRAW_DEFAULT));
-}
-
 void MenuManager::OpenMenu(Player *player, size_t pageNumber)
 {
     IMenuStyle *style = _smMenuManager->GetDefaultStyle();
@@ -428,17 +340,9 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
     AppendRemoveSpotMenuItem(menu, clientIndex, player, spotCount);
     AppendPlaybackMenuItem(menu, clientIndex, player, spotCount, grenadesMenuOn, grenadesMenuOff);
     AppendFastForwardMenuItem(menu, clientIndex, player);
-    AppendGrenadeTypeMenuItem(menu, clientIndex, player);
     AppendSwitchToGrenadeMenuItem(menu, clientIndex, player);
     AppendGodModeMenuItem(menu, clientIndex, player);
     AppendNoClipMenuItem(menu, clientIndex, player, grenadesMenuOn, grenadesMenuOff);
-    AppendPlayerModeMenuItem(menu, clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_FLASH, "flash_mode", clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_SMOKE, "smoke_mode", clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_HEGRENADE, "hegrenade_mode", clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_DECOY, "decoy_mode", clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_MOLOTOV, "molotov_mode", clientIndex, player);
-    AppendGrenadeModeMenuItem(menu, GrenadeType_INCENDIARY, "incendiary_mode", clientIndex, player);
 
     menu->SetMenuOptionFlags(menu->GetMenuOptionFlags() | MENUFLAG_BUTTON_EXIT);
 

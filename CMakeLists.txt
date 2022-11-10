@@ -84,6 +84,8 @@ add_library(jabronez SHARED
         src/player_mode.h
         src/projectile_mode.cpp
         src/projectile_mode.h
+        src/projectile_parameters.cpp
+        src/projectile_parameters.h
         src/hud_utilities.cpp
         src/hud_utilities.h
         src/entity_utilities.cpp
@@ -232,6 +234,7 @@ else()
             -Wno-unused
             $<$<COMPILE_LANGUAGE:CXX>:-Wno-non-virtual-dtor>
             $<$<COMPILE_LANGUAGE:CXX>:-Wno-delete-non-virtual-dtor>
+            $<$<COMPILE_LANGUAGE:CXX>:-Wno-class-memaccess>
             -fno-exceptions
             $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
             -Wno-deprecated-register
@@ -279,7 +282,9 @@ endif ()
 target_include_directories(jabronez PRIVATE
 	src
         ${HL2SDK}/public/game/server
+        ${HL2SDK}/game/shared
         ${HL2PUB}
+        ${HL2PUB}/mathlib
         ${HL2PUB}/engine
         ${HL2PUB}/tier0
         ${HL2PUB}/tier1

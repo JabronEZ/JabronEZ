@@ -31,6 +31,16 @@
     }; \
     extern ret Hook_Call_##name(className *self, p1type p1name)
 
+#define JEZ_HOOK_MEMBER_DECL3(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name) \
+    extern CDetour *g_Detour##name; \
+    class Hook_##name##_Class \
+    { \
+    public: \
+        ret Hook_##name##_Callback(p1type p1name, p2type p2name, p3type p3name); \
+        static ret (Hook_##name##_Class::* Hook_##name##_Actual)(p1type, p2type, p3type); \
+    }; \
+    extern ret Hook_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name)
+
 #define JEZ_HOOK_MEMBER_DECL5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \
     extern CDetour *g_Detour##name; \
     class Hook_##name##_Class \
@@ -50,6 +60,16 @@
         return (selfAsHook->*Hook_##name##_Class::Hook_##name##_Actual)(p1name); \
     } \
     ret Hook_##name##_Class::Hook_##name##_Callback(p1type p1name)
+
+#define JEZ_HOOK_MEMBER_DEF3(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name) \
+    CDetour *g_Detour##name = nullptr; \
+    ret (Hook_##name##_Class::* Hook_##name##_Class::Hook_##name##_Actual)(p1type, p2type, p3type) = nullptr; \
+    ret Hook_Call_##name(className *self, p1type p1name, p2type p2name, p3type p3name) \
+    { \
+        Hook_##name##_Class *selfAsHook = reinterpret_cast<Hook_##name##_Class *>(self); \
+        return (selfAsHook->*Hook_##name##_Class::Hook_##name##_Actual)(p1name, p2name, p3name); \
+    } \
+    ret Hook_##name##_Class::Hook_##name##_Callback(p1type p1name, p2type p2name, p3type p3name)
 
 #define JEZ_HOOK_MEMBER_DEF5(name, className, ret, p1type, p1name, p2type, p2name, p3type, p3name, p4type, p4name, p5type, p5name) \
     CDetour *g_Detour##name = nullptr; \

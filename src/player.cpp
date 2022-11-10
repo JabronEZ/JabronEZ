@@ -30,6 +30,12 @@
 #include "grenade_goto_next_spot_or_finish_timer.h"
 #include <dt_send.h>
 #include <iplayerinfo.h>
+#include "basehandle.h"
+#include "vector.h"
+#include "utlvector.h"
+#include <shareddefs.h>
+#include "usercmd.h"
+#include "filesystem.h"
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers, ITimerSystem *timerSystem)
 {
@@ -39,12 +45,6 @@ Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelper
     _gameHelpers = gameHelpers;
     _timerSystem = timerSystem;
     _grenadeSpots.clear();
-
-    for (int grenadeTypeIndex = GrenadeType_FLASH; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
-    {
-        auto grenadeType = static_cast<GrenadeType>(grenadeTypeIndex);
-        _grenadeMode[grenadeType] = ProjectileMode_ALL;
-    }
 }
 
 Player::~Player()
@@ -52,22 +52,6 @@ Player::~Player()
     _gamePlayer = nullptr;
     _grenadeSpots.clear();
     _gameHelpers = nullptr;
-}
-
-ProjectileMode Player::GetProjectileMode(GrenadeType grenadeType) const
-{
-    if (grenadeType == GrenadeType_UNKNOWN)
-        return ProjectileMode_ALL;
-
-    return _grenadeMode[grenadeType];
-}
-
-void Player::SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectileMode)
-{
-    if (grenadeType == GrenadeType_UNKNOWN)
-        return;
-
-    _grenadeMode[grenadeType] = projectileMode;
 }
 
 void Player::DoAddSpot()
@@ -366,108 +350,6 @@ void Player::DoToggleNoClip()
 {
 }
 
-void Player::DoTogglePlayerMode()
-{
-}
-
-void Player::DoToggleProjectileMode(GrenadeType grenadeType)
-{
-    if (grenadeType == GrenadeType_UNKNOWN)
-        return;
-
-    auto nextProjectileMode = GetNextProjectileMode(GetProjectileMode(grenadeType));
-
-    char message[1024];
-    int clientIndex = GetClientIndex();
-
-    const char *translationPhrase = ChooseStringForGrenadeType(
-            grenadeType,
-            "Grenades HE grenade mode changed",
-            "Grenades molotov mode changed",
-            "Grenades incendiary mode changed",
-            "Grenades decoy mode changed",
-            "Grenades flash mode changed",
-            "Grenades smoke mode changed");
-
-    if (translationPhrase == nullptr)
-        return;
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            message,
-            sizeof(message),
-            "%T",
-            3,
-            nullptr,
-            translationPhrase,
-            &clientIndex,
-            g_JabronEZ.GetTranslations()->GetProjectileModeTranslationPhrase(nextProjectileMode));
-
-    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
-    SetProjectileMode(grenadeType, nextProjectileMode);
-}
-
-void Player::DoToggleGrenadeType()
-{
-    int clientIndex = GetClientIndex();
-
-    if (GetGrenadePlaybackStarted() || GetGrenadeAwaitingDetonation())
-    {
-        char message[1024];
-
-        g_JabronEZ.GetTranslations()->FormatTranslated(
-                message,
-                sizeof(message),
-                "%T",
-                2,
-                nullptr,
-                "Grenades may not change this during playback",
-                &clientIndex);
-
-        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
-        return;
-    }
-
-    auto nextGrenadeType = GetNextGrenadeType(GetGrenadeType());
-    SetGrenadeType(nextGrenadeType);
-
-    // This logic deals with the fact that a player can only hold a molotov OR incendiary grenade.
-    // If they want to switch to a molotov, but they already have an incendiary grenade in their inventory,
-    // simply remove the incendiary grenade and give them a molotov (and vice versa).
-    auto molotovWeapon = FindWeapon("weapon_molotov");
-    auto incendiaryWeapon = FindWeapon("weapon_incgrenade");
-
-    if (nextGrenadeType == GrenadeType_MOLOTOV && molotovWeapon == nullptr)
-    {
-        if (incendiaryWeapon != nullptr)
-            RemoveWeapon(incendiaryWeapon);
-
-        GiveNamedItem("weapon_molotov");
-    }
-    else if (nextGrenadeType == GrenadeType_INCENDIARY && incendiaryWeapon == nullptr)
-    {
-        if (molotovWeapon != nullptr)
-            RemoveWeapon(molotovWeapon);
-
-        GiveNamedItem("weapon_incgrenade");
-    }
-
-    char message[1024];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            message,
-            sizeof(message),
-            "%T",
-            3,
-            nullptr,
-            "Grenades type changed",
-            &clientIndex,
-            g_JabronEZ.GetTranslations()->GetGrenadeTranslationPhrase(nextGrenadeType));
-
-    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
-
-    SwitchToCurrentGrenadeType();
-}
-
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
 {
     return Callables_Call_CCSPlayerGiveNamedItem(
@@ -582,6 +464,13 @@ void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, cons
 
     SetProjectileParameters(ProjectileParameters(origin, angle, velocity, angularImpulse));
     SetGrenadeThrowerSpot(Spot(GetAbsOrigin(), GetEyeAngles()));
+}
+
+bool Player::OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
+{
+    // TODO: Let the player switch to the molotov/incendiary interchangable.
+    //       command->weaponselect is the entity index that they are trying to switch to.
+    return true;
 }
 
 void Player::FinishGrenadeTesterPlayback(bool restorePosition)
@@ -790,4 +679,22 @@ void Player::GotoNextSpotOrFinishPlayback()
         SetGrenadeCurrentSpotIndex(currentSpotIndex + 1);
         HandleGrenadeTesterPlayback();
     }
+}
+
+int Player::OnCanAcquire(void *econItemView, int type, void *item)
+{
+    void *weaponData = Callables_Call_CEconItemViewGetCCSWeaponData(econItemView);
+
+    if (weaponData == nullptr)
+    {
+        META_CONPRINTF("No weapon data :(\n");
+        return -1;
+    }
+
+    auto className = *(const char**)((uint8_t*)weaponData + 4);
+
+    if (strcmp(className, "weapon_molotov") == 0 || strcmp(className, "weapon_incgrenade") == 0)
+        return 0;
+
+    return -1;
 }

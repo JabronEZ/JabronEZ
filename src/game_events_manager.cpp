@@ -22,6 +22,7 @@
 #include "player_manager.h"
 #include "player.h"
 #include "entity_utilities.h"
+#include "hooks.h"
 
 GameEventsManager::GameEventsManager()
 {
@@ -48,6 +49,21 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
         return;
 
     auto eventName = event->GetName();
+    auto userId = event->GetInt("userid");
+
+    if (strcmp(eventName, "player_spawn") == 0 && userId > 0)
+    {
+        auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByUserId(userId);
+
+        if (player == nullptr)
+            return;
+
+        auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(player->GetClientIndex(), true);
+
+        if (playerEntity != nullptr)
+            Hooks_MaybeSetupPlayerRunCmd(playerEntity);
+    }
+
     auto isFlashbangDetonateEvent = strcmp(eventName, "flashbang_detonate") == 0;
     auto isSmokeDetonateEvent = strcmp(eventName, "smokegrenade_detonate") == 0;
     auto isDecoyStartedEvent = strcmp(eventName, "decoy_started") == 0;
@@ -56,7 +72,6 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
     if (!isFlashbangDetonateEvent && !isSmokeDetonateEvent && !isDecoyStartedEvent && !isHEGrenadeDetonateEvent)
         return;
 
-    auto userId = event->GetInt("userid");
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByUserId(userId);
 
     if (player == nullptr)

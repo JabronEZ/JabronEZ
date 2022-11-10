@@ -25,11 +25,14 @@
 #include "god_mode.h"
 #include "projectile_mode.h"
 #include "player_mode.h"
+#include "projectile_parameters.h"
 #include "weapon_identifiers.h"
 
 class GrenadeTriggerPlaybackTimer;
 class HandlePlaybackTimer;
 class GrenadeGotoNextSpotOrFinishTimer;
+class CUserCmd;
+class IMoveHelper;
 
 class Player {
 public:
@@ -46,9 +49,6 @@ public:
 
     bool GetNoClip() const { return _noClip; }
     void SetNoClip(bool noClip) { _noClip = noClip; }
-
-    PlayerMode GetPlayerMode() const { return _playerMode; }
-    void SetPlayerMode(PlayerMode playerMode) { _playerMode = playerMode; }
 
     bool GetGrenadePlaybackEnabled() const { return _grenadePlaybackEnabled; }
     void SetGrenadePlaybackEnabled(bool grenadePlaybackEnabled) { _grenadePlaybackEnabled = grenadePlaybackEnabled; }
@@ -94,9 +94,6 @@ public:
     size_t GetGrenadeMenuPage() const { return _grenadeMenuPage; }
     void SetGrenadeMenuPage(size_t grenadeMenuPage) { _grenadeMenuPage = grenadeMenuPage; }
 
-    ProjectileMode GetProjectileMode(GrenadeType grenadeType) const;
-    void SetProjectileMode(GrenadeType grenadeType, ProjectileMode projectileMode);
-
     CBaseEntity *GiveNamedItem(const char *entityName) const;
 
     CBaseEntity *FindWeapon(const char *entityName) const;
@@ -107,6 +104,7 @@ public:
 
     void OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType);
     void OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference);
+    bool OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper);
 
     bool IsAlive() const;
     void RespawnPlayer() const;
@@ -126,11 +124,9 @@ public:
     void DoSwitchToGrenade();
     void DoToggleGodMode();
     void DoToggleNoClip();
-    void DoTogglePlayerMode();
-    void DoToggleProjectileMode(GrenadeType grenadeType);
-    void DoToggleGrenadeType();
-
     void GotoNextSpotOrFinishPlayback();
+
+    int OnCanAcquire(void *econView, int type, void *item);
 
 private:
     IGameHelpers *_gameHelpers { nullptr };
@@ -141,7 +137,6 @@ private:
     SourceHook::CVector<Spot> _grenadeSpots;
     GodMode _godMode { GodMode_OFF };
     bool _noClip { false };
-    PlayerMode _playerMode { PlayerMode_ALL };
     bool _grenadePlaybackEnabled { false };
     bool _grenadePlaybackStarted { false };
     bool _grenadePlaybackStarting { false };
@@ -156,7 +151,6 @@ private:
     HandlePlaybackTimer *_grenadeHandlePlaybackTimer { nullptr };
     IBaseMenu *_grenadeMenu { nullptr };
     size_t _grenadeMenuPage { 0 };
-    ProjectileMode _grenadeMode[GrenadeType_COUNT] { };
 };
 
 #endif

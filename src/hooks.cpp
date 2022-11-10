@@ -28,6 +28,9 @@
 SH_DECL_MANUALHOOK0_void(CMolotovProjectileDetonate, 0, 0, 0);
 int g_MolotovProjectileDetonateHookId = 0;
 
+SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
+int g_PlayerRunCmdHookId = 0;
+
 void TriggerOnProjectileCreated(
         void *playerEntity,
         const Vector &origin,
@@ -68,6 +71,36 @@ void MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile)
     {
         void *molotovVtable = *(void**)molotovProjectile;
         g_MolotovProjectileDetonateHookId = SH_ADD_MANUALDVPHOOK(CMolotovProjectileDetonate, molotovVtable, SH_STATIC(Hook_Callback_CMolotovProjectileDetonate), false);
+    }
+}
+
+void Hook_Callback_PlayerRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
+{
+    auto playerEntity = META_IFACEPTR(CBaseEntity);
+
+    if (playerEntity == nullptr)
+        RETURN_META(MRES_IGNORED);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
+
+    if (player == nullptr)
+        RETURN_META(MRES_IGNORED);
+
+    if (!player->OnRunCmd(command, moveHelper))
+        RETURN_META(MRES_SUPERCEDE);
+
+    RETURN_META(MRES_IGNORED);
+}
+
+void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity)
+{
+    if (playerEntity == nullptr)
+        return;
+
+    if (g_PlayerRunCmdHookId == 0)
+    {
+        void *playerVtable = *(void **)playerEntity;
+        g_PlayerRunCmdHookId = SH_ADD_MANUALDVPHOOK(PlayerRunCmd, playerVtable, SH_STATIC(Hook_Callback_PlayerRunCmd), false);
     }
 }
 
@@ -345,22 +378,58 @@ JEZ_HOOK_STATIC_DEF6(
 }
 #endif
 
+JEZ_HOOK_MEMBER_DEF3(
+        CCSPlayerCanAcquire,
+        CBaseEntity,
+        int,
+        void*,
+        econItemView,
+        int,
+        acquireType,
+        void *,
+        item)
+{
+    auto self = reinterpret_cast<CBaseEntity*>(this);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
+
+    if (player == nullptr)
+        return Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, item);
+
+    auto result = player->OnCanAcquire(econItemView, acquireType, item);
+
+    if (result == -1)
+        return Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, item);
+
+    return result;
+}
+
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
+        IGameConfig *sdktoolsGameConfig,
         char *error,
         size_t maxlength)
 {
     CDetourManager::Init(sourcePawnEngine, gameConfig);
 
-    int molotovProjectileDetonate;
-    if (!gameConfig->GetOffset("CMolotovProjectileDetonate", &molotovProjectileDetonate))
+    int molotovProjectileDetonateOffset;
+    if (!gameConfig->GetOffset("CMolotovProjectileDetonate", &molotovProjectileDetonateOffset))
     {
         snprintf(error, maxlength, "Unable to find offset for %s\n", "CMolotovProjectileDetonate");
         return false;
     }
 
-    SH_MANUALHOOK_RECONFIGURE(CMolotovProjectileDetonate, molotovProjectileDetonate, 0, 0);
+    SH_MANUALHOOK_RECONFIGURE(CMolotovProjectileDetonate, molotovProjectileDetonateOffset, 0, 0);
+
+    int playerRunCmdOffset;
+    if (!sdktoolsGameConfig->GetOffset("PlayerRunCmd", &playerRunCmdOffset))
+    {
+        snprintf(error, maxlength, "Unable to find offset for %s\n", "PlayerRunCmd");
+        return false;
+    }
+
+    SH_MANUALHOOK_RECONFIGURE(PlayerRunCmd, playerRunCmdOffset, 0, 0);
 
 #ifdef _WIN32
     JEZ_HOOK_STATIC_CREATE_EX(SmokeProjectileCreate, ProjectileCreate, SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
@@ -376,6 +445,8 @@ bool Hooks_Init(
     JEZ_HOOK_STATIC_CREATE(HEGrenadeProjectileCreate, "CHEGrenadeProjectileCreate");
 #endif
 
+    JEZ_HOOK_MEMBER_CREATE(CCSPlayerCanAcquire, "CCSPlayerCanAcquire");
+
     return true;
 }
 
@@ -386,10 +457,17 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(MolotovProjectileCreate);
     JEZ_HOOK_CLEANUP(DecoyProjectileCreate);
     JEZ_HOOK_CLEANUP(HEGrenadeProjectileCreate);
+    JEZ_HOOK_CLEANUP(CCSPlayerCanAcquire);
 
     if (g_MolotovProjectileDetonateHookId != 0)
     {
         SH_REMOVE_HOOK_ID(g_MolotovProjectileDetonateHookId);
         g_MolotovProjectileDetonateHookId = 0;
+    }
+
+    if (g_PlayerRunCmdHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(g_PlayerRunCmdHookId);
+        g_PlayerRunCmdHookId = 0;
     }
 }

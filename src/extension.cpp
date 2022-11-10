@@ -84,6 +84,7 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     if (!Hooks_Init(
             g_pSM->GetScriptingEngine(),
             g_GameConf,
+            sdktoolsGameConfig,
             error,
             maxlength))
     {

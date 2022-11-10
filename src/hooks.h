@@ -22,8 +22,11 @@
 #include "smsdk_ext.h"
 #include <sh_vector.h>
 #include "hooks_macros.h"
+#include "weapon_identifiers.h"
 
 class CDetour;
+class CUserCmd;
+class IMoveHelper;
 
 // The reason that all these methods are static is due to the nature of detouring methods.
 // Primarily, the callbacks for hooks can not capture additional arguments/context.
@@ -31,10 +34,13 @@ class CDetour;
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
+        IGameConfig *sdktoolsGameConfig,
         char *error,
         size_t maxlength);
 
 void Hooks_Cleanup();
+
+void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity);
 
 #ifdef _WIN32
 extern CDetour *g_DetourSmokeProjectileCreate;
@@ -142,6 +148,18 @@ JEZ_HOOK_STATIC_DECL6(
         player,
         int,
         grenadeItemDefinitionIndex);
+
+JEZ_HOOK_MEMBER_DECL3(
+        CCSPlayerCanAcquire,
+        CBaseEntity,
+        int,
+        void *,
+        econItemView,
+        int,
+        acquireType,
+        void *,
+        item);
+
 #endif
 
 #endif
