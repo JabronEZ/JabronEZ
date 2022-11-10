@@ -41,6 +41,8 @@ bool Hooks_Init(
 void Hooks_Cleanup();
 
 void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity);
 
 #ifdef _WIN32
 extern CDetour *g_DetourSmokeProjectileCreate;
@@ -149,6 +151,8 @@ JEZ_HOOK_STATIC_DECL6(
         int,
         grenadeItemDefinitionIndex);
 
+#endif
+
 JEZ_HOOK_MEMBER_DECL3(
         CCSPlayerCanAcquire,
         CBaseEntity,
@@ -160,6 +164,14 @@ JEZ_HOOK_MEMBER_DECL3(
         void *,
         item);
 
-#endif
+JEZ_HOOK_MEMBER_DECL3_VOID(
+        CCSPlayerCSWeaponDrop,
+        CBaseEntity,
+        CBaseEntity *,
+        weapon,
+        bool,
+        unk1,
+        bool,
+        unk2);
 
 #endif

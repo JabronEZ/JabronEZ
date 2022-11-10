@@ -127,6 +127,10 @@ public:
     void GotoNextSpotOrFinishPlayback();
 
     int OnCanAcquire(void *econView, int type, int originalResult);
+    void OnBumpWeapon(CBaseEntity *weaponEntity);
+    void OnBumpWeaponPost(CBaseEntity *weaponEntity);
+    bool OnCheckSlotOccupied(CBaseEntity *weaponEntity, bool *isOccupied);
+    bool OnDropWeapon(CBaseEntity *weaponEntity);
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

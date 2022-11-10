@@ -235,6 +235,7 @@ else()
             $<$<COMPILE_LANGUAGE:CXX>:-Wno-non-virtual-dtor>
             $<$<COMPILE_LANGUAGE:CXX>:-Wno-delete-non-virtual-dtor>
             $<$<COMPILE_LANGUAGE:CXX>:-Wno-class-memaccess>
+            -Wno-maybe-uninitialized
             -fno-exceptions
             $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
             -Wno-deprecated-register

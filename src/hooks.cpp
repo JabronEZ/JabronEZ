@@ -31,6 +31,13 @@ int g_MolotovProjectileDetonateHookId = 0;
 SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
 int g_PlayerRunCmdHookId = 0;
 
+SH_DECL_MANUALHOOK1(CCSPlayerBumpWeapon, 0, 0, 0, bool, CBaseEntity*);
+int g_CCSPlayerBumpWeaponHookId = 0;
+int g_CCSPlayerBumpWeaponPostHookId = 0;
+
+SH_DECL_MANUALHOOK1(CCSPlayerSlotOccupied, 0, 0, 0, bool, CBaseEntity*);
+int g_CCSPlayerSlotOccupiedHookId = 0;
+
 void TriggerOnProjectileCreated(
         void *playerEntity,
         const Vector &origin,
@@ -101,6 +108,68 @@ void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity)
     {
         void *playerVtable = *(void **)playerEntity;
         g_PlayerRunCmdHookId = SH_ADD_MANUALDVPHOOK(PlayerRunCmd, playerVtable, SH_STATIC(Hook_Callback_PlayerRunCmd), false);
+    }
+}
+
+bool Hook_Callback_CCSPlayerBumpWeapon(CBaseEntity *weapon)
+{
+    auto playerEntity = META_IFACEPTR(CBaseEntity);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
+    player->OnBumpWeapon(weapon);
+
+    RETURN_META_VALUE(MRES_IGNORED, false);
+}
+
+bool Hook_Callback_CCSPlayerBumpWeapon_Post(CBaseEntity *weapon)
+{
+    auto playerEntity = META_IFACEPTR(CBaseEntity);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
+    player->OnBumpWeaponPost(weapon);
+
+    RETURN_META_VALUE(MRES_IGNORED, false);
+}
+
+void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity)
+{
+    if (playerEntity == nullptr)
+        return;
+
+    void *playerVtable = *(void **)playerEntity;
+
+    if (g_CCSPlayerBumpWeaponHookId == 0)
+    {
+        g_CCSPlayerBumpWeaponHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerBumpWeapon, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerBumpWeapon), false);
+    }
+
+    if (g_CCSPlayerBumpWeaponPostHookId == 0)
+    {
+        g_CCSPlayerBumpWeaponPostHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerBumpWeapon, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerBumpWeapon_Post), true);
+    }
+}
+
+bool Hook_Callback_CCSPlayerSlotOccupied(CBaseEntity *weapon)
+{
+    auto playerEntity = META_IFACEPTR(CBaseEntity);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
+    bool isOccupied = false;
+    if (!player->OnCheckSlotOccupied(weapon, &isOccupied))
+        RETURN_META_VALUE(MRES_IGNORED, false);
+
+    RETURN_META_VALUE(MRES_SUPERCEDE, isOccupied);
+}
+
+void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity)
+{
+    if (playerEntity == nullptr)
+        return;
+
+    if (g_CCSPlayerSlotOccupiedHookId == 0)
+    {
+        void *playerVtable = *(void **)playerEntity;
+        g_CCSPlayerSlotOccupiedHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerSlotOccupied, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerSlotOccupied), false);
     }
 }
 
@@ -400,6 +469,32 @@ JEZ_HOOK_MEMBER_DEF3(
     return player->OnCanAcquire(econItemView, acquireType, originalResult);
 }
 
+JEZ_HOOK_MEMBER_DEF3_VOID(
+        CCSPlayerCSWeaponDrop,
+        CBaseEntity,
+        CBaseEntity*,
+        weapon,
+        bool,
+        unk1,
+        bool,
+        unk2)
+{
+    auto self = reinterpret_cast<CBaseEntity*>(this);
+
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
+
+    if (player == nullptr)
+    {
+        Hook_Call_CCSPlayerCSWeaponDrop(self, weapon, unk1, unk2);
+        return;
+    }
+
+    if (!player->OnDropWeapon(weapon))
+        return;
+
+    Hook_Call_CCSPlayerCSWeaponDrop(self, weapon, unk1, unk2);
+}
+
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
         IGameConfig *gameConfig,
@@ -427,6 +522,24 @@ bool Hooks_Init(
 
     SH_MANUALHOOK_RECONFIGURE(PlayerRunCmd, playerRunCmdOffset, 0, 0);
 
+    int csPlayerBumpWeaponOffset;
+    if (!gameConfig->GetOffset("CCSPlayerBumpWeapon", &csPlayerBumpWeaponOffset))
+    {
+        snprintf(error, maxlength, "Unable to find offset for %s\n", "CCSPlayerBumpWeapon");
+        return false;
+    }
+
+    SH_MANUALHOOK_RECONFIGURE(CCSPlayerBumpWeapon, csPlayerBumpWeaponOffset, 0, 0);
+
+    int csPlayerSlotOccupiedOffset;
+    if (!gameConfig->GetOffset("CCSPlayerSlotOccupied", &csPlayerSlotOccupiedOffset))
+    {
+        snprintf(error, maxlength, "Unable to find offset for %s\n", "CCSPlayerSlotOccupied");
+        return false;
+    }
+
+    SH_MANUALHOOK_RECONFIGURE(CCSPlayerSlotOccupied, csPlayerSlotOccupiedOffset, 0, 0);
+
 #ifdef _WIN32
     JEZ_HOOK_STATIC_CREATE_EX(SmokeProjectileCreate, ProjectileCreate, SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
     JEZ_HOOK_STATIC_CREATE_EX(FlashbangProjectileCreate, ProjectileCreate, FlashbangProjectileCreate, "CFlashbangProjectileCreate");
@@ -442,6 +555,7 @@ bool Hooks_Init(
 #endif
 
     JEZ_HOOK_MEMBER_CREATE(CCSPlayerCanAcquire, "CCSPlayerCanAcquire");
+    JEZ_HOOK_MEMBER_CREATE(CCSPlayerCSWeaponDrop, "CCSPlayerCSWeaponDrop");
 
     return true;
 }
@@ -454,6 +568,7 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(DecoyProjectileCreate);
     JEZ_HOOK_CLEANUP(HEGrenadeProjectileCreate);
     JEZ_HOOK_CLEANUP(CCSPlayerCanAcquire);
+    JEZ_HOOK_CLEANUP(CCSPlayerCSWeaponDrop);
 
     if (g_MolotovProjectileDetonateHookId != 0)
     {
@@ -465,5 +580,17 @@ void Hooks_Cleanup()
     {
         SH_REMOVE_HOOK_ID(g_PlayerRunCmdHookId);
         g_PlayerRunCmdHookId = 0;
+    }
+
+    if (g_CCSPlayerBumpWeaponHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(g_CCSPlayerBumpWeaponHookId);
+        g_CCSPlayerBumpWeaponHookId = 0;
+    }
+
+    if (g_CCSPlayerBumpWeaponPostHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(g_CCSPlayerBumpWeaponPostHookId);
+        g_CCSPlayerBumpWeaponPostHookId = 0;
     }
 }

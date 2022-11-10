@@ -61,7 +61,11 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
         auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(player->GetClientIndex(), true);
 
         if (playerEntity != nullptr)
+        {
             Hooks_MaybeSetupPlayerRunCmd(playerEntity);
+            Hooks_MaybeSetupCCSPlayerBumpWeapon(playerEntity);
+            Hooks_MaybeSetupCCSPlayerSlotOccupied(playerEntity);
+        }
     }
 
     auto isFlashbangDetonateEvent = strcmp(eventName, "flashbang_detonate") == 0;

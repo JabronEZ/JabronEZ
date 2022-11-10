@@ -695,3 +695,21 @@ int Player::OnCanAcquire(void *econItemView, int type, int originalResult)
 
     return originalResult;
 }
+
+void Player::OnBumpWeapon(CBaseEntity *weaponEntity)
+{
+}
+
+void Player::OnBumpWeaponPost(CBaseEntity *weaponEntity)
+{
+}
+
+bool Player::OnCheckSlotOccupied(CBaseEntity *weaponEntity, bool *isOccupied)
+{
+    return false;
+}
+
+bool Player::OnDropWeapon(CBaseEntity *weaponEntity)
+{
+    return true;
+}
