@@ -80,4 +80,9 @@ JEZ_CALLABLES_MEMBER_OFFSET_DECL4_VOID(
         bool,
         useSlowHighAccuracyContacts);
 
+JEZ_CALLABLES_MEMBER_SIG_DECL0(
+        CEconItemViewGetCCSWeaponData,
+        void,
+        void*);
+
 #endif

@@ -67,6 +67,11 @@ JEZ_CALLABLES_MEMBER_OFFSET_DEF4_VOID(
         bool,
         useSlowHighAccuracyContacts);
 
+JEZ_CALLABLES_MEMBER_SIG_DEF0(
+        CEconItemViewGetCCSWeaponData,
+        void,
+        void*);
+
 bool Callables_Init(
         IGameConfig *gameConfig,
         IGameConfig *sdktoolsGameConfig,
@@ -80,6 +85,7 @@ bool Callables_Init(
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(TE_GetServerClass, "TE_GetServerClass", sdktoolsGameConfig);
     JEZ_CALLABLE_MEMBER_SIG_CREATE(CS_RespawnPlayer, "RoundRespawn", cstrikeGameConfig);
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(Teleport, "Teleport", sdktoolsGameConfig);
+    JEZ_CALLABLE_MEMBER_SIG_CREATE(CEconItemViewGetCCSWeaponData, "CEconItemViewGetCCSWeaponData", gameConfig);
 
     return true;
 }
