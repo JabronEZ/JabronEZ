@@ -686,12 +686,14 @@ int Player::OnCanAcquire(void *econItemView, int type, int originalResult)
 {
     void *weaponData = Callables_Call_CEconItemViewGetCCSWeaponData(econItemView);
 
-    if (weaponData == nullptr || originalResult != 2)
+    if (weaponData == nullptr)
         return originalResult;
 
     auto className = *(const char**)((uint8_t*)weaponData + Callables_Offset_CCSWeaponDataClassName);
+    auto isFireGrenade = strcmp(className, "weapon_molotov") == 0 || strcmp(className, "weapon_incgrenade") == 0;
 
-    if (strcmp(className, "weapon_molotov") == 0 || strcmp(className, "weapon_incgrenade") == 0)
+    // Allow players to pick up a molotov/incendiary even if they already have the other one.
+    if (isFireGrenade && originalResult == 2)
         return 0;
 
     return originalResult;
