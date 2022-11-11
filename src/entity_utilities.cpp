@@ -49,6 +49,9 @@ bool EntityUtilities::IsIncendiaryGrenade(CBaseEntity *entity) const
 
 CBaseEntity *EntityUtilities::GetEntityFromHandle(CBaseHandle *handle) const
 {
+    if (handle == nullptr)
+        return nullptr;
+
     return _gameHelpers->ReferenceToEntity(handle->GetEntryIndex());
 }
 
@@ -121,4 +124,33 @@ CBaseEntity *EntityUtilities::GetEntityByIndex(int entityIndex, bool isPlayer) c
     }
 
     return serverUnknown->GetBaseEntity();
+}
+
+int EntityUtilities::GetIndexByEntity(CBaseEntity *entity) const
+{
+    auto reference = _gameHelpers->EntityToReference(entity);
+
+    if (reference == 0)
+        return 0;
+
+    return _gameHelpers->ReferenceToIndex(reference);
+}
+
+CBaseEntity *EntityUtilities::FindEntityInListByClassName(const SourceHook::CVector<CBaseEntity *>& searchList, const char *className) const
+{
+    for (auto entity : searchList)
+    {
+        if (entity == nullptr)
+            continue;
+
+        auto entityClassName = _gameHelpers->GetEntityClassname(entity);
+
+        if (entityClassName == nullptr)
+            continue;
+
+        if (strcmp(className, entityClassName) == 0)
+            return entity;
+    }
+
+    return nullptr;
 }
