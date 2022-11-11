@@ -33,6 +33,7 @@ class HandlePlaybackTimer;
 class GrenadeGotoNextSpotOrFinishTimer;
 class CUserCmd;
 class IMoveHelper;
+enum class CheckSlotOccupiedResult;
 
 class Player {
 public:
@@ -129,8 +130,7 @@ public:
     int OnCanAcquire(void *econView, int type, int originalResult);
     void OnBumpWeapon(CBaseEntity *weaponEntity);
     void OnBumpWeaponPost(CBaseEntity *weaponEntity);
-    bool OnCheckSlotOccupied(CBaseEntity *weaponEntity, bool *isOccupied);
-    bool OnDropWeapon(CBaseEntity *weaponEntity);
+    CheckSlotOccupiedResult OnCheckSlotOccupied(CBaseEntity *weaponEntity) const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

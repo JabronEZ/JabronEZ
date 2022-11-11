@@ -36,6 +36,7 @@
 #include <shareddefs.h>
 #include "usercmd.h"
 #include "filesystem.h"
+#include "hooks.h"
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers, ITimerSystem *timerSystem)
 {
@@ -704,9 +705,9 @@ void Player::OnBumpWeaponPost(CBaseEntity *weaponEntity)
 {
 }
 
-bool Player::OnCheckSlotOccupied(CBaseEntity *weaponEntity, bool *isOccupied)
+CheckSlotOccupiedResult Player::OnCheckSlotOccupied(CBaseEntity *weaponEntity) const
 {
-    return false;
+    return CheckSlotOccupiedResult::UseOriginal;
 }
 
 bool Player::OnDropWeapon(CBaseEntity *weaponEntity)
