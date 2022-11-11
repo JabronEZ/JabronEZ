@@ -85,6 +85,11 @@ JEZ_CALLABLES_MEMBER_SIG_DECL0(
         void,
         void*);
 
+JEZ_CALLABLES_MEMBER_OFFSET_DECL0(
+        WeaponGetSlot,
+        CBaseEntity,
+        int);
+
 extern int Callables_Offset_CCSWeaponDataClassName;
 
 #endif

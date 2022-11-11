@@ -46,6 +46,14 @@
 	            "windows"   "286"
 	            "linux"     "287"
 	        }
+
+            // This can be found inside CCSPlayerWeaponEquip
+            // example: if ((iVar4 == 0) || (iVar4 = (**(code **)(*piVar3 + 0x5a8))(), iVar4 == 1))
+	        "WeaponGetSlot"
+	        {
+	            "windows"   "362"
+	            "linux"     ""
+	        }
 	    }
 
 		"Signatures"

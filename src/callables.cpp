@@ -72,6 +72,11 @@ JEZ_CALLABLES_MEMBER_SIG_DEF0(
         void,
         void*);
 
+JEZ_CALLABLES_MEMBER_OFFSET_DEF0(
+        WeaponGetSlot,
+        CBaseEntity,
+        int);
+
 int Callables_Offset_CCSWeaponDataClassName = -1;
 
 bool Callables_Init(
@@ -88,6 +93,7 @@ bool Callables_Init(
     JEZ_CALLABLE_MEMBER_SIG_CREATE(CS_RespawnPlayer, "RoundRespawn", cstrikeGameConfig);
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(Teleport, "Teleport", sdktoolsGameConfig);
     JEZ_CALLABLE_MEMBER_SIG_CREATE(CEconItemViewGetCCSWeaponData, "CEconItemViewGetCCSWeaponData", gameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(WeaponGetSlot, "WeaponGetSlot", gameConfig);
 
     if (!gameConfig->GetOffset("CCSWeaponDataClassName", &Callables_Offset_CCSWeaponDataClassName))
     {
