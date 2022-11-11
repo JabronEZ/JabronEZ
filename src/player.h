@@ -102,6 +102,9 @@ public:
 
     Vector GetAbsOrigin() const;
     QAngle GetEyeAngles() const;
+    CBaseEntity *GetActiveWeapon() const;
+    CBaseEntity *GetEntity() const;
+    SourceHook::CVector<CBaseEntity*> GetAllWeapons() const;
 
     void OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType);
     void OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference);
@@ -131,6 +134,7 @@ public:
     void OnBumpWeapon(CBaseEntity *weaponEntity);
     void OnBumpWeaponPost(CBaseEntity *weaponEntity);
     CheckSlotOccupiedResult OnCheckSlotOccupied(CBaseEntity *weaponEntity) const;
+    bool OnDropWeapon(CBaseEntity *weaponEntity) const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };
@@ -155,6 +159,7 @@ private:
     HandlePlaybackTimer *_grenadeHandlePlaybackTimer { nullptr };
     IBaseMenu *_grenadeMenu { nullptr };
     size_t _grenadeMenuPage { 0 };
+    bool _isBumpingWeapon { false };
 };
 
 #endif

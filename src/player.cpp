@@ -469,8 +469,54 @@ void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, cons
 
 bool Player::OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
 {
-    // TODO: Let the player switch to the molotov/incendiary interchangable.
-    //       command->weaponselect is the entity index that they are trying to switch to.
+    if (command->weaponselect == 0)
+        return true;
+
+    auto weaponEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(command->weaponselect, false);
+
+    if (weaponEntity == nullptr)
+        return true;
+
+    auto weaponClassName = _gameHelpers->GetEntityClassname(weaponEntity);
+
+    auto currentActiveWeapon = GetActiveWeapon();
+
+    if (currentActiveWeapon == nullptr)
+        return true;
+
+    auto activeWeaponClassName = _gameHelpers->GetEntityClassname(currentActiveWeapon);
+    auto allWeapons = GetAllWeapons();
+
+    if (strcmp(weaponClassName, "weapon_incgrenade") == 0 && strcmp(activeWeaponClassName, "weapon_decoy") == 0)
+    {
+        auto molotovEntity = g_JabronEZ.GetEntityUtilities()->FindEntityInListByClassName(allWeapons, "weapon_molotov");
+
+        if (molotovEntity != nullptr)
+            command->weaponselect = g_JabronEZ.GetEntityUtilities()->GetIndexByEntity(molotovEntity);
+
+        return true;
+    }
+
+    if (strcmp(weaponClassName, "weapon_hegrenade") == 0 && strcmp(activeWeaponClassName, "weapon_molotov") == 0)
+    {
+        auto incendiaryEntity = g_JabronEZ.GetEntityUtilities()->FindEntityInListByClassName(allWeapons, "weapon_incgrenade");
+
+        if (incendiaryEntity != nullptr)
+            command->weaponselect = g_JabronEZ.GetEntityUtilities()->GetIndexByEntity(incendiaryEntity);
+
+        return true;
+    }
+
+    if (strcmp(weaponClassName, "weapon_decoy") == 0 && strcmp(activeWeaponClassName, "weapon_incgrenade") == 0)
+    {
+        auto incendiaryEntity = g_JabronEZ.GetEntityUtilities()->FindEntityInListByClassName(allWeapons, "weapon_molotov");
+
+        if (incendiaryEntity != nullptr)
+            command->weaponselect = g_JabronEZ.GetEntityUtilities()->GetIndexByEntity(incendiaryEntity);
+
+        return true;
+    }
+
     return true;
 }
 
@@ -701,18 +747,91 @@ int Player::OnCanAcquire(void *econItemView, int type, int originalResult)
 
 void Player::OnBumpWeapon(CBaseEntity *weaponEntity)
 {
+    _isBumpingWeapon = true;
 }
 
 void Player::OnBumpWeaponPost(CBaseEntity *weaponEntity)
 {
+    _isBumpingWeapon = false;
 }
 
 CheckSlotOccupiedResult Player::OnCheckSlotOccupied(CBaseEntity *weaponEntity) const
 {
+    if (_isBumpingWeapon)
+        return CheckSlotOccupiedResult::NotOccupied;
+
     return CheckSlotOccupiedResult::UseOriginal;
 }
 
-bool Player::OnDropWeapon(CBaseEntity *weaponEntity)
+bool Player::OnDropWeapon(CBaseEntity *weaponEntity) const
 {
+    if (_isBumpingWeapon)
+        return false;
+
     return true;
+}
+
+CBaseEntity *Player::GetEntity() const
+{
+    return g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
+}
+
+CBaseEntity *Player::GetActiveWeapon() const
+{
+    auto playerEntity = GetEntity();
+
+    if (playerEntity == nullptr)
+        return nullptr;
+
+    // FIXME: Cache this once we look it up.
+    sm_sendprop_info_t sendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hActiveWeapon", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return nullptr;
+
+    auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + sendpropInfo.actual_offset);
+
+    return g_JabronEZ.GetEntityUtilities()->GetEntityFromHandle(weaponHandle);
+}
+
+SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
+{
+    auto playerEntity = GetEntity();
+
+    if (playerEntity == nullptr)
+        return {};
+
+    // FIXME: Cache this once we look it up.
+    sm_sendprop_info_t sendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return {};
+
+    auto dataTable = sendpropInfo.prop->GetDataTable();
+
+    if (dataTable == nullptr)
+        return {};
+
+    auto dataTableSize = dataTable->GetNumProps();
+
+    auto result = SourceHook::CVector<CBaseEntity *>();
+
+    for (size_t dataTableIndex = 0; dataTableIndex < dataTableSize; dataTableIndex++)
+    {
+        auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + sendpropInfo.actual_offset + (dataTableIndex * 4));
+
+        if (weaponHandle == nullptr)
+            continue;
+
+        CBaseEntity *weaponEntity = g_JabronEZ.GetEntityUtilities()->GetEntityFromHandle(weaponHandle);
+
+        if (weaponEntity == nullptr)
+            continue;
+
+        result.push_back(weaponEntity);
+    }
+
+    return result;
 }
