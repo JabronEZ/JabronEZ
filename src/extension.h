@@ -50,6 +50,7 @@ public:
     DrawSpotsTimer *GetDrawSpotsTimer() const { return _drawSpotsTimer; }
     TemporaryEntities *GetTemporaryEntities() const { return _temporaryEntities; }
     GameEventsManager *GetGameEventsManager() const { return _gameEventsManager; }
+    CGlobalVars *GetGlobalVars() const { return _globalVars; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
@@ -61,6 +62,7 @@ private:
     DrawSpotsTimer *_drawSpotsTimer { nullptr };
     TemporaryEntities *_temporaryEntities { nullptr };
     GameEventsManager *_gameEventsManager { nullptr };
+    CGlobalVars *_globalVars { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

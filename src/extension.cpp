@@ -176,6 +176,7 @@ void JabronEZ::SDK_OnUnload()
 
 bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late)
 {
+    _globalVars = ismm->GetCGlobals();
     _consoleManager = new ConsoleManager(engine);
 
     if (!_consoleManager->Init(ismm, error, maxlength))

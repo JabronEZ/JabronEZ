@@ -50,6 +50,7 @@ void Hooks_Cleanup();
 void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity);
 void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity);
 void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity);
 
 #ifdef _WIN32
 extern CDetour *g_DetourSmokeProjectileCreate;

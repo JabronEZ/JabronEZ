@@ -25,6 +25,7 @@
 #include "god_mode.h"
 #include "projectile_mode.h"
 #include "player_mode.h"
+#include "grenade_throw_tickrate.h"
 #include "projectile_parameters.h"
 #include "weapon_identifiers.h"
 
@@ -44,6 +45,9 @@ public:
     int GetUserId() const { return _userId; }
     IGamePlayer *GetGamePlayer() const { return _gamePlayer; }
     const SourceHook::CVector<Spot> &GetGrenadeSpots() const { return _grenadeSpots; }
+
+    GrenadeThrowTickRate GetGrenadeThrowTickRate() const { return _grenadeThrowTickRate; }
+    void SetGrenadeThrowTickRate(GrenadeThrowTickRate grenadeThrowTickRate) { _grenadeThrowTickRate = grenadeThrowTickRate; }
 
     GodMode GetGodMode() const { return _godMode; }
     void SetGodMode(GodMode godMode) { _godMode = godMode; }
@@ -126,6 +130,7 @@ public:
     void DoFastForward();
     void DoToggleGodMode();
     void DoToggleNoClip();
+    void DoToggleGrenadeThrowTickRate();
     void GotoNextSpotOrFinishPlayback();
 
     int OnCanAcquire(void *econView, int type, int originalResult);
@@ -133,6 +138,7 @@ public:
     void OnBumpWeaponPost(CBaseEntity *weaponEntity);
     CheckSlotOccupiedResult OnCheckSlotOccupied(CBaseEntity *weaponEntity) const;
     bool OnDropWeapon(CBaseEntity *weaponEntity) const;
+    GrenadeThrowTickRate OnDetermineGrenadeThrowTickRate() const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };
@@ -142,6 +148,7 @@ private:
     IGamePlayer *_gamePlayer { nullptr };
     SourceHook::CVector<Spot> _grenadeSpots;
     GodMode _godMode { GodMode_OFF };
+    GrenadeThrowTickRate _grenadeThrowTickRate { GrenadeThrowTickRate_128 };
     bool _noClip { false };
     bool _grenadePlaybackEnabled { false };
     bool _grenadePlaybackStarted { false };

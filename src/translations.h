@@ -24,6 +24,7 @@
 #include "projectile_mode.h"
 #include "smsdk_ext.h"
 #include "weapon_identifiers.h"
+#include "grenade_throw_tickrate.h"
 
 class Translations {
 public:
@@ -42,6 +43,7 @@ public:
 
     const char *GetGrenadeTranslationPhrase(GrenadeType grenadeType);
     const char *GetGodModeTranslationPhrase(GodMode godMode);
+    const char *GetGrenadeThrowTickRateTranslationPhrase(GrenadeThrowTickRate grenadeThrowTickRate);
     const char *GetProjectileModeTranslationPhrase(ProjectileMode projectileMode);
     const char *GetGrenadeModeMenuItemTranslationPhrase(GrenadeType grenadeType);
     const char *GetPlayerModeTranslationPhrase(PlayerMode mode);

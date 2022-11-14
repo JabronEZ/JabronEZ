@@ -65,6 +65,7 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
             Hooks_MaybeSetupPlayerRunCmd(playerEntity);
             Hooks_MaybeSetupCCSPlayerBumpWeapon(playerEntity);
             Hooks_MaybeSetupCCSPlayerSlotOccupied(playerEntity);
+            Hooks_MaybeSetupCCSPlayerWeaponEquip(playerEntity);
         }
     }
 

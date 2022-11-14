@@ -75,6 +75,8 @@ void MenuManager::OnMenuSelect2(
          player->DoFastForward();
      else if (strcmp(itemKey, "god") == 0)
          player->DoToggleGodMode();
+     else if (strcmp(itemKey, "grenade_throw_tickrate") == 0)
+         player->DoToggleGrenadeThrowTickRate();
      else if (strcmp(itemKey, "noclip") == 0)
          player->DoToggleNoClip();
 
@@ -246,6 +248,28 @@ void AppendFastForwardMenuItem(
                                                      : ITEMDRAW_DISABLED));
 }
 
+void AppendGrenadeThrowTickRateMenuItem(
+        IBaseMenu *menu,
+        int clientIndex,
+        Player *player)
+{
+    char grenadeThrowTickRateMenuItem[512];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            grenadeThrowTickRateMenuItem,
+            sizeof(grenadeThrowTickRateMenuItem),
+            "%T",
+            3,
+            nullptr,
+            "Grenades menu grenade throw tickrate",
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetGrenadeThrowTickRateTranslationPhrase(player->GetGrenadeThrowTickRate()));
+
+    menu->AppendItem("grenade_throw_tickrate", ItemDrawInfo(
+                                                       grenadeThrowTickRateMenuItem,
+                                                       ITEMDRAW_DEFAULT));
+}
+
 void AppendGodModeMenuItem(
         IBaseMenu *menu,
         int clientIndex,
@@ -313,6 +337,7 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
     AppendRemoveSpotMenuItem(menu, clientIndex, player, spotCount);
     AppendPlaybackMenuItem(menu, clientIndex, player, spotCount, grenadesMenuOn, grenadesMenuOff);
     AppendFastForwardMenuItem(menu, clientIndex, player);
+    AppendGrenadeThrowTickRateMenuItem(menu, clientIndex, player);
     AppendGodModeMenuItem(menu, clientIndex, player);
     AppendNoClipMenuItem(menu, clientIndex, player, grenadesMenuOn, grenadesMenuOff);
 

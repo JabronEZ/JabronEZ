@@ -261,6 +261,11 @@
         "en"    "!switchtogrenade - Switch to active grenade type."
     }
 
+    "Grenades help menu grenade throw tickrate title"
+    {
+        "en"    "!tickrate - Toggle grenade throw tick rate."
+    }
+
     "Grenades help menu god title"
     {
         "en"    "!god - Toggle god mode."
@@ -339,6 +344,11 @@
     "Grenades help menu switchtogrenade item"
     {
         "en"    "!switchtogrenade - Switch to active grenade type."
+    }
+
+    "Grenades help menu grenade throw tickrate item"
+    {
+        "en"    "!tickrate - Toggle grenade throw tickrate."
     }
 
     "Grenades help menu god item"
@@ -1228,10 +1238,22 @@
         "en"    "No Clip enabled."
     }
 
+    "Grenades grenade throw tickrate changed"
+    {
+        "#format"   "{1:t}"
+        "en"        "Grenade Throw TickRate changed to: {1}"
+    }
+
     "Grenades god mode changed"
     {
         "#format"   "{1:t}"
         "en"        "God Mode changed to: {1}"
+    }
+
+    "Grenades menu grenade throw tickrate"
+    {
+        "#format"   "{1:t}"
+        "en"        "Grenade Throw TickRate: {1} (!tickrate)"
     }
 
     "Grenades menu god mode"
@@ -1344,6 +1366,16 @@
     "Grenades menu off"
     {
         "en"    "OFF"
+    }
+
+    "Grenades grenade throw tickrate 64"
+    {
+        "en"        "64"
+    }
+
+    "Grenades grenade throw tickrate 128"
+    {
+        "en"        "128"
     }
 
     "Grenades god mode off"

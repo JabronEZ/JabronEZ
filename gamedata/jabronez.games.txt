@@ -54,6 +54,15 @@
 	            "windows"   "362"
 	            "linux"     ""
 	        }
+
+	        // Signature for CBaseCSGrenadeStartGrenadeThrow
+	        // Linux: 55 89 E5 56 53 81 EC 10 01 00 00 A1 ? ? ? ?
+	        // Windows: 55 8B EC 83 E4 F8 81 EC F0 00 00 00 A1 ? ? ? ?
+	        "CBaseCSGrenadeStartGrenadeThrow"
+	        {
+	            "windows"   "459"
+	            "linux"     "465"
+	        }
 	    }
 
 		"Signatures"

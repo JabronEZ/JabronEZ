@@ -34,6 +34,7 @@ public:
     CBaseEntity *GetEntityByIndex(int entityIndex, bool isPlayer) const;
     bool IsIncendiaryGrenade(CBaseEntity *entity) const;
     CBaseEntity *GetProjectileThrower(CBaseEntity *entity) const;
+    CBaseEntity *GetWeaponOwner(CBaseEntity *entity) const;
     CBaseEntity *GetEntityFromHandle(CBaseHandle *handle) const;
     int GetIndexByEntity(CBaseEntity *entity) const;
     CBaseEntity *FindEntityInListByClassName(const SourceHook::CVector<CBaseEntity *>& searchList, const char *className) const;

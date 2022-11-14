@@ -106,6 +106,20 @@ const char *Translations::GetGrenadeTranslationPhrase(GrenadeType grenadeType)
             "Grenades display smoke grenade");
 }
 
+const char *Translations::GetGrenadeThrowTickRateTranslationPhrase(GrenadeThrowTickRate grenadeThrowTickRate)
+{
+    switch (grenadeThrowTickRate)
+    {
+        case GrenadeThrowTickRate_64:
+            return "Grenades grenade throw tickrate 64";
+
+        case GrenadeThrowTickRate_128:
+            return "Grenades grenade throw tickrate 128";
+    }
+
+    return "";
+}
+
 const char *Translations::GetGodModeTranslationPhrase(GodMode godMode)
 {
     switch (godMode)

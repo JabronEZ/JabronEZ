@@ -95,6 +95,25 @@ CBaseEntity *EntityUtilities::GetProjectileThrower(CBaseEntity *entity) const
     return nullptr;
 }
 
+CBaseEntity *EntityUtilities::GetWeaponOwner(CBaseEntity *entity) const
+{
+    if (entity == nullptr)
+        return nullptr;
+
+    sm_sendprop_info_t sendpropInfo {};
+    _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &sendpropInfo);
+
+    if (sendpropInfo.prop == nullptr)
+        return nullptr;
+
+    auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + sendpropInfo.actual_offset);
+
+    if (ownerHandle == nullptr)
+        return nullptr;
+
+    return GetEntityFromHandle(ownerHandle);
+}
+
 CBaseEntity *EntityUtilities::GetEntityByIndex(int entityIndex, bool isPlayer) const
 {
     edict_t *edict = _gameHelpers->EdictOfIndex(entityIndex);

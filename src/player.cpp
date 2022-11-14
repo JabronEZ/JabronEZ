@@ -306,6 +306,29 @@ void Player::RespawnPlayer() const
     Callables_Call_CS_RespawnPlayer(playerEntity);
 }
 
+void Player::DoToggleGrenadeThrowTickRate()
+{
+    SetGrenadeThrowTickRate(GetGrenadeThrowTickRate() == GrenadeThrowTickRate_64
+                                    ? GrenadeThrowTickRate_128
+                                    : GrenadeThrowTickRate_64);
+
+    int clientIndex = GetClientIndex();
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            3,
+            nullptr,
+            "Grenades grenade throw tickrate changed",
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetGrenadeThrowTickRateTranslationPhrase(GetGrenadeThrowTickRate()));
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+}
+
 void Player::DoToggleGodMode()
 {
 }
@@ -777,4 +800,9 @@ SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
     }
 
     return result;
+}
+
+GrenadeThrowTickRate Player::OnDetermineGrenadeThrowTickRate() const
+{
+    return GetGrenadeThrowTickRate();
 }
