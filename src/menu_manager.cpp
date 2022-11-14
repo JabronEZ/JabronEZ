@@ -73,8 +73,6 @@ void MenuManager::OnMenuSelect2(
          player->DoTogglePlayback();
      else if (strcmp(itemKey, "fast_forward") == 0)
          player->DoFastForward();
-     else if (strcmp(itemKey, "switch_to_grenade") == 0)
-         player->DoSwitchToGrenade();
      else if (strcmp(itemKey, "god") == 0)
          player->DoToggleGodMode();
      else if (strcmp(itemKey, "noclip") == 0)
@@ -248,31 +246,6 @@ void AppendFastForwardMenuItem(
                                                      : ITEMDRAW_DISABLED));
 }
 
-void AppendSwitchToGrenadeMenuItem(
-        IBaseMenu *menu,
-        int clientIndex,
-        Player *player)
-{
-    char switchToGrenadeMenuItem[512];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            switchToGrenadeMenuItem,
-            sizeof(switchToGrenadeMenuItem),
-            "%T",
-            2,
-            nullptr,
-            "Grenades menu switch to grenade",
-            &clientIndex);
-
-    menu->AppendItem("switch_to_grenade", ItemDrawInfo(
-                                                  switchToGrenadeMenuItem,
-                                                  player->GetGrenadePlaybackStarted()
-                                                                  || player->GetGrenadePlaybackStarting()
-                                                                  || player->GetGrenadeAwaitingDetonation()
-                                                          ? ITEMDRAW_DISABLED
-                                                          : ITEMDRAW_DEFAULT));
-}
-
 void AppendGodModeMenuItem(
         IBaseMenu *menu,
         int clientIndex,
@@ -340,7 +313,6 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
     AppendRemoveSpotMenuItem(menu, clientIndex, player, spotCount);
     AppendPlaybackMenuItem(menu, clientIndex, player, spotCount, grenadesMenuOn, grenadesMenuOff);
     AppendFastForwardMenuItem(menu, clientIndex, player);
-    AppendSwitchToGrenadeMenuItem(menu, clientIndex, player);
     AppendGodModeMenuItem(menu, clientIndex, player);
     AppendNoClipMenuItem(menu, clientIndex, player, grenadesMenuOn, grenadesMenuOff);
 

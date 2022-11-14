@@ -306,43 +306,6 @@ void Player::RespawnPlayer() const
     Callables_Call_CS_RespawnPlayer(playerEntity);
 }
 
-void Player::DoSwitchToGrenade()
-{
-    int clientIndex = GetClientIndex();
-
-    if(!IsAlive())
-    {
-        char message[1024];
-
-        g_JabronEZ.GetTranslations()->FormatTranslated(
-                message,
-                sizeof(message),
-                "%T",
-                2,
-                nullptr,
-                "Grenades must be alive to do this",
-                &clientIndex);
-
-        g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
-        return;
-    }
-
-    SwitchToCurrentGrenadeType();
-
-    char message[1024];
-
-    g_JabronEZ.GetTranslations()->FormatTranslated(
-            message,
-            sizeof(message),
-            "%T",
-            2,
-            nullptr,
-            "Grenades switched to grenade",
-            &clientIndex);
-
-    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
-}
-
 void Player::DoToggleGodMode()
 {
 }
@@ -414,25 +377,6 @@ void Player::RemoveWeapon(CBaseEntity *weaponEntity) const
             weaponEntity);
 }
 
-void Player::SwitchToCurrentGrenadeType() const
-{
-    char useCommand[512];
-    snprintf(
-            useCommand,
-            sizeof(useCommand),
-            "use %s\n",
-            ChooseStringForGrenadeType(
-                    GetGrenadeType(),
-                    "weapon_hegrenade",
-                    "weapon_molotov",
-                    "weapon_incgrenade",
-                    "weapon_decoy",
-                    "weapon_flashbang",
-                    "weapon_smokegrenade"));
-
-    g_JabronEZ.GetConsoleManager()->SendClientCommand(GetGamePlayer()->GetEdict(), useCommand);
-}
-
 Vector Player::GetAbsOrigin() const
 {
     IPlayerInfo *playerInfo = GetGamePlayer()->GetPlayerInfo();
@@ -455,11 +399,10 @@ QAngle Player::GetEyeAngles() const
 
 void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType)
 {
-    auto currentGrenadeType = GetGrenadeType();
-
-    if(currentGrenadeType != grenadeType || GetGrenadePlaybackStarted() || !GetGrenadePlaybackEnabled() || GetGrenadeAwaitingDetonation())
+    if(GetGrenadePlaybackStarted() || !GetGrenadePlaybackEnabled() || GetGrenadeAwaitingDetonation())
         return;
 
+    SetGrenadeType(grenadeType);
     SetGrenadeAwaitingDetonation(true);
     RefreshGrenadesMenu();
 
@@ -818,7 +761,7 @@ SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
 
     auto result = SourceHook::CVector<CBaseEntity *>();
 
-    for (size_t dataTableIndex = 0; dataTableIndex < dataTableSize; dataTableIndex++)
+    for (int dataTableIndex = 0; dataTableIndex < dataTableSize; dataTableIndex++)
     {
         auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + sendpropInfo.actual_offset + (dataTableIndex * 4));
 

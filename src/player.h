@@ -112,7 +112,6 @@ public:
 
     bool IsAlive() const;
     void RespawnPlayer() const;
-    void SwitchToCurrentGrenadeType() const;
     Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;
     bool IsOnActualTeam() const;
 
@@ -125,7 +124,6 @@ public:
     void DoRemoveSpot();
     void DoTogglePlayback();
     void DoFastForward();
-    void DoSwitchToGrenade();
     void DoToggleGodMode();
     void DoToggleNoClip();
     void GotoNextSpotOrFinishPlayback();
