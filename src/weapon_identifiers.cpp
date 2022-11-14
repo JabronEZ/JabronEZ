@@ -17,6 +17,7 @@
  */
 
 #include "weapon_identifiers.h"
+#include "smsdk_ext.h"
 
 CSWeaponID GetCSWeaponIDFromItemDefinitionIndex(ItemDefinitionIndex itemDefinitionIndex)
 {
@@ -142,6 +143,32 @@ GrenadeType GetGrenadeTypeFromItemDefinitionIndex(ItemDefinitionIndex itemDefini
         case ItemDefinitionIndex_HEGRENADE:
             return GrenadeType_HEGRENADE;
     }
+
+    return GrenadeType_UNKNOWN;
+}
+
+GrenadeType GetGrenadeTypeFromWeaponClassName(const char *className)
+{
+    if (className == nullptr)
+        return GrenadeType_UNKNOWN;
+
+    if (strcmp(className, "weapon_hegrenade") == 0)
+        return GrenadeType_HEGRENADE;
+
+    if (strcmp(className, "weapon_smokegrenade") == 0)
+        return GrenadeType_SMOKE;
+
+    if (strcmp(className, "weapon_decoy") == 0)
+        return GrenadeType_DECOY;
+
+    if (strcmp(className, "weapon_flashbang") == 0)
+        return GrenadeType_FLASH;
+
+    if (strcmp(className, "weapon_molotov") == 0)
+        return GrenadeType_MOLOTOV;
+
+    if (strcmp(className, "weapon_incgrenade") == 0)
+        return GrenadeType_INCENDIARY;
 
     return GrenadeType_UNKNOWN;
 }
