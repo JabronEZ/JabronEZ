@@ -36,8 +36,13 @@ HandlePlaybackTimer::~HandlePlaybackTimer()
         player->SetGrenadeHandlePlaybackTimer(nullptr);
 }
 
-CBaseEntity *ThrowGrenade(GrenadeType grenadeType, Player *player, Vector origin, QAngle angle, Vector velocity, Vector angularImpulse)
+CBaseEntity *ThrowGrenade(GrenadeType grenadeType, Player *player, const ProjectileParameters& projectileParameters)
 {
+    auto origin = projectileParameters.GetOrigin();
+    auto angle = projectileParameters.GetAngle();
+    auto velocity = projectileParameters.GetVelocity();
+    auto angularImpulse = projectileParameters.GetAngularImpulse();
+
     auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(player->GetClientIndex(), true);
     auto grenadeItemDefinition = GetItemDefinitionIndexFromGrenadeType(grenadeType);
 
@@ -62,23 +67,10 @@ void HandlePlaybackTimer::OnPlayerTimer()
     if (player == nullptr)
         return;
 
-    // TODO: In the old plugin, we would actually clear the player's HandlePlaybackTimer here.
-    //       I don't think it will make a difference, so if we can avoid it that would be more maintainable for sure!
-
     if (!player->IsOnActualTeam())
         return;
 
-    auto grenadeType = player->GetGrenadeType();
-
-    // TODO: We should probably make a structure out of these.
-    ProjectileParameters projectileParameters = player->GetProjectileParameters();
-
-    auto projectileOrigin = projectileParameters.GetOrigin();
-    auto projectileAngle = projectileParameters.GetAngle();
-    auto projectileVelocity = projectileParameters.GetVelocity();
-    auto projectileAngularImpulse = projectileParameters.GetAngularImpulse();
-
-    auto grenadeEntity = ThrowGrenade(grenadeType, player, projectileOrigin, projectileAngle, projectileVelocity, projectileAngularImpulse);
+    auto grenadeEntity = ThrowGrenade(player->GetGrenadeType(), player, player->GetProjectileParameters());
 
     auto projectileReference = _gameHelpers->EntityToReference(grenadeEntity);
 

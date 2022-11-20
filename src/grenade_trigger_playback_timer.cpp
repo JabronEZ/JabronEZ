@@ -40,9 +40,6 @@ void GrenadeTriggerPlaybackTimer::OnPlayerTimer()
     if (player == nullptr)
         return;
 
-    // TODO: In the old plugin, we would actually clear the player's GrenadeTriggerPlaybackTimer here.
-    //       I don't think it will make a difference, so if we can avoid it that would be more maintainable for sure!
-
     player->StartGrenadeTesterPlayback();
 }
 
