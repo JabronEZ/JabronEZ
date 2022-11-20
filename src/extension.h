@@ -30,6 +30,7 @@ class EntityUtilities;
 class DrawSpotsTimer;
 class TemporaryEntities;
 class GameEventsManager;
+class ParticleManager;
 
 class JabronEZ : public SDKExtension
 {
@@ -51,6 +52,7 @@ public:
     TemporaryEntities *GetTemporaryEntities() const { return _temporaryEntities; }
     GameEventsManager *GetGameEventsManager() const { return _gameEventsManager; }
     CGlobalVars *GetGlobalVars() const { return _globalVars; }
+    ParticleManager *GetParticleManager() const { return _particleManager; }
 
 private:
     ConsoleManager *_consoleManager { nullptr };
@@ -63,6 +65,7 @@ private:
     TemporaryEntities *_temporaryEntities { nullptr };
     GameEventsManager *_gameEventsManager { nullptr };
     CGlobalVars *_globalVars { nullptr };
+    ParticleManager *_particleManager { nullptr };
 };
 
 extern JabronEZ g_JabronEZ;

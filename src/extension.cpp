@@ -28,6 +28,7 @@
 #include "draw_spots_timer.h"
 #include "temporary_entities.h"
 #include "game_events_manager.h"
+#include "particle_manager.h"
 
 JabronEZ g_JabronEZ;
 
@@ -172,12 +173,19 @@ void JabronEZ::SDK_OnUnload()
         delete _temporaryEntities;
         _temporaryEntities = nullptr;
     }
+
+    if (_particleManager != nullptr)
+    {
+        delete _particleManager;
+        _particleManager = nullptr;
+    }
 }
 
 bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, bool late)
 {
     _globalVars = ismm->GetCGlobals();
     _consoleManager = new ConsoleManager(engine);
+    _particleManager = new ParticleManager(engine);
 
     if (!_consoleManager->Init(ismm, error, maxlength))
     {
@@ -194,6 +202,11 @@ bool JabronEZ::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlength, b
     if (late)
         _consoleManager->LoadConfiguration();
 
+    if (!_particleManager->Init(ismm, error, maxlength))
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -204,4 +217,7 @@ void JabronEZ::OnCoreMapStart(edict_t *edictList, int edictCount, int clientMax)
 
     if (_drawSpotsTimer != nullptr)
         _drawSpotsTimer->Init();
+
+    if (_particleManager != nullptr)
+        _particleManager->LoadCustomParticles();
 }

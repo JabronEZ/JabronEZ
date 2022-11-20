@@ -23,6 +23,7 @@
 #include "player.h"
 #include "player_manager.h"
 #include "smsdk_ext.h"
+#include "particle_manager.h"
 
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *, const CCommand &);
 
@@ -96,6 +97,17 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
     {
         auto angles = player->GetEyeAngles();
         META_CONPRINTF("Angles: %f %f %f\n", angles.x, angles.y, angles.z);
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp(command, "sm_jez_short_smoke") == 0)
+    {
+        float x = atof(args.Arg(1));
+        float y = atof(args.Arg(2));
+        float z = atof(args.Arg(3));
+
+        g_JabronEZ.GetParticleManager()->CreateShortSmoke(Vector(x, y, z), QAngle(0, 0, 0));
+
         RETURN_META(MRES_SUPERCEDE);
     }
 

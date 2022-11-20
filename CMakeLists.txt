@@ -108,6 +108,8 @@ add_library(jabronez SHARED
         src/grenade_goto_next_spot_or_finish_timer.h
         src/game_events_manager.cpp
         src/game_events_manager.h
+        src/particle_manager.cpp
+        src/particle_manager.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}
