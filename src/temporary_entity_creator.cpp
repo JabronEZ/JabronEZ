@@ -44,6 +44,7 @@ ServerClass *TemporaryEntityCreator::GetServerClass() const
 
 int TemporaryEntityCreator::FindPropertyOffset(const char *propertyName) const
 {
+    // FIXME: In the future, it might be worth attempting to cache these in a dictionary.
     sm_sendprop_info_t sendpropInfo {};
     if (!_gameHelpers->FindSendPropInfo(GetServerClass()->GetName(), propertyName, &sendpropInfo))
         return -1;
