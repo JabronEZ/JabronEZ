@@ -118,6 +118,7 @@ public:
     void RespawnPlayer() const;
     Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;
     bool IsOnActualTeam() const;
+    void GiveAllGrenades() const;
 
     void StartGrenadeTesterPlayback();
     void FinishGrenadeTesterPlayback(bool restorePosition = true);

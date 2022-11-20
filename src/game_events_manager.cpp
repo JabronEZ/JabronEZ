@@ -67,6 +67,11 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
             Hooks_MaybeSetupCCSPlayerSlotOccupied(playerEntity);
             Hooks_MaybeSetupCCSPlayerWeaponEquip(playerEntity);
         }
+
+        if (player->IsAlive())
+            player->GiveAllGrenades();
+
+        return;
     }
 
     auto isFlashbangDetonateEvent = strcmp(eventName, "flashbang_detonate") == 0;

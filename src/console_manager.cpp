@@ -82,17 +82,6 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
         RETURN_META(MRES_SUPERCEDE);
     }
 
-    if (strcmp(command, "sm_jez_give_flash") == 0)
-    {
-        player->GiveNamedItem("weapon_flashbang");
-        player->GiveNamedItem("weapon_molotov");
-        player->GiveNamedItem("weapon_incgrenade");
-        player->GiveNamedItem("weapon_decoy");
-        player->GiveNamedItem("weapon_smokegrenade");
-        player->GiveNamedItem("weapon_hegrenade");
-        RETURN_META(MRES_SUPERCEDE);
-    }
-
     if (strcmp(command, "sm_jez_angles") == 0)
     {
         auto angles = player->GetEyeAngles();

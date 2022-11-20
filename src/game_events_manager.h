@@ -36,7 +36,7 @@ public:
     void FireGameEvent(IGameEvent *event) override;
     int	GetEventDebugID() override;
 
-    void SetGameHelpers(IGameHelpers *pHelpers) { _gameHelpers = gamehelpers; }
+    void SetGameHelpers(IGameHelpers *gameHelpers) { _gameHelpers = gameHelpers; }
 
 private:
     IGameEventManager2 *_gameEventsManager { nullptr };

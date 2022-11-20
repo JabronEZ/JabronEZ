@@ -737,6 +737,16 @@ bool Player::OnDropWeapon(CBaseEntity *weaponEntity) const
     return true;
 }
 
+void Player::GiveAllGrenades() const
+{
+    GiveNamedItem("weapon_flashbang");
+    GiveNamedItem("weapon_molotov");
+    GiveNamedItem("weapon_incgrenade");
+    GiveNamedItem("weapon_decoy");
+    GiveNamedItem("weapon_smokegrenade");
+    GiveNamedItem("weapon_hegrenade");
+}
+
 CBaseEntity *Player::GetEntity() const
 {
     return g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(GetClientIndex(), true);
