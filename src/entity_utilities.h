@@ -38,6 +38,8 @@ public:
     CBaseEntity *GetEntityFromHandle(CBaseHandle *handle) const;
     int GetIndexByEntity(CBaseEntity *entity) const;
     CBaseEntity *FindEntityInListByClassName(const SourceHook::CVector<CBaseEntity *>& searchList, const char *className) const;
+    Vector GetEntityAbsOrigin(CBaseEntity *entity) const;
+    void KillEntity(CBaseEntity *entity);
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

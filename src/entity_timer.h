@@ -16,21 +16,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
-#define JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
+#ifndef JABRONEZ_ENTITY_TIMER_H
+#define JABRONEZ_ENTITY_TIMER_H
 
 #include "smsdk_ext.h"
-#include "player_timer.h"
+#include "simple_timer.h"
 
-class Player;
+class CBaseEntity;
 
-class GrenadeGotoNextSpotOrFinishTimer : public PlayerTimer {
+class EntityTimer : public SimpleTimer {
 public:
-    explicit GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
-    ~GrenadeGotoNextSpotOrFinishTimer() override;
+    explicit EntityTimer(CBaseEntity *entity, float interval, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
 
-    void OnSimpleTimer() override;
-    void OnSimpleTimerEnd() override;
+    CBaseEntity *GetEntity() const;
+
+private:
+    // Timers specific to an entity should never assume that the underlying `CBaseEntity *` is still existent!
+    int _entReference { -1 };
 };
 
 #endif

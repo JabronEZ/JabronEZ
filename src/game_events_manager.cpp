@@ -23,6 +23,7 @@
 #include "player.h"
 #include "entity_utilities.h"
 #include "hooks.h"
+#include "particle_manager.h"
 
 GameEventsManager::GameEventsManager()
 {

@@ -37,6 +37,8 @@
 #include "usercmd.h"
 #include "filesystem.h"
 #include "hooks.h"
+#include "particle_manager.h"
+#include "remove_short_smoke_timer.h"
 
 Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelpers *gameHelpers, ITimerSystem *timerSystem)
 {
@@ -631,6 +633,17 @@ float GetDelayPostDetonation(GrenadeType grenadeType)
 
 void Player::OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference)
 {
+    if (grenadeType == GrenadeType_SMOKE)
+    {
+        auto projectileEntity = _gameHelpers->ReferenceToEntity(projectileReference);
+        if (projectileEntity != nullptr)
+        {
+            auto projectileOrigin = g_JabronEZ.GetEntityUtilities()->GetEntityAbsOrigin(projectileEntity);
+            g_JabronEZ.GetParticleManager()->CreateShortSmoke(projectileOrigin, QAngle(0, 0, 0));
+            auto timer = new RemoveShortSmokeTimer(projectileEntity, _timerSystem, _gameHelpers);
+        }
+    }
+
     if (!GetGrenadePlaybackEnabled())
         return;
 
@@ -660,7 +673,7 @@ void Player::OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectile
             SetGrenadeTriggerPlaybackTimer(nullptr);
         }
 
-        SetGrenadeTriggerPlaybackTimer(new GrenadeTriggerPlaybackTimer(this, postDetonationDelay, _timerSystem));
+        SetGrenadeTriggerPlaybackTimer(new GrenadeTriggerPlaybackTimer(this, postDetonationDelay, _timerSystem, _gameHelpers));
         return;
     }
 
@@ -681,7 +694,7 @@ void Player::OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectile
             SetGrenadeGotoNextSpotOrFinishTimer(nullptr);
         }
 
-        SetGrenadeGotoNextSpotOrFinishTimer(new GrenadeGotoNextSpotOrFinishTimer(this, postDetonationDelay, _timerSystem));
+        SetGrenadeGotoNextSpotOrFinishTimer(new GrenadeGotoNextSpotOrFinishTimer(this, postDetonationDelay, _timerSystem, _gameHelpers));
         return;
     }
 }

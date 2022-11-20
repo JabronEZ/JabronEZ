@@ -77,6 +77,21 @@ JEZ_CALLABLES_MEMBER_OFFSET_DEF0(
         CBaseEntity,
         int);
 
+JEZ_CALLABLES_MEMBER_OFFSET_DEF5(
+        AcceptEntityInput,
+        CBaseEntity,
+        bool,
+        const char *,
+        inputName,
+        CBaseEntity *,
+        activator,
+        CBaseEntity *,
+        caller,
+        SDKVariantT*,
+        value,
+        int,
+        outputId);
+
 int Callables_Offset_CCSWeaponDataClassName = -1;
 
 bool Callables_Init(
@@ -94,6 +109,7 @@ bool Callables_Init(
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(Teleport, "Teleport", sdktoolsGameConfig);
     JEZ_CALLABLE_MEMBER_SIG_CREATE(CEconItemViewGetCCSWeaponData, "CEconItemViewGetCCSWeaponData", gameConfig);
     JEZ_CALLABLE_MEMBER_OFFSET_CREATE(WeaponGetSlot, "WeaponGetSlot", gameConfig);
+    JEZ_CALLABLE_MEMBER_OFFSET_CREATE(AcceptEntityInput, "AcceptInput", sdktoolsGameConfig);
 
     if (!gameConfig->GetOffset("CCSWeaponDataClassName", &Callables_Offset_CCSWeaponDataClassName))
     {

@@ -20,32 +20,18 @@
 #define JABRONEZ_PLAYER_TIMER_H
 
 #include "smsdk_ext.h"
+#include "simple_timer.h"
 
 class Player;
 
-class PlayerTimer : public ITimedEvent {
+class PlayerTimer : public SimpleTimer {
 public:
-    explicit PlayerTimer(Player *player, float interval, ITimerSystem *timerSystem);
-    virtual ~PlayerTimer();
-
-    ResultType OnTimer(ITimer *timer, void *data) final;
-    void OnTimerEnd(ITimer *timer, void *data) final;
-
-    virtual void OnPlayerTimer() = 0;
-    virtual void OnPlayerTimerEnd() = 0;
-
-    void KillTimerSafely();
-
+    explicit PlayerTimer(Player *player, float interval, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
     Player *GetPlayer() const;
 
 private:
-    ITimerSystem *_timerSystem { nullptr };
-    ITimer *_timer { nullptr };
-
     // Timers specific to a player should never assume that the underlying `Player *` is still connected!
     int _userId { -1 };
-    bool _isKilled { false };
-    bool _isInTimerCallback { false };
 };
 
 #endif

@@ -26,11 +26,11 @@ class Player;
 
 class GrenadeTriggerPlaybackTimer : public PlayerTimer {
 public:
-    explicit GrenadeTriggerPlaybackTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem);
+    explicit GrenadeTriggerPlaybackTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
     ~GrenadeTriggerPlaybackTimer() override;
 
-    void OnPlayerTimer() override;
-    void OnPlayerTimerEnd() override;
+    void OnSimpleTimer() override;
+    void OnSimpleTimerEnd() override;
 
 };
 

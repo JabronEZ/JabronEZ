@@ -76,7 +76,6 @@ void ParticleManager::LoadCustomParticles()
     }
 
     _shortSmokeParticleType = particleEffectNames->FindStringIndex("jez_explosion_smokegrenade");
-    _shortSmokeScreenParticleType = particleEffectNames->FindStringIndex("jez_explosion_screen_smokegrenade_new");
     _particleEffect = effectDispatchTable->FindStringIndex("ParticleEffect");
 }
 
@@ -89,6 +88,7 @@ bool ParticleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
 void ParticleManager::CreateShortSmoke(Vector origin, QAngle angle) const
 {
+    RecipientFilter filter(g_JabronEZ.GetPlayerManager()->GetPlayers(), false, false);
     auto effectDispatch = g_JabronEZ.GetTemporaryEntities()->FindByName("EffectDispatch");
 
     effectDispatch->SetPropertyInt("m_iEffectName", _particleEffect);
@@ -99,12 +99,7 @@ void ParticleManager::CreateShortSmoke(Vector origin, QAngle angle) const
     effectDispatch->SetPropertyFloat("m_vStart.x", origin.x);
     effectDispatch->SetPropertyFloat("m_vStart.y", origin.y);
     effectDispatch->SetPropertyFloat("m_vStart.z", origin.z);
-    effectDispatch->SetPropertyFloat("m_vAngles.x", angle.x);
-    effectDispatch->SetPropertyFloat("m_vAngles.y", angle.y);
-    effectDispatch->SetPropertyFloat("m_vAngles.z", angle.z);
+    effectDispatch->SetPropertyVector("m_vAngles", Vector(angle.x, angle.y, angle.z));
 
-    RecipientFilter filter(g_JabronEZ.GetPlayerManager()->GetPlayers(), false, false);
     effectDispatch->Send(filter, 0.0f);
-
-    // FIXME: We need to show the screen smoke effect as well, or you will be able to see right throw the smoke.
 }

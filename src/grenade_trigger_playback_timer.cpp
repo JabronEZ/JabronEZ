@@ -20,8 +20,8 @@
 #include "grenade_trigger_playback_timer.h"
 #include "player.h"
 
-GrenadeTriggerPlaybackTimer::GrenadeTriggerPlaybackTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem)
-    : PlayerTimer(player, postDetonationDelay, timerSystem)
+GrenadeTriggerPlaybackTimer::GrenadeTriggerPlaybackTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
+    : PlayerTimer(player, postDetonationDelay, timerSystem, gameHelpers)
 {
 }
 
@@ -33,7 +33,7 @@ GrenadeTriggerPlaybackTimer::~GrenadeTriggerPlaybackTimer()
         player->SetGrenadeTriggerPlaybackTimer(nullptr);
 }
 
-void GrenadeTriggerPlaybackTimer::OnPlayerTimer()
+void GrenadeTriggerPlaybackTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
@@ -43,6 +43,6 @@ void GrenadeTriggerPlaybackTimer::OnPlayerTimer()
     player->StartGrenadeTesterPlayback();
 }
 
-void GrenadeTriggerPlaybackTimer::OnPlayerTimerEnd()
+void GrenadeTriggerPlaybackTimer::OnSimpleTimerEnd()
 {
 }

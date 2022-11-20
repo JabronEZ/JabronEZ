@@ -112,6 +112,12 @@ add_library(jabronez SHARED
         src/sdk_variant_t.h
         src/particle_manager.cpp
         src/particle_manager.h
+        src/remove_short_smoke_timer.cpp
+        src/remove_short_smoke_timer.h
+        src/entity_timer.cpp
+        src/entity_timer.h
+        src/simple_timer.cpp
+        src/simple_timer.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}

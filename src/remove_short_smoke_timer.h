@@ -16,21 +16,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
-#define JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
+#ifndef JABRONEZ_REMOVE_SHORT_SMOKE_TIMER_H
+#define JABRONEZ_REMOVE_SHORT_SMOKE_TIMER_H
 
 #include "smsdk_ext.h"
-#include "player_timer.h"
+#include "entity_timer.h"
 
-class Player;
+class CBaseEntity;
 
-class GrenadeGotoNextSpotOrFinishTimer : public PlayerTimer {
+class RemoveShortSmokeTimer : public EntityTimer {
 public:
-    explicit GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
-    ~GrenadeGotoNextSpotOrFinishTimer() override;
+    explicit RemoveShortSmokeTimer(CBaseEntity *entity, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
+    ~RemoveShortSmokeTimer() override;
 
     void OnSimpleTimer() override;
     void OnSimpleTimerEnd() override;
+
+private:
+    IGameHelpers *_gameHelpers { nullptr };
 };
 
 #endif

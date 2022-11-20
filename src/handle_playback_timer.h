@@ -29,11 +29,8 @@ public:
     explicit HandlePlaybackTimer(Player *player, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
     ~HandlePlaybackTimer() override;
 
-    void OnPlayerTimer() override;
-    void OnPlayerTimerEnd() override;
-
-private:
-    IGameHelpers *_gameHelpers { nullptr };
+    void OnSimpleTimer() override;
+    void OnSimpleTimerEnd() override;
 };
 
 #endif

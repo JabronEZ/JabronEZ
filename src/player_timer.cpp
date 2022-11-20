@@ -22,59 +22,13 @@
 #include "player_manager.h"
 #include "player_timer.h"
 
-
-PlayerTimer::PlayerTimer(Player *player, float interval, ITimerSystem *timerSystem)
+PlayerTimer::PlayerTimer(Player *player, float interval, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
+    : SimpleTimer(interval, timerSystem, gameHelpers)
 {
-    _timerSystem = timerSystem;
-    _timer = timerSystem->CreateTimer(this, interval, nullptr, TIMER_FLAG_NO_MAPCHANGE);
     _userId = player->GetUserId();
-    _isInTimerCallback = false;
-}
-
-PlayerTimer::~PlayerTimer()
-{
-    if (_timer != nullptr && _timerSystem != nullptr && !_isInTimerCallback)
-    {
-        _timerSystem->KillTimer(_timer);
-    }
-
-    _timer = nullptr;
-}
-
-ResultType PlayerTimer::OnTimer(ITimer *timer, void *data)
-{
-    _isInTimerCallback = true;
-
-    if (!_isKilled)
-        OnPlayerTimer();
-
-    return SourceMod::Pl_Stop;
-}
-
-void PlayerTimer::OnTimerEnd(ITimer *timer, void *data)
-{
-    OnPlayerTimerEnd();
-
-    _timer = nullptr;
-    delete this;
 }
 
 Player *PlayerTimer::GetPlayer() const
 {
     return g_JabronEZ.GetPlayerManager()->GetPlayerByUserId(_userId);
-}
-
-void PlayerTimer::KillTimerSafely()
-{
-    if (_isKilled)
-        return;
-
-    _isKilled = true;
-
-    if (!_isInTimerCallback && _timer != nullptr && _timerSystem != nullptr)
-    {
-        _timerSystem->KillTimer(_timer);
-    }
-
-    _timer = nullptr;
 }

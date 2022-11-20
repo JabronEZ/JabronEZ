@@ -22,6 +22,7 @@
 #include "smsdk_ext.h"
 #include <sh_vector.h>
 #include "callables_macros.h"
+#include "sdk_variant_t.h"
 
 bool Callables_Init(
         IGameConfig *gameConfig,
@@ -89,6 +90,21 @@ JEZ_CALLABLES_MEMBER_OFFSET_DECL0(
         WeaponGetSlot,
         CBaseEntity,
         int);
+
+JEZ_CALLABLES_MEMBER_OFFSET_DECL5(
+        AcceptEntityInput,
+        CBaseEntity,
+        bool,
+        const char *,
+        inputName,
+        CBaseEntity *,
+        activator,
+        CBaseEntity *,
+        caller,
+        SDKVariantT*,
+        value,
+        int,
+        outputId);
 
 extern int Callables_Offset_CCSWeaponDataClassName;
 

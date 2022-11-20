@@ -16,21 +16,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
-#define JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
+#include "extension.h"
+#include "entity_timer.h"
 
-#include "smsdk_ext.h"
-#include "player_timer.h"
+EntityTimer::EntityTimer(CBaseEntity *entity, float interval, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
+    : SimpleTimer(interval, timerSystem, gameHelpers)
+{
+    _entReference = gameHelpers->EntityToReference(entity);
+}
 
-class Player;
-
-class GrenadeGotoNextSpotOrFinishTimer : public PlayerTimer {
-public:
-    explicit GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
-    ~GrenadeGotoNextSpotOrFinishTimer() override;
-
-    void OnSimpleTimer() override;
-    void OnSimpleTimerEnd() override;
-};
-
-#endif
+CBaseEntity *EntityTimer::GetEntity() const
+{
+    return _gameHelpers->ReferenceToEntity(_entReference);
+}

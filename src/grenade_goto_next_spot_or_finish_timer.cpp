@@ -20,8 +20,8 @@
 #include "grenade_goto_next_spot_or_finish_timer.h"
 #include "player.h"
 
-GrenadeGotoNextSpotOrFinishTimer::GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem)
-    : PlayerTimer(player, postDetonationDelay, timerSystem)
+GrenadeGotoNextSpotOrFinishTimer::GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
+    : PlayerTimer(player, postDetonationDelay, timerSystem, gameHelpers)
 {
 }
 
@@ -33,7 +33,7 @@ GrenadeGotoNextSpotOrFinishTimer::~GrenadeGotoNextSpotOrFinishTimer()
         player->SetGrenadeGotoNextSpotOrFinishTimer(nullptr);
 }
 
-void GrenadeGotoNextSpotOrFinishTimer::OnPlayerTimer()
+void GrenadeGotoNextSpotOrFinishTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
@@ -43,6 +43,6 @@ void GrenadeGotoNextSpotOrFinishTimer::OnPlayerTimer()
     player->GotoNextSpotOrFinishPlayback();
 }
 
-void GrenadeGotoNextSpotOrFinishTimer::OnPlayerTimerEnd()
+void GrenadeGotoNextSpotOrFinishTimer::OnSimpleTimerEnd()
 {
 }

@@ -16,21 +16,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
-#define JABRONEZ_GRENADE_GOTO_NEXT_SPOT_OR_FINISH_TIMER_H
+#include "extension.h"
+#include "remove_short_smoke_timer.h"
+#include "entity_utilities.h"
 
-#include "smsdk_ext.h"
-#include "player_timer.h"
+RemoveShortSmokeTimer::RemoveShortSmokeTimer(CBaseEntity *projectileEntity, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
+    : EntityTimer(projectileEntity, 3.5f, timerSystem, gameHelpers)
+{
+}
 
-class Player;
+RemoveShortSmokeTimer::~RemoveShortSmokeTimer() = default;
 
-class GrenadeGotoNextSpotOrFinishTimer : public PlayerTimer {
-public:
-    explicit GrenadeGotoNextSpotOrFinishTimer(Player *player, float postDetonationDelay, ITimerSystem *timerSystem, IGameHelpers *gameHelpers);
-    ~GrenadeGotoNextSpotOrFinishTimer() override;
+void RemoveShortSmokeTimer::OnSimpleTimer()
+{
+    auto entity = GetEntity();
 
-    void OnSimpleTimer() override;
-    void OnSimpleTimerEnd() override;
-};
+    if (entity == nullptr)
+        return;
 
-#endif
+    g_JabronEZ.GetEntityUtilities()->KillEntity(entity);
+}
+
+void RemoveShortSmokeTimer::OnSimpleTimerEnd()
+{
+}

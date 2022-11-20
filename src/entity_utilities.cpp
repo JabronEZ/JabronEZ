@@ -18,6 +18,7 @@
 
 #include "entity_utilities.h"
 #include "smsdk_ext.h"
+#include "callables.h"
 
 EntityUtilities::EntityUtilities(
         IGameHelpers *gameHelpers,
@@ -193,4 +194,36 @@ CBaseEntity *EntityUtilities::FindEntityInListByClassName(const SourceHook::CVec
     }
 
     return nullptr;
+}
+
+void EntityUtilities::KillEntity(CBaseEntity *entity)
+{
+    if (entity == nullptr)
+        return;
+
+    SDKVariantT voidVariant;
+    Callables_Call_AcceptEntityInput(entity, "kill", nullptr, nullptr, &voidVariant, 0);
+}
+
+Vector EntityUtilities::GetEntityAbsOrigin(CBaseEntity *entity) const
+{
+    if (entity == nullptr)
+        return { 0, 0, 0 };
+
+    static unsigned int absOriginOffset = 0;
+
+    if (absOriginOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CBaseEntity", "m_vecOrigin", &sendpropInfo);
+
+        if (sendpropInfo.prop == nullptr)
+            return { 0, 0, 0 };
+
+        absOriginOffset = sendpropInfo.actual_offset;
+    }
+
+    auto *originVector = (Vector *)((uint8_t *)entity + absOriginOffset);
+
+    return { originVector->x, originVector->y, originVector->z };
 }

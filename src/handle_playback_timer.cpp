@@ -23,9 +23,8 @@
 #include "entity_utilities.h"
 
 HandlePlaybackTimer::HandlePlaybackTimer(Player *player, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
-    : PlayerTimer(player, 1.5f, timerSystem)
+    : PlayerTimer(player, 1.5f, timerSystem, gameHelpers)
 {
-    _gameHelpers = gameHelpers;
 }
 
 HandlePlaybackTimer::~HandlePlaybackTimer()
@@ -60,7 +59,7 @@ CBaseEntity *ThrowGrenade(GrenadeType grenadeType, Player *player, const Project
     return nullptr;
 }
 
-void HandlePlaybackTimer::OnPlayerTimer()
+void HandlePlaybackTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
@@ -87,6 +86,6 @@ void HandlePlaybackTimer::OnPlayerTimer()
 //        MarkShortDecoy(s_GrenadeIndex);
 }
 
-void HandlePlaybackTimer::OnPlayerTimerEnd()
+void HandlePlaybackTimer::OnSimpleTimerEnd()
 {
 }

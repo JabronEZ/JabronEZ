@@ -35,12 +35,10 @@ public:
 
     void CreateShortSmoke(Vector origin, QAngle angle) const;
 
-
 private:
     INetworkStringTableContainer *_netStringTables { nullptr };
     IVEngineServer *_engineServer { nullptr };
     int _shortSmokeParticleType;
-    int _shortSmokeScreenParticleType;
     int _particleEffect;
 };
 
