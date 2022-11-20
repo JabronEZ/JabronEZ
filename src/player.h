@@ -139,7 +139,6 @@ public:
     void OnBumpWeaponPost(CBaseEntity *weaponEntity);
     CheckSlotOccupiedResult OnCheckSlotOccupied(CBaseEntity *weaponEntity) const;
     bool OnDropWeapon(CBaseEntity *weaponEntity) const;
-    GrenadeThrowTickRate OnDetermineGrenadeThrowTickRate() const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };

@@ -286,13 +286,20 @@ bool Player::IsAlive() const
     if (playerEntity == nullptr)
         return false;
 
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CBasePlayer", "m_lifeState", &sendpropInfo);
+    static unsigned int lifeStateOffset = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return false;
+    if (lifeStateOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CBasePlayer", "m_lifeState", &sendpropInfo);
 
-    uint8_t lifeState = *((uint8_t *)playerEntity + sendpropInfo.actual_offset);
+        if (sendpropInfo.prop == nullptr)
+            return false;
+
+        lifeStateOffset = sendpropInfo.actual_offset;
+    }
+
+    uint8_t lifeState = *((uint8_t *)playerEntity + lifeStateOffset);
     return lifeState == 0;
 }
 
@@ -355,26 +362,29 @@ CBaseEntity *Player::FindWeapon(const char *entityName) const
     if (playerEntity == nullptr)
         return nullptr;
 
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
+    static unsigned int myWeaponsOffset = 0;
+    static unsigned int myWeaponsDataTableSize = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return nullptr;
-
-    SendTable *dataTable = sendpropInfo.prop->GetDataTable();
-
-    if (dataTable == nullptr)
-        return nullptr;
-
-    size_t offset = sendpropInfo.actual_offset;
-    size_t numberOfProps = dataTable->GetNumProps();
-
-    for (size_t propIndex = 0; propIndex < numberOfProps; propIndex++)
+    if (myWeaponsOffset == 0)
     {
-        auto property = dataTable->GetProp((int)propIndex);
-        auto propertyActualOffset = offset + property->GetOffset();
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
 
-        auto *baseHandle = (CBaseHandle *)((uint8_t *)playerEntity + propertyActualOffset);
+        if (sendpropInfo.prop == nullptr)
+            return nullptr;
+
+        SendTable *dataTable = sendpropInfo.prop->GetDataTable();
+
+        if (dataTable == nullptr)
+            return nullptr;
+
+        myWeaponsOffset = sendpropInfo.actual_offset;
+        myWeaponsDataTableSize = dataTable->GetNumProps();
+    }
+
+    for (size_t propIndex = 0; propIndex < myWeaponsDataTableSize; propIndex++)
+    {
+        auto *baseHandle = (CBaseHandle *)((uint8_t *)playerEntity + myWeaponsOffset + (propIndex * 4));
 
         if (baseHandle == nullptr)
             continue;
@@ -759,15 +769,20 @@ CBaseEntity *Player::GetActiveWeapon() const
     if (playerEntity == nullptr)
         return nullptr;
 
-    // FIXME: Cache this once we look it up.
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hActiveWeapon", &sendpropInfo);
+    static unsigned int activeWeaponOffset = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return nullptr;
+    if (activeWeaponOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hActiveWeapon", &sendpropInfo);
 
-    auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + sendpropInfo.actual_offset);
+        if (sendpropInfo.prop == nullptr)
+            return nullptr;
 
+        activeWeaponOffset = sendpropInfo.actual_offset;
+    }
+
+    auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + activeWeaponOffset);
     return g_JabronEZ.GetEntityUtilities()->GetEntityFromHandle(weaponHandle);
 }
 
@@ -778,25 +793,31 @@ SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
     if (playerEntity == nullptr)
         return {};
 
-    // FIXME: Cache this once we look it up.
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
+    static unsigned int myWeaponsOffset = 0;
+    static unsigned int myWeaponsDataTableSize = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return {};
+    if (myWeaponsOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo{};
+        _gameHelpers->FindSendPropInfo("CCSPlayer", "m_hMyWeapons", &sendpropInfo);
 
-    auto dataTable = sendpropInfo.prop->GetDataTable();
+        if (sendpropInfo.prop == nullptr)
+            return {};
 
-    if (dataTable == nullptr)
-        return {};
+        auto dataTable = sendpropInfo.prop->GetDataTable();
 
-    auto dataTableSize = dataTable->GetNumProps();
+        if (dataTable == nullptr)
+            return {};
+
+        myWeaponsOffset = sendpropInfo.actual_offset;
+        myWeaponsDataTableSize = dataTable->GetNumProps();
+    }
 
     auto result = SourceHook::CVector<CBaseEntity *>();
 
-    for (int dataTableIndex = 0; dataTableIndex < dataTableSize; dataTableIndex++)
+    for (size_t dataTableIndex = 0; dataTableIndex < myWeaponsDataTableSize; dataTableIndex++)
     {
-        auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + sendpropInfo.actual_offset + (dataTableIndex * 4));
+        auto *weaponHandle = (CBaseHandle *)((uint8_t *)playerEntity + myWeaponsOffset + (dataTableIndex * 4));
 
         if (weaponHandle == nullptr)
             continue;
@@ -810,9 +831,4 @@ SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
     }
 
     return result;
-}
-
-GrenadeThrowTickRate Player::OnDetermineGrenadeThrowTickRate() const
-{
-    return GetGrenadeThrowTickRate();
 }

@@ -37,13 +37,20 @@ bool EntityUtilities::IsIncendiaryGrenade(CBaseEntity *entity) const
     if (entity == nullptr)
         return false;
 
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CMolotovProjectile", "m_bIsIncGrenade", &sendpropInfo);
+    static unsigned int isIncGrenadeOffset = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return false;
+    if (isIncGrenadeOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CMolotovProjectile", "m_bIsIncGrenade", &sendpropInfo);
 
-    uint8_t isIncendiary = *((uint8_t *)entity + sendpropInfo.actual_offset);
+        if (sendpropInfo.prop == nullptr)
+            return false;
+
+        isIncGrenadeOffset = sendpropInfo.actual_offset;
+    }
+
+    uint8_t isIncendiary = *((uint8_t *)entity + isIncGrenadeOffset);
     return isIncendiary != 0;
 }
 
@@ -60,15 +67,30 @@ CBaseEntity *EntityUtilities::GetProjectileThrower(CBaseEntity *entity) const
     if (entity == nullptr)
         return nullptr;
 
-    sm_sendprop_info_t throwerSendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CBaseCSGrenadeProjectile", "m_hThrower", &throwerSendpropInfo);
+    static unsigned int throwerOffset = 0;
+    static unsigned int ownerOffset = 0;
 
-    sm_sendprop_info_t ownerSendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &ownerSendpropInfo);
-
-    if (throwerSendpropInfo.prop != nullptr)
+    if (throwerOffset == 0)
     {
-        auto *throwerHandle = (CBaseHandle *)((uint8_t *)entity + throwerSendpropInfo.actual_offset);
+        sm_sendprop_info_t throwerSendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CBaseCSGrenadeProjectile", "m_hThrower", &throwerSendpropInfo);
+
+        if (throwerSendpropInfo.prop != nullptr)
+            throwerOffset = throwerSendpropInfo.actual_offset;
+    }
+
+    if (ownerOffset == 0)
+    {
+        sm_sendprop_info_t ownerSendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &ownerSendpropInfo);
+
+        if (ownerSendpropInfo.prop != nullptr)
+            ownerOffset = ownerSendpropInfo.actual_offset;
+    }
+
+    if (throwerOffset != 0)
+    {
+        auto *throwerHandle = (CBaseHandle *)((uint8_t *)entity + throwerOffset);
 
         if (throwerHandle != nullptr)
         {
@@ -79,9 +101,9 @@ CBaseEntity *EntityUtilities::GetProjectileThrower(CBaseEntity *entity) const
         }
     }
 
-    if (ownerSendpropInfo.prop != nullptr)
+    if (ownerOffset != 0)
     {
-        auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + ownerSendpropInfo.actual_offset);
+        auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + ownerOffset);
 
         if (ownerHandle != nullptr)
         {
@@ -100,13 +122,20 @@ CBaseEntity *EntityUtilities::GetWeaponOwner(CBaseEntity *entity) const
     if (entity == nullptr)
         return nullptr;
 
-    sm_sendprop_info_t sendpropInfo {};
-    _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &sendpropInfo);
+    static unsigned int ownerOffset = 0;
 
-    if (sendpropInfo.prop == nullptr)
-        return nullptr;
+    if (ownerOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        _gameHelpers->FindSendPropInfo("CBaseEntity", "m_hOwnerEntity", &sendpropInfo);
 
-    auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + sendpropInfo.actual_offset);
+        if (sendpropInfo.prop == nullptr)
+            return nullptr;
+
+        ownerOffset = sendpropInfo.actual_offset;
+    }
+
+    auto *ownerHandle = (CBaseHandle *)((uint8_t *)entity + ownerOffset);
 
     if (ownerHandle == nullptr)
         return nullptr;
@@ -119,28 +148,20 @@ CBaseEntity *EntityUtilities::GetEntityByIndex(int entityIndex, bool isPlayer) c
     edict_t *edict = _gameHelpers->EdictOfIndex(entityIndex);
 
     if (edict == nullptr || edict->IsFree())
-    {
         return nullptr;
-    }
 
     if (entityIndex > 0 && entityIndex <= _smPlayerManager->GetMaxClients())
     {
         IGamePlayer *gamePlayer = playerhelpers->GetGamePlayer(edict);
         if (gamePlayer == nullptr || !gamePlayer->IsConnected())
-        {
             return nullptr;
-        }
     }
     else if (isPlayer)
-    {
         return nullptr;
-    }
 
     IServerUnknown *serverUnknown;
     if ((serverUnknown = edict->GetUnknown()) == nullptr)
-    {
         return nullptr;
-    }
 
     return serverUnknown->GetBaseEntity();
 }

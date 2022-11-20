@@ -146,14 +146,10 @@ void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity)
     void *playerVtable = *(void **)playerEntity;
 
     if (g_CCSPlayerBumpWeaponHookId == 0)
-    {
         g_CCSPlayerBumpWeaponHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerBumpWeapon, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerBumpWeapon), false);
-    }
 
     if (g_CCSPlayerBumpWeaponPostHookId == 0)
-    {
         g_CCSPlayerBumpWeaponPostHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerBumpWeapon, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerBumpWeapon_Post), true);
-    }
 }
 
 bool Hook_Callback_CCSPlayerSlotOccupied(CBaseEntity *weapon)
@@ -191,36 +187,31 @@ void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
 
-    if (player == nullptr)
+    if (player == nullptr || player->GetGrenadeThrowTickRate() != GrenadeThrowTickRate_64)
         RETURN_META(MRES_IGNORED);
 
-    if (player->OnDetermineGrenadeThrowTickRate() != GrenadeThrowTickRate_64)
-        RETURN_META(MRES_IGNORED);
+    static unsigned int throwTimeOffset = 0;
 
-    sm_sendprop_info_t sendpropInfo {};
-    gamehelpers->FindSendPropInfo("CBaseCSGrenade", "m_fThrowTime", &sendpropInfo);
+    if (throwTimeOffset == 0)
+    {
+        sm_sendprop_info_t sendpropInfo {};
+        gamehelpers->FindSendPropInfo("CBaseCSGrenade", "m_fThrowTime", &sendpropInfo);
 
-    if (sendpropInfo.prop == nullptr)
-        RETURN_META(MRES_IGNORED);
+        if (sendpropInfo.prop == nullptr)
+            RETURN_META(MRES_IGNORED);
 
-    float oldValue = *(float*)((uint8_t *)weaponEntity + sendpropInfo.actual_offset);
+        throwTimeOffset = sendpropInfo.actual_offset;
+    }
+
     float newValue = g_JabronEZ.GetGlobalVars()->curtime + 0.109375f;
-
-    *(float*)((uint8_t *)weaponEntity + sendpropInfo.actual_offset) = newValue;
+    *(float*)((uint8_t *)weaponEntity + throwTimeOffset) = newValue;
 
     RETURN_META(MRES_IGNORED);
 }
 
-void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity)
+void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, GrenadeType grenadeType)
 {
     if (weaponEntity == nullptr)
-        return;
-
-    const char *className = gamehelpers->GetEntityClassname(weaponEntity);
-
-    GrenadeType grenadeType = GetGrenadeTypeFromWeaponClassName(className);
-
-    if (grenadeType == GrenadeType_UNKNOWN)
         return;
 
     int grenadeTypeIndex = (int)grenadeType;
@@ -235,15 +226,10 @@ void Hook_Callback_CCSPlayerWeaponEquip(CBaseEntity *weaponEntity)
 {
     const char *weaponEntityClassName = gamehelpers->GetEntityClassname(weaponEntity);
 
-    if (strcmp(weaponEntityClassName, "weapon_flashbang") == 0
-        || strcmp(weaponEntityClassName, "weapon_molotov") == 0
-        || strcmp(weaponEntityClassName, "weapon_incgrenade") == 0
-        || strcmp(weaponEntityClassName, "weapon_decoy") == 0
-        || strcmp(weaponEntityClassName, "weapon_smokegrenade") == 0
-        || strcmp(weaponEntityClassName, "weapon_hegrenade") == 0)
-    {
-        Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(weaponEntity);
-    }
+    GrenadeType grenadeType = GetGrenadeTypeFromWeaponClassName(weaponEntityClassName);
+
+    if (grenadeType != GrenadeType_UNKNOWN)
+        Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(weaponEntity, grenadeType);
 
     RETURN_META(MRES_IGNORED);
 }
