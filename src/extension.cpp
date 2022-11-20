@@ -109,17 +109,15 @@ bool JabronEZ::SDK_OnLoad(char *error, size_t maxlength, bool late)
     _entityUtilities = new EntityUtilities(gamehelpers, playerhelpers);
     _drawSpotsTimer = new DrawSpotsTimer(timersys, engine);
     _temporaryEntities = new TemporaryEntities(gamehelpers, engine);
-    _gameEventsManager->SetGameHelpers(gamehelpers);
+
+    if (_gameEventsManager != nullptr)
+        _gameEventsManager->SetGameHelpers(gamehelpers);
 
     if (!_translations->Init(error, maxlength))
-    {
         return false;
-    }
 
     if (!_temporaryEntities->Init(sdktoolsGameConfig, error, maxlength))
-    {
         return false;
-    }
 
     if (late)
         _drawSpotsTimer->Init();
