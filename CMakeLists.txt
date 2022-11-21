@@ -106,8 +106,8 @@ add_library(jabronez SHARED
         src/timers/grenade_trigger_playback_timer.h
         src/timers/grenade_goto_next_spot_or_finish_timer.cpp
         src/timers/grenade_goto_next_spot_or_finish_timer.h
-        src/game_events_manager.cpp
-        src/game_events_manager.h
+        src/events/game_events_manager.cpp
+        src/events/game_events_manager.h
         src/sdk_variant_t.cpp
         src/sdk_variant_t.h
         src/particle_manager.cpp
@@ -297,6 +297,7 @@ target_include_directories(jabronez PRIVATE
     src/callables
     src/players
     src/console
+    src/events
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
