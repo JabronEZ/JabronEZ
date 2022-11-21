@@ -88,14 +88,14 @@ add_library(jabronez SHARED
         src/projectile_parameters.h
         src/hud_utilities.cpp
         src/hud_utilities.h
-        src/entity_utilities.cpp
-        src/entity_utilities.h
+        src/entities/entity_utilities.cpp
+        src/entities/entity_utilities.h
         src/timers/draw_spots_timer.cpp
         src/timers/draw_spots_timer.h
-        src/temporary_entities.cpp
-        src/temporary_entities.h
-        src/temporary_entity_creator.cpp
-        src/temporary_entity_creator.h
+        src/entities/temporary_entities.cpp
+        src/entities/temporary_entities.h
+        src/entities/temporary_entity_creator.cpp
+        src/entities/temporary_entity_creator.h
         src/recipient_filter.cpp
         src/recipient_filter.h
         src/timers/player_timer.cpp
@@ -298,6 +298,7 @@ target_include_directories(jabronez PRIVATE
     src/players
     src/console
     src/events
+    src/entities
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
