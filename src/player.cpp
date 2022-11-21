@@ -32,7 +32,6 @@
 #include <iplayerinfo.h>
 #include "basehandle.h"
 #include "vector.h"
-#include "utlvector.h"
 #include <shareddefs.h>
 #include "usercmd.h"
 #include "filesystem.h"
@@ -365,6 +364,23 @@ void Player::DoToggleGodMode()
 
 void Player::DoToggleNoClip()
 {
+    auto newNoClip = !GetNoClip();
+    SetNoClip(newNoClip);
+
+    int clientIndex = GetClientIndex();
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            2,
+            nullptr,
+            newNoClip ? "Grenades noclip enabled" : "Grenades noclip disabled",
+            &clientIndex);
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 }
 
 CBaseEntity *Player::GiveNamedItem(const char *entityName) const
@@ -866,4 +882,76 @@ SourceHook::CVector<CBaseEntity *> Player::GetAllWeapons() const
     }
 
     return result;
+}
+
+unsigned int Player::GetMoveTypeOffset() const
+{
+    static unsigned int moveTypeOffset = 0;
+
+    if (moveTypeOffset != 0)
+        return moveTypeOffset;
+
+    auto playerEntity = GetEntity();
+
+    if (playerEntity == nullptr)
+        return 0;
+
+    auto dataMap = _gameHelpers->GetDataMap(playerEntity);
+
+    if (dataMap == nullptr)
+        return 0;
+
+    sm_datatable_info_t dataTableInfo;
+
+    if (!_gameHelpers->FindDataMapInfo(dataMap, "m_MoveType", &dataTableInfo))
+        return 0;
+
+    moveTypeOffset = dataTableInfo.actual_offset;
+    return moveTypeOffset;
+}
+
+bool Player::GetNoClip() const
+{
+    if (!IsAlive())
+        return false;
+
+    auto playerEntity = GetEntity();
+
+    if (playerEntity == nullptr)
+        return false;
+
+    unsigned int moveTypeOffset = GetMoveTypeOffset();
+
+    if (moveTypeOffset == 0)
+        return false;
+
+    auto currentMoveType = *((uint8_t*)playerEntity + moveTypeOffset);
+    return currentMoveType == MOVETYPE_NOCLIP;
+}
+
+void Player::SetNoClip(bool noClip)
+{
+    if (!IsAlive())
+        return;
+
+    unsigned int moveTypeOffset = GetMoveTypeOffset();
+
+    if (moveTypeOffset == 0)
+        return;
+
+    auto playerEntity = GetEntity();
+
+    if (playerEntity == nullptr)
+        return;
+
+    if (noClip)
+    {
+        *((uint8_t*)playerEntity + moveTypeOffset) = MOVETYPE_NOCLIP;
+        return;
+    }
+
+    auto currentMoveType = *((uint8_t*)playerEntity + moveTypeOffset);
+
+    if (currentMoveType == MOVETYPE_NOCLIP)
+        *((uint8_t*)playerEntity + moveTypeOffset) = MOVETYPE_WALK;
 }

@@ -52,9 +52,6 @@ public:
     GodMode GetGodMode() const { return _godMode; }
     void SetGodMode(GodMode godMode) { _godMode = godMode; }
 
-    bool GetNoClip() const { return _noClip; }
-    void SetNoClip(bool noClip) { _noClip = noClip; }
-
     bool GetShortGrenades() const { return _shortGrenades; }
     void SetShortGrenades(bool shortGrenades) { _shortGrenades = shortGrenades; }
 
@@ -107,6 +104,9 @@ public:
     CBaseEntity *FindWeapon(const char *entityName) const;
     void RemoveWeapon(CBaseEntity *weaponEntity) const;
 
+    bool GetNoClip() const;
+    void SetNoClip(bool noClip);
+
     Vector GetAbsOrigin() const;
     QAngle GetEyeAngles() const;
     CBaseEntity *GetActiveWeapon() const;
@@ -145,6 +145,8 @@ public:
     bool OnDropWeapon(CBaseEntity *weaponEntity) const;
 
 private:
+    unsigned int GetMoveTypeOffset() const;
+
     IGameHelpers *_gameHelpers { nullptr };
     ITimerSystem *_timerSystem { nullptr };
     int _clientIndex { -1 };
@@ -153,7 +155,6 @@ private:
     SourceHook::CVector<Spot> _grenadeSpots;
     GodMode _godMode { GodMode_OFF };
     GrenadeThrowTickRate _grenadeThrowTickRate { GrenadeThrowTickRate_128 };
-    bool _noClip { false };
     bool _grenadePlaybackEnabled { false };
     bool _grenadePlaybackStarted { false };
     bool _grenadePlaybackStarting { false };
