@@ -338,6 +338,27 @@ void Player::DoToggleGrenadeThrowTickRate()
     g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
 }
 
+void Player::DoToggleShortGrenades()
+{
+    SetShortGrenades(!GetShortGrenades());
+
+    int clientIndex = GetClientIndex();
+
+    char message[1024];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            message,
+            sizeof(message),
+            "%T",
+            3,
+            nullptr,
+            "Grenades short grenades changed",
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetShortGrenadesTranslationPhrase(GetShortGrenades()));
+
+    g_JabronEZ.GetHudUtilities()->PrintToChat(this, message);
+}
+
 void Player::DoToggleGodMode()
 {
 }
@@ -633,14 +654,15 @@ float GetDelayPostDetonation(GrenadeType grenadeType)
 
 void Player::OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference)
 {
-    if (grenadeType == GrenadeType_SMOKE)
+    // FIXME: We have a hook for `CSmokeGrenadeProjectileDetonate`, does it make sense to move this logic there to prevent needing to jump back and forth?
+    if (grenadeType == GrenadeType_SMOKE && GetShortGrenades())
     {
         auto projectileEntity = _gameHelpers->ReferenceToEntity(projectileReference);
         if (projectileEntity != nullptr)
         {
             auto projectileOrigin = g_JabronEZ.GetEntityUtilities()->GetEntityAbsOrigin(projectileEntity);
             g_JabronEZ.GetParticleManager()->CreateShortSmoke(projectileOrigin, QAngle(0, 0, 0));
-            auto timer = new RemoveShortSmokeTimer(projectileEntity, _timerSystem, _gameHelpers);
+            new RemoveShortSmokeTimer(projectileEntity, _timerSystem, _gameHelpers);
         }
     }
 

@@ -182,4 +182,8 @@ JEZ_HOOK_MEMBER_DECL3_VOID(
         bool,
         unk2);
 
+JEZ_HOOK_MEMBER_DECL0_VOID(
+        CSmokeGrenadeProjectileDetonate,
+        CBaseEntity);
+
 #endif

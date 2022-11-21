@@ -73,6 +73,8 @@ void MenuManager::OnMenuSelect2(
          player->DoTogglePlayback();
      else if (strcmp(itemKey, "fast_forward") == 0)
          player->DoFastForward();
+     else if (strcmp(itemKey, "short_grenades") == 0)
+         player->DoToggleShortGrenades();
      else if (strcmp(itemKey, "god") == 0)
          player->DoToggleGodMode();
      else if (strcmp(itemKey, "grenade_throw_tickrate") == 0)
@@ -270,6 +272,28 @@ void AppendGrenadeThrowTickRateMenuItem(
                                                        ITEMDRAW_DEFAULT));
 }
 
+void AppendShortGrenadesMenuItem(
+        IBaseMenu *menu,
+        int clientIndex,
+        Player *player)
+{
+    char godModeMenuItem[512];
+
+    g_JabronEZ.GetTranslations()->FormatTranslated(
+            godModeMenuItem,
+            sizeof(godModeMenuItem),
+            "%T",
+            3,
+            nullptr,
+            "Grenades menu short grenades",
+            &clientIndex,
+            g_JabronEZ.GetTranslations()->GetShortGrenadesTranslationPhrase(player->GetShortGrenades()));
+
+    menu->AppendItem("short_grenades", ItemDrawInfo(
+                                    godModeMenuItem,
+                                    ITEMDRAW_DEFAULT));
+}
+
 void AppendGodModeMenuItem(
         IBaseMenu *menu,
         int clientIndex,
@@ -338,6 +362,7 @@ void MenuManager::OpenMenu(Player *player, size_t pageNumber)
     AppendPlaybackMenuItem(menu, clientIndex, player, spotCount, grenadesMenuOn, grenadesMenuOff);
     AppendFastForwardMenuItem(menu, clientIndex, player);
     AppendGrenadeThrowTickRateMenuItem(menu, clientIndex, player);
+    AppendShortGrenadesMenuItem(menu, clientIndex, player);
     AppendGodModeMenuItem(menu, clientIndex, player);
     AppendNoClipMenuItem(menu, clientIndex, player, grenadesMenuOn, grenadesMenuOff);
 

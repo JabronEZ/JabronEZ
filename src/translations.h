@@ -42,6 +42,7 @@ public:
             ...);
 
     const char *GetGrenadeTranslationPhrase(GrenadeType grenadeType);
+    const char *GetShortGrenadesTranslationPhrase(bool shortGrenades);
     const char *GetGodModeTranslationPhrase(GodMode godMode);
     const char *GetGrenadeThrowTickRateTranslationPhrase(GrenadeThrowTickRate grenadeThrowTickRate);
     const char *GetProjectileModeTranslationPhrase(ProjectileMode projectileMode);

@@ -55,6 +55,9 @@ public:
     bool GetNoClip() const { return _noClip; }
     void SetNoClip(bool noClip) { _noClip = noClip; }
 
+    bool GetShortGrenades() const { return _shortGrenades; }
+    void SetShortGrenades(bool shortGrenades) { _shortGrenades = shortGrenades; }
+
     bool GetGrenadePlaybackEnabled() const { return _grenadePlaybackEnabled; }
     void SetGrenadePlaybackEnabled(bool grenadePlaybackEnabled) { _grenadePlaybackEnabled = grenadePlaybackEnabled; }
 
@@ -129,6 +132,7 @@ public:
     void DoRemoveSpot();
     void DoTogglePlayback();
     void DoFastForward();
+    void DoToggleShortGrenades();
     void DoToggleGodMode();
     void DoToggleNoClip();
     void DoToggleGrenadeThrowTickRate();
@@ -154,6 +158,7 @@ private:
     bool _grenadePlaybackStarted { false };
     bool _grenadePlaybackStarting { false };
     bool _grenadeAwaitingDetonation { false };
+    bool _shortGrenades { true };
     ProjectileParameters _projectileParameters { Vector(0.0f, 0.0f, 0.0f), QAngle(0.0f, 0.0f, 0.0f), Vector(0.0f, 0.0f, 0.0f), Vector(0.0f, 0.0f, 0.0f) };
     size_t _grenadeCurrentSpotIndex { 0 };
     GrenadeType _grenadeType { GrenadeType_FLASH };

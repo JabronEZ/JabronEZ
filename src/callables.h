@@ -91,6 +91,22 @@ JEZ_CALLABLES_MEMBER_OFFSET_DECL0(
         CBaseEntity,
         int);
 
+#ifdef WIN32
+JEZ_CALLABLES_MEMBER_OFFSET_DECL5(
+        AcceptEntityInput,
+        CBaseEntity,
+        bool,
+        const char *,
+        inputName,
+        CBaseEntity *,
+        activator,
+        CBaseEntity *,
+        caller,
+        SDKVariantT,
+        value,
+        int,
+        outputId);
+#else
 JEZ_CALLABLES_MEMBER_OFFSET_DECL5(
         AcceptEntityInput,
         CBaseEntity,
@@ -105,6 +121,7 @@ JEZ_CALLABLES_MEMBER_OFFSET_DECL5(
         value,
         int,
         outputId);
+#endif
 
 extern int Callables_Offset_CCSWeaponDataClassName;
 

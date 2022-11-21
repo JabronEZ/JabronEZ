@@ -120,6 +120,14 @@ const char *Translations::GetGrenadeThrowTickRateTranslationPhrase(GrenadeThrowT
     return "";
 }
 
+const char *Translations::GetShortGrenadesTranslationPhrase(bool shortGrenades)
+{
+    if (shortGrenades)
+        return "Grenades short grenades on";
+
+    return "Grenades short grenades off";
+}
+
 const char *Translations::GetGodModeTranslationPhrase(GodMode godMode)
 {
     switch (godMode)

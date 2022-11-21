@@ -202,7 +202,11 @@ void EntityUtilities::KillEntity(CBaseEntity *entity)
         return;
 
     SDKVariantT voidVariant;
+#ifdef WIN32
+    Callables_Call_AcceptEntityInput(entity, "kill", nullptr, nullptr, voidVariant, 0);
+#else
     Callables_Call_AcceptEntityInput(entity, "kill", nullptr, nullptr, &voidVariant, 0);
+#endif
 }
 
 Vector EntityUtilities::GetEntityAbsOrigin(CBaseEntity *entity) const

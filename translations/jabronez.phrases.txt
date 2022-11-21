@@ -266,6 +266,11 @@
         "en"    "!tickrate - Toggle grenade throw tick rate."
     }
 
+    "Grenades help menu short grenades title"
+    {
+        "en"    "!shortgrenades - Toggle short grenades."
+    }
+
     "Grenades help menu god title"
     {
         "en"    "!god - Toggle god mode."
@@ -349,6 +354,11 @@
     "Grenades help menu grenade throw tickrate item"
     {
         "en"    "!tickrate - Toggle grenade throw tickrate."
+    }
+
+    "Grenades help menu short grenades item"
+    {
+        "en"    "!shortgrenades - Toggle short grenades."
     }
 
     "Grenades help menu god item"
@@ -1244,6 +1254,12 @@
         "en"        "Grenade Throw TickRate changed to: {1}"
     }
 
+    "Grenades short grenades changed"
+    {
+        "#format"   "{1:t}"
+        "en"        "Short Grenades changed to: {1}"
+    }
+
     "Grenades god mode changed"
     {
         "#format"   "{1:t}"
@@ -1254,6 +1270,12 @@
     {
         "#format"   "{1:t}"
         "en"        "Grenade Throw TickRate: {1} (!tickrate)"
+    }
+
+    "Grenades menu short grenades"
+    {
+        "#format"   "{1:t}"
+        "en"        "Short Grenades: {1} (!shortgrenades)"
     }
 
     "Grenades menu god mode"
@@ -1376,6 +1398,16 @@
     "Grenades grenade throw tickrate 128"
     {
         "en"        "128"
+    }
+
+    "Grenades short grenades off"
+    {
+        "en"        "OFF"
+    }
+
+    "Grenades short grenades on"
+    {
+        "en"        "ON"
     }
 
     "Grenades god mode off"
