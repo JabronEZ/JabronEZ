@@ -43,7 +43,7 @@ void Hook_Callback_PlayerRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
     RETURN_META(MRES_IGNORED);
 }
 
-void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity)
+void Hooks_MaybeSetupPlayerRunCmdHook(CBaseEntity *playerEntity)
 {
     if (playerEntity == nullptr)
         return;

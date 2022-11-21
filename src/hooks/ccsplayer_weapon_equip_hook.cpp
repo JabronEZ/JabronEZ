@@ -31,12 +31,12 @@ void Hook_Callback_CCSPlayerWeaponEquip(CBaseEntity *weaponEntity)
     GrenadeType grenadeType = GetGrenadeTypeFromWeaponClassName(weaponEntityClassName);
 
     if (grenadeType != GrenadeType_UNKNOWN)
-        Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(weaponEntity, grenadeType);
+        Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrowHook(weaponEntity, grenadeType);
 
     RETURN_META(MRES_IGNORED);
 }
 
-void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity)
+void Hooks_MaybeSetupCCSPlayerWeaponEquipHook(CBaseEntity *playerEntity)
 {
     if (playerEntity == nullptr)
         return;

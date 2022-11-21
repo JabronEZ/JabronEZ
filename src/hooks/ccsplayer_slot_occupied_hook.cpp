@@ -38,7 +38,7 @@ bool Hook_Callback_CCSPlayerSlotOccupied(CBaseEntity *weapon)
     RETURN_META_VALUE(MRES_SUPERCEDE, checkOccupiedResult == CheckSlotOccupiedResult::Occupied);
 }
 
-void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity)
+void Hooks_MaybeSetupCCSPlayerSlotOccupiedHook(CBaseEntity *playerEntity)
 {
     if (playerEntity == nullptr)
         return;

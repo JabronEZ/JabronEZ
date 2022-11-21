@@ -21,7 +21,7 @@
 
 #include "smsdk_ext.h"
 
-void MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile);
+void Hooks_MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile);
 bool Hooks_Init_CMolotovProjectileDetonateHook(
         IGameConfig *gameConfig,
         char *error,

@@ -23,7 +23,7 @@
 
 class CBaseEntity;
 
-void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerBumpWeaponHook(CBaseEntity *playerEntity);
 bool Hooks_Init_CCSPlayerBumpWeaponHook(
         IGameConfig *gameConfig,
         char *error,

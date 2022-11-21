@@ -46,7 +46,7 @@ bool Hook_Callback_CCSPlayerBumpWeapon_Post(CBaseEntity *weapon)
     RETURN_META_VALUE(MRES_IGNORED, false);
 }
 
-void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity)
+void Hooks_MaybeSetupCCSPlayerBumpWeaponHook(CBaseEntity *playerEntity)
 {
     if (playerEntity == nullptr)
         return;

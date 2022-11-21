@@ -43,7 +43,7 @@ void Hook_Callback_CMolotovProjectileDetonate()
     RETURN_META(MRES_IGNORED);
 }
 
-void MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile)
+void Hooks_MaybeSetupCMolotovProjectileDetonateHook(CBaseEntity *molotovProjectile)
 {
     if (molotovProjectile == nullptr)
         return;

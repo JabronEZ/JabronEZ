@@ -67,10 +67,10 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
 
         if (playerEntity != nullptr)
         {
-            Hooks_MaybeSetupPlayerRunCmd(playerEntity);
-            Hooks_MaybeSetupCCSPlayerBumpWeapon(playerEntity);
-            Hooks_MaybeSetupCCSPlayerSlotOccupied(playerEntity);
-            Hooks_MaybeSetupCCSPlayerWeaponEquip(playerEntity);
+            Hooks_MaybeSetupPlayerRunCmdHook(playerEntity);
+            Hooks_MaybeSetupCCSPlayerBumpWeaponHook(playerEntity);
+            Hooks_MaybeSetupCCSPlayerSlotOccupiedHook(playerEntity);
+            Hooks_MaybeSetupCCSPlayerWeaponEquipHook(playerEntity);
         }
 
         if (player->IsAlive())

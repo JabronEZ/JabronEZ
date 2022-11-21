@@ -57,7 +57,7 @@ void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
     RETURN_META(MRES_IGNORED);
 }
 
-void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, GrenadeType grenadeType)
+void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrowHook(CBaseEntity *weaponEntity, GrenadeType grenadeType)
 {
     if (weaponEntity == nullptr)
         return;

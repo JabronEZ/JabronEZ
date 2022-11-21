@@ -28,7 +28,7 @@ enum class CheckSlotOccupiedResult
     Occupied
 };
 
-void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerSlotOccupiedHook(CBaseEntity *playerEntity);
 bool Hooks_Init_CCSPlayerSlotOccupiedHook(
         IGameConfig *gameConfig,
         char *error,

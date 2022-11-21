@@ -264,7 +264,7 @@ JEZ_HOOK_STATIC_DEF6(
     TriggerOnProjectileCreated(player, origin, angle, velocity, angularImpulse, grenadeItemDefinitionIndex);
     auto molotovProjectile = Hook_Call_MolotovProjectileCreate(origin, angle, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
 
-    MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
+    Hooks_MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
 
     return molotovProjectile;
 }

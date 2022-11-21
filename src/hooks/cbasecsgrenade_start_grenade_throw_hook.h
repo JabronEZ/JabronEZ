@@ -22,7 +22,7 @@
 #include "smsdk_ext.h"
 #include "weapon_identifiers.h"
 
-void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, GrenadeType grenadeType);
+void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrowHook(CBaseEntity *weaponEntity, GrenadeType grenadeType);
 bool Hooks_Init_CBaseCSGrenadeStartGrenadeThrowHook(
         IGameConfig *gameConfig,
         char *error,

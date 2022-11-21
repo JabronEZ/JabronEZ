@@ -24,7 +24,7 @@
 class CUserCmd;
 class CBaseEntity;
 
-void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupPlayerRunCmdHook(CBaseEntity *playerEntity);
 bool Hooks_Init_PlayerRunCmdHook(
         IGameConfig *sdktoolsGameConfig,
         char *error,

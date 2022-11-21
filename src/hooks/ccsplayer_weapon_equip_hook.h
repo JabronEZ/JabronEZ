@@ -23,7 +23,7 @@
 
 class CBaseEntity;
 
-void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity);
+void Hooks_MaybeSetupCCSPlayerWeaponEquipHook(CBaseEntity *playerEntity);
 bool Hooks_Init_CCSPlayerWeaponEquipHook(
         IGameConfig *gameConfig,
         char *error,
