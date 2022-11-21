@@ -70,6 +70,8 @@ add_library(jabronez SHARED
         src/hooks/ccsplayer_bump_weapon_hook.h
         src/hooks/ccsplayer_slot_occupied_hook.cpp
         src/hooks/ccsplayer_slot_occupied_hook.h
+        src/hooks/ccsplayer_weapon_equip_hook.cpp
+        src/hooks/ccsplayer_weapon_equip_hook.h
         src/hooks/hooks_macros.h
         src/callables/callables.cpp
         src/callables/callables.h

@@ -38,8 +38,6 @@ bool Hooks_Init(
 
 void Hooks_Cleanup();
 
-void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity);
-
 #ifdef _WIN32
 extern CDetour *g_DetourSmokeProjectileCreate;
 extern CDetour *g_DetourFlashbangProjectileCreate;

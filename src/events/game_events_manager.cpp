@@ -26,6 +26,7 @@
 #include "player_run_cmd_hook.h"
 #include "ccsplayer_bump_weapon_hook.h"
 #include "ccsplayer_slot_occupied_hook.h"
+#include "ccsplayer_weapon_equip_hook.h"
 #include "particle_manager.h"
 
 GameEventsManager::GameEventsManager()

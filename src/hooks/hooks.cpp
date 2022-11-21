@@ -21,6 +21,7 @@
 #include "player_run_cmd_hook.h"
 #include "ccsplayer_bump_weapon_hook.h"
 #include "ccsplayer_slot_occupied_hook.h"
+#include "ccsplayer_weapon_equip_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -29,9 +30,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-SH_DECL_MANUALHOOK1_void(CCSPlayerWeaponEquip, 0, 0, 0, CBaseEntity*);
-int g_CCSPlayerWeaponEquipHookId = 0;
 
 SH_DECL_MANUALHOOK0_void(CBaseCSGrenadeStartGrenadeThrow, 0, 0, 0);
 int g_StartGrenadeThrowHookId[GrenadeType_COUNT] = { 0, 0, 0, 0, 0, 0 };
@@ -92,30 +90,6 @@ void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, 
     {
         void *weaponVtable = *(void **)weaponEntity;
         g_StartGrenadeThrowHookId[grenadeTypeIndex] = SH_ADD_MANUALDVPHOOK(CBaseCSGrenadeStartGrenadeThrow, weaponVtable, SH_STATIC(Hook_Callback_CBaseCSGrenadeStartGrenadeThrow), true);
-    }
-}
-
-void Hook_Callback_CCSPlayerWeaponEquip(CBaseEntity *weaponEntity)
-{
-    const char *weaponEntityClassName = gamehelpers->GetEntityClassname(weaponEntity);
-
-    GrenadeType grenadeType = GetGrenadeTypeFromWeaponClassName(weaponEntityClassName);
-
-    if (grenadeType != GrenadeType_UNKNOWN)
-        Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(weaponEntity, grenadeType);
-
-    RETURN_META(MRES_IGNORED);
-}
-
-void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity)
-{
-    if (playerEntity == nullptr)
-        return;
-
-    if (g_CCSPlayerWeaponEquipHookId == 0)
-    {
-        void *playerVtable = *(void **)playerEntity;
-        g_CCSPlayerWeaponEquipHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerWeaponEquip, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerWeaponEquip), false);
     }
 }
 
@@ -501,17 +475,9 @@ bool Hooks_Init(
     if (!Hooks_Init_CMolotovProjectileDetonateHook(gameConfig, error, maxlength)
         || !Hooks_Init_PlayerRunCmdHook(sdktoolsGameConfig, error, maxlength)
         || !Hooks_Init_CCSPlayerBumpWeaponHook(gameConfig, error, maxlength)
-        || !Hooks_Init_CCSPlayerSlotOccupiedHook(gameConfig, error, maxlength))
+        || !Hooks_Init_CCSPlayerSlotOccupiedHook(gameConfig, error, maxlength)
+        || !Hooks_Init_CCSPlayerWeaponEquipHook(gameConfig, error, maxlength))
         return false;
-
-    int csPlayerWeaponEquip;
-    if (!gameConfig->GetOffset("CCSPlayerWeaponEquip", &csPlayerWeaponEquip))
-    {
-        snprintf(error, maxlength, "Unable to find offset for %s\n", "CCSPlayerWeaponEquip");
-        return false;
-    }
-
-    SH_MANUALHOOK_RECONFIGURE(CCSPlayerWeaponEquip, csPlayerWeaponEquip, 0, 0);
 
     int grenadeStartGrenadeThrowOffset;
     if (!gameConfig->GetOffset("CBaseCSGrenadeStartGrenadeThrow", &grenadeStartGrenadeThrowOffset))
@@ -558,6 +524,7 @@ void Hooks_Cleanup()
     Hooks_Cleanup_PlayerRunCmdHook();
     Hooks_Cleanup_CCSPlayerBumpWeaponHook();
     Hooks_Cleanup_CCSPlayerSlotOccupiedHook();
+    Hooks_Cleanup_CCSPlayerWeaponEquipHook();
 
     for (int grenadeTypeIndex = 0; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
     {
