@@ -90,34 +90,34 @@ add_library(jabronez SHARED
         src/hud_utilities.h
         src/entity_utilities.cpp
         src/entity_utilities.h
-        src/draw_spots_timer.cpp
-        src/draw_spots_timer.h
+        src/timers/draw_spots_timer.cpp
+        src/timers/draw_spots_timer.h
         src/temporary_entities.cpp
         src/temporary_entities.h
         src/temporary_entity_creator.cpp
         src/temporary_entity_creator.h
         src/recipient_filter.cpp
         src/recipient_filter.h
-        src/player_timer.cpp
-        src/player_timer.h
-        src/handle_playback_timer.cpp
-        src/handle_playback_timer.h
-        src/grenade_trigger_playback_timer.cpp
-        src/grenade_trigger_playback_timer.h
-        src/grenade_goto_next_spot_or_finish_timer.cpp
-        src/grenade_goto_next_spot_or_finish_timer.h
+        src/timers/player_timer.cpp
+        src/timers/player_timer.h
+        src/timers/handle_playback_timer.cpp
+        src/timers/handle_playback_timer.h
+        src/timers/grenade_trigger_playback_timer.cpp
+        src/timers/grenade_trigger_playback_timer.h
+        src/timers/grenade_goto_next_spot_or_finish_timer.cpp
+        src/timers/grenade_goto_next_spot_or_finish_timer.h
         src/game_events_manager.cpp
         src/game_events_manager.h
         src/sdk_variant_t.cpp
         src/sdk_variant_t.h
         src/particle_manager.cpp
         src/particle_manager.h
-        src/remove_short_smoke_timer.cpp
-        src/remove_short_smoke_timer.h
-        src/entity_timer.cpp
-        src/entity_timer.h
-        src/simple_timer.cpp
-        src/simple_timer.h
+        src/timers/remove_short_smoke_timer.cpp
+        src/timers/remove_short_smoke_timer.h
+        src/timers/entity_timer.cpp
+        src/timers/entity_timer.h
+        src/timers/simple_timer.cpp
+        src/timers/simple_timer.h
         ${SMEXTCPP}
         ${CDETOURCPP}
         ${ASMCPP}
@@ -292,6 +292,7 @@ endif ()
 
 target_include_directories(jabronez PRIVATE
 	src
+    src/timers
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
