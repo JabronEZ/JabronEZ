@@ -26,13 +26,6 @@
 
 class CDetour;
 
-enum class CheckSlotOccupiedResult
-{
-    UseOriginal,
-    NotOccupied,
-    Occupied
-};
-
 // The reason that all these methods are static is due to the nature of detouring methods.
 // Primarily, the callbacks for hooks can not capture additional arguments/context.
 // Since we already have this limitation, we can prevent the need for passing around context by just embracing global scope here.
@@ -45,9 +38,6 @@ bool Hooks_Init(
 
 void Hooks_Cleanup();
 
-void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity);
-void Hooks_MaybeSetupCCSPlayerBumpWeapon(CBaseEntity *playerEntity);
-void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity);
 void Hooks_MaybeSetupCCSPlayerWeaponEquip(CBaseEntity *playerEntity);
 
 #ifdef _WIN32

@@ -20,6 +20,7 @@
 #include "cmolotov_projectile_detonate_hook.h"
 #include "player_run_cmd_hook.h"
 #include "ccsplayer_bump_weapon_hook.h"
+#include "ccsplayer_slot_occupied_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -28,9 +29,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-SH_DECL_MANUALHOOK1(CCSPlayerSlotOccupied, 0, 0, 0, bool, CBaseEntity*);
-int g_CCSPlayerSlotOccupiedHookId = 0;
 
 SH_DECL_MANUALHOOK1_void(CCSPlayerWeaponEquip, 0, 0, 0, CBaseEntity*);
 int g_CCSPlayerWeaponEquipHookId = 0;
@@ -50,31 +48,6 @@ void TriggerOnProjectileCreated(
 
     if (player != nullptr)
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
-}
-
-bool Hook_Callback_CCSPlayerSlotOccupied(CBaseEntity *weapon)
-{
-    auto playerEntity = META_IFACEPTR(CBaseEntity);
-
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
-    auto checkOccupiedResult = player->OnCheckSlotOccupied(weapon);
-
-    if (checkOccupiedResult == CheckSlotOccupiedResult::UseOriginal)
-        RETURN_META_VALUE(MRES_IGNORED, false);
-
-    RETURN_META_VALUE(MRES_SUPERCEDE, checkOccupiedResult == CheckSlotOccupiedResult::Occupied);
-}
-
-void Hooks_MaybeSetupCCSPlayerSlotOccupied(CBaseEntity *playerEntity)
-{
-    if (playerEntity == nullptr)
-        return;
-
-    if (g_CCSPlayerSlotOccupiedHookId == 0)
-    {
-        void *playerVtable = *(void **)playerEntity;
-        g_CCSPlayerSlotOccupiedHookId = SH_ADD_MANUALDVPHOOK(CCSPlayerSlotOccupied, playerVtable, SH_STATIC(Hook_Callback_CCSPlayerSlotOccupied), false);
-    }
 }
 
 void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
@@ -527,17 +500,9 @@ bool Hooks_Init(
 
     if (!Hooks_Init_CMolotovProjectileDetonateHook(gameConfig, error, maxlength)
         || !Hooks_Init_PlayerRunCmdHook(sdktoolsGameConfig, error, maxlength)
-        || !Hooks_Init_CCSPlayerBumpWeaponHook(gameConfig, error, maxlength))
+        || !Hooks_Init_CCSPlayerBumpWeaponHook(gameConfig, error, maxlength)
+        || !Hooks_Init_CCSPlayerSlotOccupiedHook(gameConfig, error, maxlength))
         return false;
-
-    int csPlayerSlotOccupiedOffset;
-    if (!gameConfig->GetOffset("CCSPlayerSlotOccupied", &csPlayerSlotOccupiedOffset))
-    {
-        snprintf(error, maxlength, "Unable to find offset for %s\n", "CCSPlayerSlotOccupied");
-        return false;
-    }
-
-    SH_MANUALHOOK_RECONFIGURE(CCSPlayerSlotOccupied, csPlayerSlotOccupiedOffset, 0, 0);
 
     int csPlayerWeaponEquip;
     if (!gameConfig->GetOffset("CCSPlayerWeaponEquip", &csPlayerWeaponEquip))
@@ -592,6 +557,7 @@ void Hooks_Cleanup()
     Hooks_Cleanup_CMolotovProjectileDetonateHook();
     Hooks_Cleanup_PlayerRunCmdHook();
     Hooks_Cleanup_CCSPlayerBumpWeaponHook();
+    Hooks_Cleanup_CCSPlayerSlotOccupiedHook();
 
     for (int grenadeTypeIndex = 0; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
     {
