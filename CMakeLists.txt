@@ -68,8 +68,8 @@ add_library(jabronez SHARED
         src/callables/callables_macros.h
         src/console_manager.cpp
         src/console_manager.h
-        src/player_manager.cpp
-        src/player_manager.h
+        src/players/player_manager.cpp
+        src/players/player_manager.h
         src/menu_manager.cpp
         src/menu_manager.h
         src/translations.cpp
@@ -78,10 +78,10 @@ add_library(jabronez SHARED
         src/weapon_identifiers.h
         src/spot.cpp
         src/spot.h
-        src/player.cpp
-        src/player.h
+        src/players/player.cpp
+        src/players/player.h
         src/god_mode.h
-        src/player_mode.h
+        src/players/player_mode.h
         src/projectile_mode.cpp
         src/projectile_mode.h
         src/projectile_parameters.cpp
@@ -295,6 +295,7 @@ target_include_directories(jabronez PRIVATE
     src/timers
     src/hooks
     src/callables
+    src/players
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
