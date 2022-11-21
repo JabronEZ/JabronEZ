@@ -74,13 +74,13 @@ add_library(jabronez SHARED
         src/gui/menu_manager.h
         src/translations/translations.cpp
         src/translations/translations.h
-        src/weapon_identifiers.cpp
-        src/weapon_identifiers.h
-        src/spot.cpp
-        src/spot.h
+        src/misc/weapon_identifiers.cpp
+        src/misc/weapon_identifiers.h
+        src/misc/spot.cpp
+        src/misc/spot.h
         src/players/player.cpp
         src/players/player.h
-        src/god_mode.h
+        src/misc/god_mode.h
         src/players/player_mode.h
         src/projectiles/projectile_mode.cpp
         src/projectiles/projectile_mode.h
@@ -97,8 +97,8 @@ add_library(jabronez SHARED
         src/entities/temporary_entities.h
         src/entities/temporary_entity_creator.cpp
         src/entities/temporary_entity_creator.h
-        src/recipient_filter.cpp
-        src/recipient_filter.h
+        src/misc/recipient_filter.cpp
+        src/misc/recipient_filter.h
         src/timers/player_timer.cpp
         src/timers/player_timer.h
         src/timers/handle_playback_timer.cpp
@@ -109,8 +109,8 @@ add_library(jabronez SHARED
         src/timers/grenade_goto_next_spot_or_finish_timer.h
         src/events/game_events_manager.cpp
         src/events/game_events_manager.h
-        src/sdk_variant_t.cpp
-        src/sdk_variant_t.h
+        src/misc/sdk_variant_t.cpp
+        src/misc/sdk_variant_t.h
         src/particles/particle_manager.cpp
         src/particles/particle_manager.h
         src/timers/remove_short_smoke_timer.cpp
@@ -304,6 +304,7 @@ target_include_directories(jabronez PRIVATE
     src/projectiles
     src/gui
     src/translations
+    src/misc
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
