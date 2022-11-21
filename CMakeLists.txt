@@ -78,6 +78,8 @@ add_library(jabronez SHARED
         src/hooks/projectile_create_hooks.h
         src/hooks/ccsplayer_can_acquire_hook.cpp
         src/hooks/ccsplayer_can_acquire_hook.h
+        src/hooks/ccsplayer_cs_weapon_drop_hook.cpp
+        src/hooks/ccsplayer_cs_weapon_drop_hook.h
         src/hooks/hooks_macros.h
         src/callables/callables.cpp
         src/callables/callables.h

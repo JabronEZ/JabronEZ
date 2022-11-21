@@ -25,6 +25,7 @@
 #include "cbasecsgrenade_start_grenade_throw_hook.h"
 #include "projectile_create_hooks.h"
 #include "ccsplayer_can_acquire_hook.h"
+#include "ccsplayer_cs_weapon_drop_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -32,32 +33,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-JEZ_HOOK_MEMBER_DEF3_VOID(
-        CCSPlayerCSWeaponDrop,
-        CBaseEntity,
-        CBaseEntity*,
-        weapon,
-        bool,
-        unk1,
-        bool,
-        unk2)
-{
-    auto self = reinterpret_cast<CBaseEntity*>(this);
-
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
-
-    if (player == nullptr)
-    {
-        Hook_Call_CCSPlayerCSWeaponDrop(self, weapon, unk1, unk2);
-        return;
-    }
-
-    if (!player->OnDropWeapon(weapon))
-        return;
-
-    Hook_Call_CCSPlayerCSWeaponDrop(self, weapon, unk1, unk2);
-}
 
 JEZ_HOOK_MEMBER_DEF0_VOID(
         CSmokeGrenadeProjectileDetonate,
@@ -123,10 +98,10 @@ bool Hooks_Init(
         || !Hooks_Init_CCSPlayerWeaponEquipHook(gameConfig, error, maxlength)
         || !Hooks_Init_CBaseCSGrenadeStartGrenadeThrowHook(gameConfig, error, maxlength)
         || !Hooks_Init_ProjectileCreateHooks(error, maxlength)
-        || !Hooks_Init_CCSPlayerCanAcquireHook(error, maxlength))
+        || !Hooks_Init_CCSPlayerCanAcquireHook(error, maxlength)
+        || !Hooks_Init_CCSPlayerCSWeaponDropHook(error, maxlength))
         return false;
 
-    JEZ_HOOK_MEMBER_CREATE(CCSPlayerCSWeaponDrop, "CCSPlayerCSWeaponDrop");
     JEZ_HOOK_MEMBER_CREATE(CSmokeGrenadeProjectileDetonate, "CSmokeGrenadeProjectileDetonate");
 
     return true;
@@ -136,7 +111,7 @@ void Hooks_Cleanup()
 {
     Hooks_Cleanup_ProjectileCreateHooks();
     Hooks_Cleanup_CCSPlayerCanAcquireHook();
-    JEZ_HOOK_CLEANUP(CCSPlayerCSWeaponDrop);
+    Hooks_Cleanup_CCSPlayerCSWeaponDropHook();
     JEZ_HOOK_CLEANUP(CSmokeGrenadeProjectileDetonate);
 
     Hooks_Cleanup_CMolotovProjectileDetonateHook();
