@@ -26,61 +26,9 @@
 #include "projectile_create_hooks.h"
 #include "ccsplayer_can_acquire_hook.h"
 #include "ccsplayer_cs_weapon_drop_hook.h"
+#include "csmokegrenade_projectile_detonate_hook.h"
 #include <CDetour/detours.h>
-#include "extension.h"
-#include "player_manager.h"
-#include "player.h"
 #include "smsdk_ext.h"
-#include "entity_utilities.h"
-#include "grenade_throw_tickrate.h"
-
-JEZ_HOOK_MEMBER_DEF0_VOID(
-        CSmokeGrenadeProjectileDetonate,
-        CBaseEntity)
-{
-    auto projectileEntity = reinterpret_cast<CBaseEntity*>(this);
-    Hook_Call_CSmokeGrenadeProjectileDetonate(projectileEntity);
-
-    auto throwerEntity = g_JabronEZ.GetEntityUtilities()->GetProjectileThrower(projectileEntity);
-
-    if (throwerEntity != nullptr)
-    {
-        auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(throwerEntity);
-
-        if (player != nullptr && player->GetShortGrenades())
-        {
-            static unsigned int smokeEffectTickBeginOffset = 0;
-
-            if (smokeEffectTickBeginOffset == 0)
-            {
-                sm_sendprop_info_t sendpropInfo {};
-                gamehelpers->FindSendPropInfo("CSmokeGrenadeProjectile", "m_nSmokeEffectTickBegin", &sendpropInfo);
-
-                if (sendpropInfo.prop == nullptr)
-                    return;
-
-                smokeEffectTickBeginOffset = sendpropInfo.actual_offset;
-            }
-
-            static unsigned int didSmokeEffectOffset = 0;
-
-            if (didSmokeEffectOffset == 0)
-            {
-                sm_sendprop_info_t sendpropInfo {};
-                gamehelpers->FindSendPropInfo("CSmokeGrenadeProjectile", "m_bDidSmokeEffect", &sendpropInfo);
-
-                if (sendpropInfo.prop == nullptr)
-                    return;
-
-                didSmokeEffectOffset = sendpropInfo.actual_offset;
-            }
-
-            // Setting these values right after the detonate function will cause the original smoke particle to never appear.
-            *(bool*)((uint8_t*)projectileEntity + didSmokeEffectOffset) = false;
-            *(uint32_t*)((uint8_t*)projectileEntity + smokeEffectTickBeginOffset) = 0;
-        }
-    }
-}
 
 bool Hooks_Init(
         ISourcePawnEngine *sourcePawnEngine,
@@ -99,10 +47,9 @@ bool Hooks_Init(
         || !Hooks_Init_CBaseCSGrenadeStartGrenadeThrowHook(gameConfig, error, maxlength)
         || !Hooks_Init_ProjectileCreateHooks(error, maxlength)
         || !Hooks_Init_CCSPlayerCanAcquireHook(error, maxlength)
-        || !Hooks_Init_CCSPlayerCSWeaponDropHook(error, maxlength))
+        || !Hooks_Init_CCSPlayerCSWeaponDropHook(error, maxlength)
+        || !Hooks_Init_CSmokeGrenadeProjectileDetonateHook(error, maxlength))
         return false;
-
-    JEZ_HOOK_MEMBER_CREATE(CSmokeGrenadeProjectileDetonate, "CSmokeGrenadeProjectileDetonate");
 
     return true;
 }
@@ -112,8 +59,7 @@ void Hooks_Cleanup()
     Hooks_Cleanup_ProjectileCreateHooks();
     Hooks_Cleanup_CCSPlayerCanAcquireHook();
     Hooks_Cleanup_CCSPlayerCSWeaponDropHook();
-    JEZ_HOOK_CLEANUP(CSmokeGrenadeProjectileDetonate);
-
+    Hooks_Cleanup_CSmokeGrenadeProjectileDetonateHook();
     Hooks_Cleanup_CMolotovProjectileDetonateHook();
     Hooks_Cleanup_PlayerRunCmdHook();
     Hooks_Cleanup_CCSPlayerBumpWeaponHook();

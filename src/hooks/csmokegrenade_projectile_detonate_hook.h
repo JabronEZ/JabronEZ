@@ -16,24 +16,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_HOOKS_H
-#define JABRONEZ_HOOKS_H
+#ifndef JABRONEZ_CSMOKEGRENADE_PROJECTILE_DETONATE_HOOK_H
+#define JABRONEZ_CSMOKEGRENADE_PROJECTILE_DETONATE_HOOK_H
 
 #include "smsdk_ext.h"
 #include "hooks_macros.h"
 
 class CDetour;
 
-// The reason that all these methods are static is due to the nature of detouring methods.
-// Primarily, the callbacks for hooks can not capture additional arguments/context.
-// Since we already have this limitation, we can prevent the need for passing around context by just embracing global scope here.
-bool Hooks_Init(
-        ISourcePawnEngine *sourcePawnEngine,
-        IGameConfig *gameConfig,
-        IGameConfig *sdktoolsGameConfig,
+JEZ_HOOK_MEMBER_DECL0_VOID(
+        CSmokeGrenadeProjectileDetonate,
+        CBaseEntity);
+
+bool Hooks_Init_CSmokeGrenadeProjectileDetonateHook(
         char *error,
         size_t maxlength);
-
-void Hooks_Cleanup();
+void Hooks_Cleanup_CSmokeGrenadeProjectileDetonateHook();
 
 #endif
