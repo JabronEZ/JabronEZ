@@ -24,6 +24,7 @@
 #include "ccsplayer_weapon_equip_hook.h"
 #include "cbasecsgrenade_start_grenade_throw_hook.h"
 #include "projectile_create_hooks.h"
+#include "ccsplayer_can_acquire_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -31,28 +32,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-JEZ_HOOK_MEMBER_DEF3(
-        CCSPlayerCanAcquire,
-        CBaseEntity,
-        int,
-        void*,
-        econItemView,
-        int,
-        acquireType,
-        void *,
-        unk)
-{
-    auto self = reinterpret_cast<CBaseEntity*>(this);
-
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
-    auto originalResult = Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, unk);
-
-    if (player == nullptr)
-        return originalResult;
-
-    return player->OnCanAcquire(econItemView, acquireType, originalResult);
-}
 
 JEZ_HOOK_MEMBER_DEF3_VOID(
         CCSPlayerCSWeaponDrop,
@@ -143,10 +122,10 @@ bool Hooks_Init(
         || !Hooks_Init_CCSPlayerSlotOccupiedHook(gameConfig, error, maxlength)
         || !Hooks_Init_CCSPlayerWeaponEquipHook(gameConfig, error, maxlength)
         || !Hooks_Init_CBaseCSGrenadeStartGrenadeThrowHook(gameConfig, error, maxlength)
-        || !Hooks_Init_ProjectileCreateHooks(error, maxlength))
+        || !Hooks_Init_ProjectileCreateHooks(error, maxlength)
+        || !Hooks_Init_CCSPlayerCanAcquireHook(error, maxlength))
         return false;
 
-    JEZ_HOOK_MEMBER_CREATE(CCSPlayerCanAcquire, "CCSPlayerCanAcquire");
     JEZ_HOOK_MEMBER_CREATE(CCSPlayerCSWeaponDrop, "CCSPlayerCSWeaponDrop");
     JEZ_HOOK_MEMBER_CREATE(CSmokeGrenadeProjectileDetonate, "CSmokeGrenadeProjectileDetonate");
 
@@ -156,7 +135,7 @@ bool Hooks_Init(
 void Hooks_Cleanup()
 {
     Hooks_Cleanup_ProjectileCreateHooks();
-    JEZ_HOOK_CLEANUP(CCSPlayerCanAcquire);
+    Hooks_Cleanup_CCSPlayerCanAcquireHook();
     JEZ_HOOK_CLEANUP(CCSPlayerCSWeaponDrop);
     JEZ_HOOK_CLEANUP(CSmokeGrenadeProjectileDetonate);
 

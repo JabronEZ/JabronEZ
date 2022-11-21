@@ -76,6 +76,8 @@ add_library(jabronez SHARED
         src/hooks/cbasecsgrenade_start_grenade_throw_hook.h
         src/hooks/projectile_create_hooks.cpp
         src/hooks/projectile_create_hooks.h
+        src/hooks/ccsplayer_can_acquire_hook.cpp
+        src/hooks/ccsplayer_can_acquire_hook.h
         src/hooks/hooks_macros.h
         src/callables/callables.cpp
         src/callables/callables.h

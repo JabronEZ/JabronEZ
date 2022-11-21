@@ -16,40 +16,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JABRONEZ_HOOKS_H
-#define JABRONEZ_HOOKS_H
+#ifndef JABRONEZ_CCSPLAYER_CAN_ACQUIRE_HOOK_H
+#define JABRONEZ_CCSPLAYER_CAN_ACQUIRE_HOOK_H
 
 #include "smsdk_ext.h"
-#include <sh_vector.h>
 #include "hooks_macros.h"
-#include "weapon_identifiers.h"
 
 class CDetour;
 
-// The reason that all these methods are static is due to the nature of detouring methods.
-// Primarily, the callbacks for hooks can not capture additional arguments/context.
-// Since we already have this limitation, we can prevent the need for passing around context by just embracing global scope here.
-bool Hooks_Init(
-        ISourcePawnEngine *sourcePawnEngine,
-        IGameConfig *gameConfig,
-        IGameConfig *sdktoolsGameConfig,
+JEZ_HOOK_MEMBER_DECL3(
+        CCSPlayerCanAcquire,
+        CBaseEntity,
+        int,
+        void *,
+        econItemView,
+        int,
+        acquireType,
+        void *,
+        item);
+
+bool Hooks_Init_CCSPlayerCanAcquireHook(
         char *error,
         size_t maxlength);
-
-void Hooks_Cleanup();
-
-JEZ_HOOK_MEMBER_DECL3_VOID(
-        CCSPlayerCSWeaponDrop,
-        CBaseEntity,
-        CBaseEntity *,
-        weapon,
-        bool,
-        unk1,
-        bool,
-        unk2);
-
-JEZ_HOOK_MEMBER_DECL0_VOID(
-        CSmokeGrenadeProjectileDetonate,
-        CBaseEntity);
+void Hooks_Cleanup_CCSPlayerCanAcquireHook();
 
 #endif
