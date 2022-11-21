@@ -25,8 +25,6 @@
 #include "weapon_identifiers.h"
 
 class CDetour;
-class CUserCmd;
-class IMoveHelper;
 
 enum class CheckSlotOccupiedResult
 {

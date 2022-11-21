@@ -18,6 +18,7 @@
 
 #include "hooks.h"
 #include "cmolotov_projectile_detonate_hook.h"
+#include "player_run_cmd_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -26,9 +27,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
-int g_PlayerRunCmdHookId = 0;
 
 SH_DECL_MANUALHOOK1(CCSPlayerBumpWeapon, 0, 0, 0, bool, CBaseEntity*);
 int g_CCSPlayerBumpWeaponHookId = 0;
@@ -55,36 +53,6 @@ void TriggerOnProjectileCreated(
 
     if (player != nullptr)
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
-}
-
-void Hook_Callback_PlayerRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
-{
-    auto playerEntity = META_IFACEPTR(CBaseEntity);
-
-    if (playerEntity == nullptr)
-        RETURN_META(MRES_IGNORED);
-
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
-
-    if (player == nullptr)
-        RETURN_META(MRES_IGNORED);
-
-    if (!player->OnRunCmd(command, moveHelper))
-        RETURN_META(MRES_SUPERCEDE);
-
-    RETURN_META(MRES_IGNORED);
-}
-
-void Hooks_MaybeSetupPlayerRunCmd(CBaseEntity *playerEntity)
-{
-    if (playerEntity == nullptr)
-        return;
-
-    if (g_PlayerRunCmdHookId == 0)
-    {
-        void *playerVtable = *(void **)playerEntity;
-        g_PlayerRunCmdHookId = SH_ADD_MANUALDVPHOOK(PlayerRunCmd, playerVtable, SH_STATIC(Hook_Callback_PlayerRunCmd), false);
-    }
 }
 
 bool Hook_Callback_CCSPlayerBumpWeapon(CBaseEntity *weapon)
@@ -594,17 +562,9 @@ bool Hooks_Init(
 {
     CDetourManager::Init(sourcePawnEngine, gameConfig);
 
-    if (!Hooks_Init_CMolotovProjectileDetonateHook(gameConfig, error, maxlength))
+    if (!Hooks_Init_CMolotovProjectileDetonateHook(gameConfig, error, maxlength)
+        || !Hooks_Init_PlayerRunCmdHook(sdktoolsGameConfig, error, maxlength))
         return false;
-
-    int playerRunCmdOffset;
-    if (!sdktoolsGameConfig->GetOffset("PlayerRunCmd", &playerRunCmdOffset))
-    {
-        snprintf(error, maxlength, "Unable to find offset for %s\n", "PlayerRunCmd");
-        return false;
-    }
-
-    SH_MANUALHOOK_RECONFIGURE(PlayerRunCmd, playerRunCmdOffset, 0, 0);
 
     int csPlayerBumpWeaponOffset;
     if (!gameConfig->GetOffset("CCSPlayerBumpWeapon", &csPlayerBumpWeaponOffset))
@@ -675,12 +635,7 @@ void Hooks_Cleanup()
     JEZ_HOOK_CLEANUP(CSmokeGrenadeProjectileDetonate);
 
     Hooks_Cleanup_CMolotovProjectileDetonateHook();
-
-    if (g_PlayerRunCmdHookId != 0)
-    {
-        SH_REMOVE_HOOK_ID(g_PlayerRunCmdHookId);
-        g_PlayerRunCmdHookId = 0;
-    }
+    Hooks_Cleanup_PlayerRunCmdHook();
 
     if (g_CCSPlayerBumpWeaponHookId != 0)
     {

@@ -64,6 +64,8 @@ add_library(jabronez SHARED
         src/hooks/hooks.h
         src/hooks/cmolotov_projectile_detonate_hook.cpp
         src/hooks/cmolotov_projectile_detonate_hook.h
+        src/hooks/player_run_cmd_hook.cpp
+        src/hooks/player_run_cmd_hook.h
         src/hooks/hooks_macros.h
         src/callables/callables.cpp
         src/callables/callables.h
