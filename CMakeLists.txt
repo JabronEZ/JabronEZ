@@ -60,9 +60,9 @@ project(jabronez)
 add_library(jabronez SHARED
         src/extension.cpp
         src/extension.h
-        src/hooks.cpp
-        src/hooks.h
-        src/hooks_macros.h
+        src/hooks/hooks.cpp
+        src/hooks/hooks.h
+        src/hooks/hooks_macros.h
         src/callables.cpp
         src/callables.h
         src/callables_macros.h
@@ -293,6 +293,7 @@ endif ()
 target_include_directories(jabronez PRIVATE
 	src
     src/timers
+    src/hooks
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
