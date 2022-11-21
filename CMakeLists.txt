@@ -66,8 +66,8 @@ add_library(jabronez SHARED
         src/callables/callables.cpp
         src/callables/callables.h
         src/callables/callables_macros.h
-        src/console_manager.cpp
-        src/console_manager.h
+        src/console/console_manager.cpp
+        src/console/console_manager.h
         src/players/player_manager.cpp
         src/players/player_manager.h
         src/menu_manager.cpp
@@ -296,6 +296,7 @@ target_include_directories(jabronez PRIVATE
     src/hooks
     src/callables
     src/players
+    src/console
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
