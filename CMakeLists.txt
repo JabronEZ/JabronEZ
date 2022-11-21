@@ -70,8 +70,8 @@ add_library(jabronez SHARED
         src/console/console_manager.h
         src/players/player_manager.cpp
         src/players/player_manager.h
-        src/menu_manager.cpp
-        src/menu_manager.h
+        src/gui/menu_manager.cpp
+        src/gui/menu_manager.h
         src/translations.cpp
         src/translations.h
         src/weapon_identifiers.cpp
@@ -87,8 +87,8 @@ add_library(jabronez SHARED
         src/projectiles/projectile_parameters.cpp
         src/projectiles/projectile_parameters.h
         src/projectiles/grenade_throw_tickrate.h
-        src/hud_utilities.cpp
-        src/hud_utilities.h
+        src/gui/hud_utilities.cpp
+        src/gui/hud_utilities.h
         src/entities/entity_utilities.cpp
         src/entities/entity_utilities.h
         src/timers/draw_spots_timer.cpp
@@ -302,6 +302,7 @@ target_include_directories(jabronez PRIVATE
     src/entities
     src/particles
     src/projectiles
+    src/gui
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
