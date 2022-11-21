@@ -110,8 +110,8 @@ add_library(jabronez SHARED
         src/events/game_events_manager.h
         src/sdk_variant_t.cpp
         src/sdk_variant_t.h
-        src/particle_manager.cpp
-        src/particle_manager.h
+        src/particles/particle_manager.cpp
+        src/particles/particle_manager.h
         src/timers/remove_short_smoke_timer.cpp
         src/timers/remove_short_smoke_timer.h
         src/timers/entity_timer.cpp
@@ -299,6 +299,7 @@ target_include_directories(jabronez PRIVATE
     src/console
     src/events
     src/entities
+    src/particles
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
