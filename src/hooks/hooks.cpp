@@ -22,6 +22,7 @@
 #include "ccsplayer_bump_weapon_hook.h"
 #include "ccsplayer_slot_occupied_hook.h"
 #include "ccsplayer_weapon_equip_hook.h"
+#include "cbasecsgrenade_start_grenade_throw_hook.h"
 #include <CDetour/detours.h>
 #include "extension.h"
 #include "player_manager.h"
@@ -30,9 +31,6 @@
 #include "smsdk_ext.h"
 #include "entity_utilities.h"
 #include "grenade_throw_tickrate.h"
-
-SH_DECL_MANUALHOOK0_void(CBaseCSGrenadeStartGrenadeThrow, 0, 0, 0);
-int g_StartGrenadeThrowHookId[GrenadeType_COUNT] = { 0, 0, 0, 0, 0, 0 };
 
 void TriggerOnProjectileCreated(
         void *playerEntity,
@@ -46,51 +44,6 @@ void TriggerOnProjectileCreated(
 
     if (player != nullptr)
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
-}
-
-void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
-{
-    auto weaponEntity = META_IFACEPTR(CBaseEntity);
-    auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetWeaponOwner(weaponEntity);
-
-    if (playerEntity == nullptr)
-        RETURN_META(MRES_IGNORED);
-
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
-
-    if (player == nullptr || player->GetGrenadeThrowTickRate() != GrenadeThrowTickRate_64)
-        RETURN_META(MRES_IGNORED);
-
-    static unsigned int throwTimeOffset = 0;
-
-    if (throwTimeOffset == 0)
-    {
-        sm_sendprop_info_t sendpropInfo {};
-        gamehelpers->FindSendPropInfo("CBaseCSGrenade", "m_fThrowTime", &sendpropInfo);
-
-        if (sendpropInfo.prop == nullptr)
-            RETURN_META(MRES_IGNORED);
-
-        throwTimeOffset = sendpropInfo.actual_offset;
-    }
-
-    float newValue = g_JabronEZ.GetGlobalVars()->curtime + 0.109375f;
-    *(float*)((uint8_t *)weaponEntity + throwTimeOffset) = newValue;
-
-    RETURN_META(MRES_IGNORED);
-}
-
-void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, GrenadeType grenadeType)
-{
-    if (weaponEntity == nullptr)
-        return;
-
-    int grenadeTypeIndex = (int)grenadeType;
-    if (g_StartGrenadeThrowHookId[grenadeTypeIndex] == 0)
-    {
-        void *weaponVtable = *(void **)weaponEntity;
-        g_StartGrenadeThrowHookId[grenadeTypeIndex] = SH_ADD_MANUALDVPHOOK(CBaseCSGrenadeStartGrenadeThrow, weaponVtable, SH_STATIC(Hook_Callback_CBaseCSGrenadeStartGrenadeThrow), true);
-    }
 }
 
 #ifdef _WIN32
@@ -476,17 +429,9 @@ bool Hooks_Init(
         || !Hooks_Init_PlayerRunCmdHook(sdktoolsGameConfig, error, maxlength)
         || !Hooks_Init_CCSPlayerBumpWeaponHook(gameConfig, error, maxlength)
         || !Hooks_Init_CCSPlayerSlotOccupiedHook(gameConfig, error, maxlength)
-        || !Hooks_Init_CCSPlayerWeaponEquipHook(gameConfig, error, maxlength))
+        || !Hooks_Init_CCSPlayerWeaponEquipHook(gameConfig, error, maxlength)
+        || !Hooks_Init_CBaseCSGrenadeStartGrenadeThrowHook(gameConfig, error, maxlength))
         return false;
-
-    int grenadeStartGrenadeThrowOffset;
-    if (!gameConfig->GetOffset("CBaseCSGrenadeStartGrenadeThrow", &grenadeStartGrenadeThrowOffset))
-    {
-        snprintf(error, maxlength, "Unable to find offset for %s\n", "CBaseCSGrenadeStartGrenadeThrow");
-        return false;
-    }
-
-    SH_MANUALHOOK_RECONFIGURE(CBaseCSGrenadeStartGrenadeThrow, grenadeStartGrenadeThrowOffset, 0, 0);
 
 #ifdef _WIN32
     JEZ_HOOK_STATIC_CREATE_EX(SmokeProjectileCreate, ProjectileCreate, SmokeProjectileCreate, "CSmokeGrenadeProjectileCreate");
@@ -525,13 +470,5 @@ void Hooks_Cleanup()
     Hooks_Cleanup_CCSPlayerBumpWeaponHook();
     Hooks_Cleanup_CCSPlayerSlotOccupiedHook();
     Hooks_Cleanup_CCSPlayerWeaponEquipHook();
-
-    for (int grenadeTypeIndex = 0; grenadeTypeIndex < GrenadeType_COUNT; grenadeTypeIndex++)
-    {
-        if (g_StartGrenadeThrowHookId[grenadeTypeIndex] != 0)
-        {
-            SH_REMOVE_HOOK_ID(g_StartGrenadeThrowHookId[grenadeTypeIndex]);
-            g_StartGrenadeThrowHookId[grenadeTypeIndex] = 0;
-        }
-    }
+    Hooks_Cleanup_CBaseCSGrenadeStartGrenadeThrowHook();
 }

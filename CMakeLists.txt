@@ -72,6 +72,8 @@ add_library(jabronez SHARED
         src/hooks/ccsplayer_slot_occupied_hook.h
         src/hooks/ccsplayer_weapon_equip_hook.cpp
         src/hooks/ccsplayer_weapon_equip_hook.h
+        src/hooks/cbasecsgrenade_start_grenade_throw_hook.cpp
+        src/hooks/cbasecsgrenade_start_grenade_throw_hook.h
         src/hooks/hooks_macros.h
         src/callables/callables.cpp
         src/callables/callables.h

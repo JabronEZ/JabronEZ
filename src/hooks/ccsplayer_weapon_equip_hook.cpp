@@ -19,12 +19,10 @@
 #include "hooks.h"
 #include "weapon_identifiers.h"
 #include "smsdk_ext.h"
+#include "cbasecsgrenade_start_grenade_throw_hook.h"
 
 SH_DECL_MANUALHOOK1_void(CCSPlayerWeaponEquip, 0, 0, 0, CBaseEntity*);
 int g_CCSPlayerWeaponEquipHookId = 0;
-
-// FIXME: Remove this once the CBaseCSGrenadeStartGrenadeThrow hook is refactored into separate file.
-void Hooks_MaybeSetupCBaseCSGrenadeStartGrenadeThrow(CBaseEntity *weaponEntity, GrenadeType grenadeType);
 
 void Hook_Callback_CCSPlayerWeaponEquip(CBaseEntity *weaponEntity)
 {
