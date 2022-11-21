@@ -20,6 +20,7 @@
 #include "handle_playback_timer.h"
 #include "player.h"
 #include "hooks.h"
+#include "projectile_create_hooks.h"
 #include "entity_utilities.h"
 
 HandlePlaybackTimer::HandlePlaybackTimer(Player *player, ITimerSystem *timerSystem, IGameHelpers *gameHelpers)
