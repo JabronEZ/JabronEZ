@@ -82,10 +82,11 @@ add_library(jabronez SHARED
         src/players/player.h
         src/god_mode.h
         src/players/player_mode.h
-        src/projectile_mode.cpp
-        src/projectile_mode.h
-        src/projectile_parameters.cpp
-        src/projectile_parameters.h
+        src/projectiles/projectile_mode.cpp
+        src/projectiles/projectile_mode.h
+        src/projectiles/projectile_parameters.cpp
+        src/projectiles/projectile_parameters.h
+        src/projectiles/grenade_throw_tickrate.h
         src/hud_utilities.cpp
         src/hud_utilities.h
         src/entities/entity_utilities.cpp
@@ -300,6 +301,7 @@ target_include_directories(jabronez PRIVATE
     src/events
     src/entities
     src/particles
+    src/projectiles
         ${HL2SDK}/public/game/server
         ${HL2SDK}/game/shared
         ${HL2PUB}
