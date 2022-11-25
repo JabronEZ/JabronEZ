@@ -35,7 +35,7 @@ void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
 
-    if (player == nullptr || player->GetGrenadeThrowTickRate() != GrenadeThrowTickRate_64)
+    if (player == nullptr || !player->IsValid() || player->GetGrenadeThrowTickRate() != GrenadeThrowTickRate_64)
         RETURN_META(MRES_IGNORED);
 
     static unsigned int throwTimeOffset = 0;

@@ -974,3 +974,18 @@ void Player::SetNoClip(bool noClip)
     if (currentMoveType == MOVETYPE_NOCLIP)
         *((uint8_t*)playerEntity + moveTypeOffset) = MOVETYPE_WALK;
 }
+
+bool Player::IsValid() const
+{
+    if (_gamePlayer == nullptr)
+        return false;
+
+    if (!_gamePlayer->IsConnected()
+        || !_gamePlayer->IsInGame()
+        || _gamePlayer->IsFakeClient()
+        || _gamePlayer->IsSourceTV()
+        || _gamePlayer->IsReplay())
+        return false;
+
+    return true;
+}

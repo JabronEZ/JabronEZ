@@ -32,7 +32,7 @@ HudUtilities::~HudUtilities()
 
 void HudUtilities::PrintToChat(Player *player, const char *message)
 {
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return;
 
     _gameHelpers->TextMsg(player->GetClientIndex(), TEXTMSG_DEST_CHAT, message);

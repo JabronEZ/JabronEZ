@@ -32,7 +32,7 @@ HandlePlaybackTimer::~HandlePlaybackTimer()
 {
     auto player = GetPlayer();
 
-    if (player != nullptr)
+    if (player != nullptr && player->IsValid())
         player->SetGrenadeHandlePlaybackTimer(nullptr);
 }
 
@@ -64,7 +64,7 @@ void HandlePlaybackTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return;
 
     if (!player->IsOnActualTeam())

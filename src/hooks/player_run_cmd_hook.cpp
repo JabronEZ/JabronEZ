@@ -34,7 +34,7 @@ void Hook_Callback_PlayerRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         RETURN_META(MRES_IGNORED);
 
     if (!player->OnRunCmd(command, moveHelper))

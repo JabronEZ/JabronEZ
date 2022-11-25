@@ -60,9 +60,8 @@ ResultType DrawSpotsTimer::OnTimer(ITimer *timer, void *data)
     for(size_t playerIndex = 0; playerIndex < playerCount; playerIndex++)
     {
         auto player = players.at(playerIndex);
-        auto gamePlayer = player->GetGamePlayer();
 
-        if(!gamePlayer->IsConnected() || !gamePlayer->IsInGame())
+        if(player == nullptr || !player->IsValid())
             continue;
 
         auto spots = player->GetGrenadeSpots();

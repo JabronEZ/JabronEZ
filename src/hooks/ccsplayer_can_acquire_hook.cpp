@@ -38,7 +38,7 @@ JEZ_HOOK_MEMBER_DEF3(
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
     auto originalResult = Hook_Call_CCSPlayerCanAcquire(self, econItemView, acquireType, unk);
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return originalResult;
 
     return player->OnCanAcquire(econItemView, acquireType, originalResult);

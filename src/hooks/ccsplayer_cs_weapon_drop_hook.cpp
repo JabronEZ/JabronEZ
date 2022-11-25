@@ -36,7 +36,7 @@ JEZ_HOOK_MEMBER_DEF3_VOID(
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(self);
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
     {
         Hook_Call_CCSPlayerCSWeaponDrop(self, weapon, unk1, unk2);
         return;

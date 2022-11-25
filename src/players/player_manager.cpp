@@ -69,9 +69,7 @@ void PlayerManager::OnClientDisconnecting(int clientIndex)
     auto player = GetPlayerByClientIndex(clientIndex);
 
     if (player == nullptr)
-    {
         return;
-    }
 
     CleanupPlayer(player);
 }
@@ -154,4 +152,20 @@ Player *PlayerManager::GetPlayerByEdict(edict_t *edict) const
 const SourceHook::CVector<Player *> &PlayerManager::GetPlayers() const
 {
     return _players;
+}
+
+SourceHook::CVector<Player *> PlayerManager::GetValidPlayers() const
+{
+    SourceHook::CVector<Player *> validPlayers;
+    validPlayers.clear();
+
+    for (auto player : _players)
+    {
+        if (player->IsValid())
+        {
+            validPlayers.push_back(player);
+        }
+    }
+
+    return validPlayers;
 }

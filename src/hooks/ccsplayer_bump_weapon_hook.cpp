@@ -31,18 +31,23 @@ bool Hook_Callback_CCSPlayerBumpWeapon(CBaseEntity *weapon)
     auto playerEntity = META_IFACEPTR(CBaseEntity);
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
-    player->OnBumpWeapon(weapon);
 
+    if (player == nullptr || !player->IsValid())
+        RETURN_META_VALUE(MRES_IGNORED, false);
+
+    player->OnBumpWeapon(weapon);
     RETURN_META_VALUE(MRES_IGNORED, false);
 }
 
 bool Hook_Callback_CCSPlayerBumpWeapon_Post(CBaseEntity *weapon)
 {
     auto playerEntity = META_IFACEPTR(CBaseEntity);
-
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
-    player->OnBumpWeaponPost(weapon);
 
+    if (player == nullptr || !player->IsValid())
+        RETURN_META_VALUE(MRES_IGNORED, false);
+
+    player->OnBumpWeaponPost(weapon);
     RETURN_META_VALUE(MRES_IGNORED, false);
 }
 

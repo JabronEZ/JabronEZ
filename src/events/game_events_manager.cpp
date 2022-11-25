@@ -60,7 +60,7 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
     {
         auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByUserId(userId);
 
-        if (player == nullptr)
+        if (player == nullptr || !player->IsValid())
             return;
 
         auto playerEntity = g_JabronEZ.GetEntityUtilities()->GetEntityByIndex(player->GetClientIndex(), true);
@@ -89,7 +89,7 @@ void GameEventsManager::FireGameEvent(IGameEvent *event)
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByUserId(userId);
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return;
 
     GrenadeType grenadeType = GrenadeType_UNKNOWN;
