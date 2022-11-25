@@ -150,6 +150,7 @@ jobs:
           cp repo/particles/jabronez_particles_0001.pcf dist/particles/jabronez_particles_0001.pcf
           cp repo/gamedata/jabronez.games.txt dist/addons/sourcemod/gamedata/jabronez.games.txt
           cp repo/translations/jabronez.phrases.txt dist/addons/sourcemod/translations/jabronez.phrases.txt
+          touch dist/addons/sourcemod/extensions/jabronez.autoload
           (cd dist && zip -r ../jabronez-${{ env.JEZ_TAG }}.zip .)
       - name: 'Upload ZIP as Artifact'
         uses: actions/upload-artifact@v3
