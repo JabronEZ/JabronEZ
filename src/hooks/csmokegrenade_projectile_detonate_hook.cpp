@@ -36,7 +36,7 @@ JEZ_HOOK_MEMBER_DEF0_VOID(
     {
         auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(throwerEntity);
 
-        if (player != nullptr && player->GetShortGrenades())
+        if (player != nullptr && player->IsValid() && player->GetShortGrenades())
         {
             static unsigned int smokeEffectTickBeginOffset = 0;
 

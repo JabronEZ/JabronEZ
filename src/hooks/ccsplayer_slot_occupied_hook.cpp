@@ -30,6 +30,10 @@ bool Hook_Callback_CCSPlayerSlotOccupied(CBaseEntity *weapon)
     auto playerEntity = META_IFACEPTR(CBaseEntity);
 
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(playerEntity);
+
+    if (player == nullptr || !player->IsValid())
+        RETURN_META_VALUE(MRES_IGNORED, false);
+
     auto checkOccupiedResult = player->OnCheckSlotOccupied(weapon);
 
     if (checkOccupiedResult == CheckSlotOccupiedResult::UseOriginal)

@@ -39,6 +39,7 @@ public:
     Player *GetPlayerByBaseEntity(CBaseEntity *entity) const;
 
     const SourceHook::CVector<Player *> &GetPlayers() const;
+    SourceHook::CVector<Player *> GetValidPlayers() const;
 
 private:
     void CleanupPlayer(Player *player);

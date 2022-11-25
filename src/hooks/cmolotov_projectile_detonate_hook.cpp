@@ -36,7 +36,7 @@ void Hook_Callback_CMolotovProjectileDetonate()
     {
         auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(throwerEntity);
 
-        if (player != nullptr)
+        if (player != nullptr && player->IsValid())
             player->OnGrenadeDetonationEvent(isIncendiary ? GrenadeType_INCENDIARY : GrenadeType_MOLOTOV, gamehelpers->EntityToReference(projectileEntity));
     }
 

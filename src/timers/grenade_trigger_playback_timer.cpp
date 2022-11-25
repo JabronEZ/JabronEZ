@@ -29,7 +29,7 @@ GrenadeTriggerPlaybackTimer::~GrenadeTriggerPlaybackTimer()
 {
     auto player = GetPlayer();
 
-    if (player != nullptr)
+    if (player != nullptr && player->IsValid())
         player->SetGrenadeTriggerPlaybackTimer(nullptr);
 }
 
@@ -37,7 +37,7 @@ void GrenadeTriggerPlaybackTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return;
 
     player->StartGrenadeTesterPlayback();

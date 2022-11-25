@@ -21,6 +21,8 @@
 
 RecipientFilter::RecipientFilter(const SourceHook::CVector<Player *>& players, bool isReliable, bool isInitMessage)
 {
+    // FIXME: Should we really be storing the players here, or should we store the user IDs instead?
+    //        There might be a case where the recipient filter is dispatched later.
     _players = players;
     _isReliable = isReliable;
     _isInitMessage = isInitMessage;

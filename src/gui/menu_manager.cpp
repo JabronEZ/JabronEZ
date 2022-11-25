@@ -49,18 +49,14 @@ void MenuManager::OnMenuSelect2(
 {
     Player *player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(client);
 
-    if (player == nullptr)
-    {
+    if (player == nullptr || !player->IsValid())
         return;
-    }
 
     ItemDrawInfo itemInfo;
     const char *itemKey = menu->GetItemInfo(item, &itemInfo);
 
     if (itemKey == nullptr)
-    {
         return;
-    }
 
     auto pageNumber = (size_t)(((int)(floor((float)item / 6.0f))) + 1);
     player->SetGrenadeMenuPage(pageNumber);
@@ -342,6 +338,9 @@ void AppendNoClipMenuItem(
 
 void MenuManager::OpenMenu(Player *player, size_t pageNumber)
 {
+    if (player == nullptr || !player->IsValid())
+        return;
+
     IMenuStyle *style = _smMenuManager->GetDefaultStyle();
     IBaseMenu *menu = style->CreateMenu(this, _extension->GetIdentity());
     _menus.push_back(menu);
@@ -386,7 +385,7 @@ void MenuManager::NotifyPlayerMenuDestroyed(IBaseMenu *menu)
 
     for (auto player : players)
     {
-        if (player->GetGrenadeMenu() == menu)
+        if (player->IsValid() && player->GetGrenadeMenu() == menu)
         {
             player->SetGrenadeMenu(nullptr);
         }

@@ -96,7 +96,7 @@ void ConsoleManager::OnClientCommand(edict_t *edict, const CCommand &args)
 {
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByEdict(edict);
 
-    if (player == nullptr || args.ArgC() < 1)
+    if (player == nullptr || !player->IsValid() || args.ArgC() < 1)
     {
         return;
     }
@@ -154,7 +154,7 @@ void ConsoleManager::OnSayCommand(const CCommand &command)
     auto clientIndex = _lastCommandClient + 1; // Convert the client index to the engine client index.
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(clientIndex);
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         RETURN_META(MRES_IGNORED);
 
     auto message = command.Arg(1);

@@ -34,7 +34,7 @@ void TriggerOnProjectileCreated(
 {
     auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByBaseEntity(reinterpret_cast<CBaseEntity*>(playerEntity));
 
-    if (player != nullptr)
+    if (player != nullptr && player->IsValid())
         player->OnProjectileCreated(origin, angle, velocity, angularImpulse, GetGrenadeTypeFromItemDefinitionIndex((ItemDefinitionIndex)grenadeItemDefinitionIndex));
 }
 

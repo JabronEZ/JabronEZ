@@ -29,7 +29,7 @@ GrenadeGotoNextSpotOrFinishTimer::~GrenadeGotoNextSpotOrFinishTimer()
 {
     auto player = GetPlayer();
 
-    if (player != nullptr)
+    if (player != nullptr && player->IsValid())
         player->SetGrenadeGotoNextSpotOrFinishTimer(nullptr);
 }
 
@@ -37,7 +37,7 @@ void GrenadeGotoNextSpotOrFinishTimer::OnSimpleTimer()
 {
     auto player = GetPlayer();
 
-    if (player == nullptr)
+    if (player == nullptr || !player->IsValid())
         return;
 
     player->GotoNextSpotOrFinishPlayback();

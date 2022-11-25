@@ -117,6 +117,7 @@ public:
     void OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference);
     bool OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper);
 
+    bool IsValid() const;
     bool IsAlive() const;
     void RespawnPlayer() const;
     Spot GetClosestGrenadeSpot(size_t *outSpotIndex) const;

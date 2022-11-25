@@ -88,7 +88,7 @@ bool ParticleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
 void ParticleManager::CreateShortSmoke(Vector origin, QAngle angle) const
 {
-    RecipientFilter filter(g_JabronEZ.GetPlayerManager()->GetPlayers(), false, false);
+    RecipientFilter filter(g_JabronEZ.GetPlayerManager()->GetValidPlayers(), false, false);
     auto effectDispatch = g_JabronEZ.GetTemporaryEntities()->FindByName("EffectDispatch");
 
     effectDispatch->SetPropertyInt("m_iEffectName", _particleEffect);
