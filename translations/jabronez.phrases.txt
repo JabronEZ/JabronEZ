@@ -228,27 +228,27 @@
 
     "Grenades help menu menu title"
     {
-        "en"    "!menu - Open the grenades menu."
+        "en"    "!jezmenu - Open the grenades menu."
     }
 
     "Grenades help menu addspot title"
     {
-        "en"    "!addspot - Add current spot."
+        "en"    "!jezaddspot - Add current spot."
     }
 
     "Grenades help menu removespot title"
     {
-        "en"    "!removespot - Remove closest spot."
+        "en"    "!jezremovespot - Remove closest spot."
     }
 
     "Grenades help menu playback title"
     {
-        "en"    "!playback - Toggle playback state for grenades."
+        "en"    "!jezplayback - Toggle playback state for grenades."
     }
 
     "Grenades help menu fastforward title"
     {
-        "en"    "!fastforward - Skip grenade playback."
+        "en"    "!jezfastforward - Skip grenade playback."
     }
 
     "Grenades help menu grenadetype title"
@@ -263,22 +263,22 @@
 
     "Grenades help menu grenade throw tickrate title"
     {
-        "en"    "!tickrate - Toggle grenade throw tick rate."
+        "en"    "!jeztickrate - Toggle grenade throw tick rate."
     }
 
     "Grenades help menu short grenades title"
     {
-        "en"    "!shortgrenades - Toggle short grenades."
+        "en"    "!jezshortgrenades - Toggle short grenades."
     }
 
     "Grenades help menu god title"
     {
-        "en"    "!god - Toggle god mode."
+        "en"    "!jezgod - Toggle god mode."
     }
 
     "Grenades help menu noclip title"
     {
-        "en"    "!noclip - Toggle noclip mode."
+        "en"    "!jeznoclip - Toggle noclip mode."
     }
 
     "Grenades help menu playermode title"
@@ -318,27 +318,27 @@
 
     "Grenades help menu menu item"
     {
-        "en"    "!menu - Open the grenades menu."
+        "en"    "!jezmenu - Open the grenades menu."
     }
 
     "Grenades help menu addspot item"
     {
-        "en"    "!addspot - Add current spot."
+        "en"    "!jezaddspot - Add current spot."
     }
 
     "Grenades help menu removespot item"
     {
-        "en"    "!removespot - Remove closest spot."
+        "en"    "!jezremovespot - Remove closest spot."
     }
 
     "Grenades help menu playback item"
     {
-        "en"    "!playback - Toggle playback state for grenades."
+        "en"    "!jezplayback - Toggle playback state for grenades."
     }
 
     "Grenades help menu fastforward item"
     {
-        "en"    "!fastforward - Skip grenade playback."
+        "en"    "!jezfastforward - Skip grenade playback."
     }
 
     "Grenades help menu grenadetype item"
@@ -353,22 +353,22 @@
 
     "Grenades help menu grenade throw tickrate item"
     {
-        "en"    "!tickrate - Toggle grenade throw tickrate."
+        "en"    "!jeztickrate - Toggle grenade throw tickrate."
     }
 
     "Grenades help menu short grenades item"
     {
-        "en"    "!shortgrenades - Toggle short grenades."
+        "en"    "!jezshortgrenades - Toggle short grenades."
     }
 
     "Grenades help menu god item"
     {
-        "en"    "!god - Toggle god mode."
+        "en"    "!jezgod - Toggle god mode."
     }
 
     "Grenades help menu noclip item"
     {
-        "en"    "!noclip - Toggle noclip mode."
+        "en"    "!jeznoclip - Toggle noclip mode."
     }
 
     "Grenades help menu playermode item"
@@ -1269,25 +1269,25 @@
     "Grenades menu grenade throw tickrate"
     {
         "#format"   "{1:t}"
-        "en"        "Grenade Throw TickRate: {1} (!tickrate)"
+        "en"        "Grenade Throw TickRate: {1} (!jeztickrate)"
     }
 
     "Grenades menu short grenades"
     {
         "#format"   "{1:t}"
-        "en"        "Short Grenades: {1} (!shortgrenades)"
+        "en"        "Short Grenades: {1} (!jezshortgrenades)"
     }
 
     "Grenades menu god mode"
     {
         "#format"   "{1:t}"
-        "en"        "God Mode: {1} (!god)"
+        "en"        "God Mode: {1} (!jezgod)"
     }
 
     "Grenades menu noclip"
     {
         "#format"   "{1:t}"
-        "en"    "No Clip: {1} (!noclip)"
+        "en"    "No Clip: {1} (!jeznoclip)"
     }
 
     "Grenades menu flash mode"
@@ -1334,17 +1334,17 @@
 
     "Grenades menu add spot"
     {
-        "en"    "Add current spot (!addspot)"
+        "en"    "Add current spot (!jezaddspot)"
     }
 
     "Grenades menu remove spot"
     {
-        "en"    "Remove closest spot (!removespot)"
+        "en"    "Remove closest spot (!jezremovespot)"
     }
 
     "Grenades menu fast forward"
     {
-        "en"    "Fast forward playback (!fastforward)"
+        "en"    "Fast forward playback (!jezfastforward)"
     }
 
     "Grenades menu switch to grenade"
@@ -1377,7 +1377,7 @@
     "Grenades menu playback"
     {
         "#format"   "{1:t}"
-        "en"    "Playback: {1} (!playback)"
+        "en"    "Playback: {1} (!jezplayback)"
     }
 
     "Grenades menu on"

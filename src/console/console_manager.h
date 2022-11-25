@@ -34,6 +34,8 @@ public:
     bool RegisterConCommandBase(ConCommandBase *conCommandBase) override;
 
     void OnClientCommand(edict_t *edict, const CCommand &args);
+    void OnSayCommand(const CCommand &command);
+    void SetCommandClient(int client);
 
     void LoadConfiguration();
     void SendClientCommand(edict_t *edict, const char *command);
@@ -43,6 +45,9 @@ private:
     IServerGameClients *_serverClients { nullptr };
     IVEngineServer *_engineServer { nullptr };
     IServerPluginHelpers *_pluginHelpers { nullptr };
+    ConCommand *_sayCommand { nullptr };
+    ConCommand *_teamSayCommand { nullptr };
+    int _lastCommandClient { -1 };
 };
 
 #endif

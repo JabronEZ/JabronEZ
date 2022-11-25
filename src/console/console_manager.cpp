@@ -26,6 +26,8 @@
 #include "particle_manager.h"
 
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, edict_t *, const CCommand &);
+SH_DECL_HOOK1_void(ConCommand, Dispatch, SH_NOATTRIB, false, const CCommand &);
+SH_DECL_HOOK1_void(IServerGameClients, SetCommandClient, SH_NOATTRIB, false, int);
 
 ConsoleManager::ConsoleManager(IVEngineServer *engineServer)
 {
@@ -55,12 +57,37 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
     SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
 
+    _sayCommand = _cvarInterface->FindCommand("say");
+
+    if (_sayCommand == nullptr)
+    {
+        snprintf(error, maxlen, "Unable to find say command");
+        return false;
+    }
+
+    SH_ADD_HOOK(ConCommand, Dispatch, _sayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+
+    _teamSayCommand = _cvarInterface->FindCommand("say_team");
+
+    if (_teamSayCommand == nullptr)
+    {
+        snprintf(error, maxlen, "Unable to find say_team command");
+        return false;
+    }
+
+    SH_ADD_HOOK(ConCommand, Dispatch, _teamSayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+
+    SH_ADD_HOOK(IServerGameClients, SetCommandClient, _serverClients, SH_MEMBER(this, &ConsoleManager::SetCommandClient), false);
+
     return true;
 }
 
 ConsoleManager::~ConsoleManager()
 {
     SH_REMOVE_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
+    SH_REMOVE_HOOK(ConCommand, Dispatch, _sayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+    SH_REMOVE_HOOK(ConCommand, Dispatch, _teamSayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+    SH_REMOVE_HOOK(IServerGameClients, SetCommandClient, _serverClients, SH_MEMBER(this, &ConsoleManager::SetCommandClient), false);
     _cvarInterface = nullptr;
     _engineServer = nullptr;
 }
@@ -117,4 +144,88 @@ void ConsoleManager::SendClientCommand(edict_t *edict, const char *command)
 void ConsoleManager::LoadConfiguration()
 {
     _engineServer->ServerCommand("exec jabronez\n");
+}
+
+void ConsoleManager::OnSayCommand(const CCommand &command)
+{
+    if (command.ArgC() < 2)
+        RETURN_META(MRES_IGNORED);
+
+    auto clientIndex = _lastCommandClient + 1; // Convert the client index to the engine client index.
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(clientIndex);
+
+    if (player == nullptr)
+        RETURN_META(MRES_IGNORED);
+
+    auto message = command.Arg(1);
+
+    if (strcmp("!jezmenu", message) == 0)
+    {
+        g_JabronEZ.GetMenuManager()->OpenMenu(player, 1);
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezaddspot", message) == 0)
+    {
+        player->DoAddSpot();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezremovespot", message) == 0)
+    {
+        player->DoRemoveSpot();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezplayback", message) == 0)
+    {
+        player->DoTogglePlayback();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezfastforward", message) == 0)
+    {
+        player->DoFastForward();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jeztickrate", message) == 0)
+    {
+        player->DoToggleGrenadeThrowTickRate();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezshortgrenades", message) == 0)
+    {
+        player->DoToggleShortGrenades();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jezgod", message) == 0)
+    {
+        player->DoToggleGodMode();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    if (strcmp("!jeznoclip", message) == 0)
+    {
+        player->DoToggleNoClip();
+        player->RefreshGrenadesMenu();
+        RETURN_META(MRES_SUPERCEDE);
+    }
+
+    RETURN_META(MRES_IGNORED);
+}
+
+void ConsoleManager::SetCommandClient(int client)
+{
+    _lastCommandClient = client;
+    RETURN_META(MRES_IGNORED);
 }
