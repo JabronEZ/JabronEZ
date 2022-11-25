@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-linux32:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
@@ -25,22 +25,146 @@ jobs:
         with:
           path: 'sm'
           repository: alliedmodders/sourcemod
-          ref: 58f0ca475887dc697890431ec08a5e0 # This is the stable version of SourceMod that is currently released (v1.11)
+          ref: 1.11-dev # This is the stable version of SourceMod that is currently released (v1.11)
+          fetch-depth: 0
+          submodules: 'recursive'
       - name: Checkout MetaMod Source
         uses: actions/checkout@v3
         with:
           path: 'mm'
           repository: alliedmodders/metamod-source
-          ref: 4bdc2182b6c3b37c2628acea8fbca63 # This is the stable version of MetaMod: Source that is currently released (v1.11)
+          ref: 1.11-dev # This is the stable version of MetaMod: Source that is currently released (v1.11)
+          fetch-depth: 0
+          submodules: 'recursive'
       - name: Checkout HL2SDK CS:GO
         uses: actions/checkout@v3
         with:
           path: 'hl2sdk-csgo'
           repository: alliedmodders/hl2sdk
           ref: csgo # Build against the CS:GO version of the SDK
+          fetch-depth: 0
+          submodules: 'recursive'
       - name: Build
         working-directory: repo
         run: |
           mkdir build
           cd build
-          cmake -DSMSDK=$GITHUB_WORKSPACE/sm -DMMSOURCE=$GITHUB_WORKSPACE/mm -DHL2SDK=$GITHUB_WORKSPACE/hl2sdk-csgo
+          cmake .. -DSMSDK=$GITHUB_WORKSPACE/sm -DMMSOURCE=$GITHUB_WORKSPACE/mm -DHL2SDK=$GITHUB_WORKSPACE/hl2sdk-csgo
+          cmake --build . --target jabronez
+      - name: 'Upload SO as Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: binary-linux32
+          path: 'repo/build/jabronez.ext.so'
+          retention-days: 5
+  build-win32:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: 'repo'
+          fetch-depth: 0
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+          sdk: 10.0.19041.0
+          toolset: 14.33.31629
+      - name: Checkout SourceMod
+        uses: actions/checkout@v3
+        with:
+          path: 'sm'
+          repository: alliedmodders/sourcemod
+          ref: 1.11-dev # This is the stable version of SourceMod that is currently released (v1.11)
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout MetaMod Source
+        uses: actions/checkout@v3
+        with:
+          path: 'mm'
+          repository: alliedmodders/metamod-source
+          ref: 1.11-dev # This is the stable version of MetaMod: Source that is currently released (v1.11)
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout HL2SDK CS:GO
+        uses: actions/checkout@v3
+        with:
+          path: 'hl2sdk-csgo'
+          repository: alliedmodders/hl2sdk
+          ref: csgo # Build against the CS:GO version of the SDK
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Build
+        working-directory: repo
+        shell: cmd
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DSMSDK=%GITHUB_WORKSPACE%\sm -DMMSOURCE=%GITHUB_WORKSPACE%\mm -DHL2SDK=%GITHUB_WORKSPACE%\hl2sdk-csgo -G "CodeBlocks - NMake Makefiles"
+          cmake --build . --target jabronez
+      - name: 'Upload DLL as Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: binary-win32
+          path: 'repo/build/jabronez.ext.dll'
+          retention-days: 5
+  publish:
+    runs-on: ubuntu-22.04
+    needs: [build-win32, build-linux32]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: 'repo'
+          token: '${{ secrets.SERVICE_PAT }}'
+          fetch-depth: 0
+      - name: Download Linux Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: binary-linux32
+      - name: Download Windows Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: binary-win32
+      - name: Tag Release
+        working-directory: repo
+        run: |
+          JEZ_SHORT_COMMIT_HASH=$(git rev-parse --short HEAD)
+          JEZ_LONG_COMMIT_HASH=$(git rev-parse HEAD)
+          JEZ_VERSION=$(grep -oP '^\#define\sSMEXT_CONF_VERSION\s+\"([^\"]+)\"' src/smsdk_config.h | awk '{print $3}' | sed 's/\"//g')
+          JEZ_TAG="$JEZ_VERSION-$JEZ_SHORT_COMMIT_HASH"
+          git tag "$JEZ_TAG"
+          git push origin "$JEZ_TAG"
+          echo "JEZ_TAG=$JEZ_TAG" >> $GITHUB_ENV
+          echo "JEZ_LONG_COMMIT_HASH=$JEZ_LONG_COMMIT_HASH" >> $GITHUB_ENV
+      - name: Create Package
+        run: |
+          ls -R
+          mkdir dist
+          mkdir -p dist/addons/sourcemod/extensions
+          mkdir -p dist/addons/sourcemod/gamedata
+          mkdir -p dist/addons/sourcemod/translations
+          mkdir -p dist/cfg
+          mkdir -p dist/particles
+          cp jabronez.ext.so dist/addons/sourcemod/extensions/jabronez.ext.so
+          cp jabronez.ext.dll dist/addons/sourcemod/extensions/jabronez.ext.dll
+          cp repo/cfg/jabronez.cfg dist/cfg/jabronez.cfg
+          cp repo/particles/jabronez_particles_0001.pcf dist/particles/jabronez_particles_0001.pcf
+          cp repo/gamedata/jabronez.games.txt dist/addons/sourcemod/gamedata/jabronez.games.txt
+          cp repo/translations/jabronez.phrases.txt dist/addons/sourcemod/translations/jabronez.phrases.txt
+          (cd dist && zip -r ../jabronez-${{ env.JEZ_TAG }}.zip .)
+      - name: 'Upload ZIP as Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: 'jabronez-${{ env.JEZ_TAG }}.zip'
+          retention-days: 5
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: 'See the commit hash for information.'
+          token: ${{ secrets.SERVICE_PAT }}
+          tag_name: '${{ env.JEZ_TAG }}'
+          target_commitish: '${{ env.JEZ_LONG_COMMIT_HASH }}'
+          name: '${{ env.JEZ_TAG }}'
+          files: 'jabronez-${{ env.JEZ_TAG }}.zip'
+        env:
+          GITHUB_REPOSITORY: JabronEZ/JabronEZ

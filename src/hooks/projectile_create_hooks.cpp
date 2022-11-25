@@ -173,7 +173,7 @@ CBaseEntity* Hook_Callback_FullStackProjectileCreate(
         case GrenadeType_MOLOTOV:
         case GrenadeType_INCENDIARY:
             molotovProjectile = Hook_Call_MolotovProjectileCreate(originLocal, angleLocal, velocity, angularImpulse, player, grenadeItemDefinitionIndex);
-            MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
+            Hooks_MaybeSetupCMolotovProjectileDetonateHook(molotovProjectile);
             return molotovProjectile;
         default:
             return nullptr;

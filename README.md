@@ -33,4 +33,5 @@ Take special care to check out to the appropriate branches as mentioned above, a
 mkdir build
 cd build
 cmake .. -DSMSDK=/home/anthony/Git/alliedmodders/sourcemod -DMMSOURCE=/home/anthony/Git/alliedmodders/mmsource-1.10 -DHL2SDK=/home/anthony/Git/alliedmodders/hl2sdk-csgo
+make
 ```
