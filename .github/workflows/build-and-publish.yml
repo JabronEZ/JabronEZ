@@ -16,28 +16,28 @@ jobs:
           path: 'repo'
           fetch-depth: 0
       - name: Install Build Dependencies
-        run: sudo apt-get -y install clang lib32z1-dev libc6-dev-i386 linux-libc-dev:i386 g++-multilib cmake
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get -qq update
+          sudo apt-get -y install clang lib32z1-dev libc6-dev-i386 linux-libc-dev:i386 g++-multilib cmake
       - name: Checkout SourceMod
         uses: actions/checkout@v3
         with:
           path: 'sm'
           repository: alliedmodders/sourcemod
           ref: 58f0ca475887dc697890431ec08a5e0 # This is the stable version of SourceMod that is currently released (v1.11)
-          fetch-depth: 0
       - name: Checkout MetaMod Source
         uses: actions/checkout@v3
         with:
           path: 'mm'
           repository: alliedmodders/metamod-source
           ref: 4bdc2182b6c3b37c2628acea8fbca63 # This is the stable version of MetaMod: Source that is currently released (v1.11)
-          fetch-depth: 0
       - name: Checkout HL2SDK CS:GO
         uses: actions/checkout@v3
         with:
           path: 'hl2sdk-csgo'
           repository: alliedmodders/hl2sdk
           ref: csgo # Build against the CS:GO version of the SDK
-          fetch-depth: 0
       - name: Build
         working-directory: repo
         run: |
