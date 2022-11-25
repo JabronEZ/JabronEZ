@@ -166,6 +166,18 @@ void JabronEZ::SDK_OnUnload()
         _entityUtilities = nullptr;
     }
 
+    if (_drawSpotsTimer != nullptr)
+    {
+        delete _drawSpotsTimer;
+        _drawSpotsTimer = nullptr;
+    }
+
+    if (_gameEventsManager != nullptr)
+    {
+        delete _gameEventsManager;
+        _gameEventsManager = nullptr;
+    }
+
     if (_temporaryEntities != nullptr)
     {
         delete _temporaryEntities;

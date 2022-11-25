@@ -52,6 +52,24 @@ Player::Player(int clientIndex, int userId, IGamePlayer *gamePlayer, IGameHelper
 
 Player::~Player()
 {
+    if (_grenadeTriggerPlaybackTimer != nullptr)
+    {
+        _grenadeTriggerPlaybackTimer->KillTimerSafely();
+        _grenadeTriggerPlaybackTimer = nullptr;
+    }
+
+    if (_grenadeGotoNextSpotOrFinishTimer != nullptr)
+    {
+        _grenadeGotoNextSpotOrFinishTimer->KillTimerSafely();
+        _grenadeGotoNextSpotOrFinishTimer = nullptr;
+    }
+
+    if (_grenadeHandlePlaybackTimer != nullptr)
+    {
+        _grenadeHandlePlaybackTimer->KillTimerSafely();
+        _grenadeHandlePlaybackTimer = nullptr;
+    }
+
     _gamePlayer = nullptr;
     _grenadeSpots.clear();
     _gameHelpers = nullptr;

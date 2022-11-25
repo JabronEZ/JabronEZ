@@ -44,7 +44,7 @@ bool GameEventsManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
 
 GameEventsManager::~GameEventsManager()
 {
-    if (_gameEventsManager)
+    if (_gameEventsManager != nullptr)
         _gameEventsManager->RemoveListener(this);
 }
 
