@@ -1,7 +1,8 @@
-name: Build & Publish
+
+name: PR Validation
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -114,7 +115,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           path: 'repo'
-          token: '${{ secrets.SERVICE_PAT }}'
           fetch-depth: 0
       - name: Download Linux Binary
         uses: actions/download-artifact@v3
@@ -127,14 +127,9 @@ jobs:
       - name: Tag Release
         working-directory: repo
         run: |
-          JEZ_SHORT_COMMIT_HASH=$(git rev-parse --short HEAD)
-          JEZ_LONG_COMMIT_HASH=$(git rev-parse HEAD)
           JEZ_VERSION=$(grep -oP '^\#define\sSMEXT_CONF_VERSION\s+\"([^\"]+)\"' src/smsdk_config.h | awk '{print $3}' | sed 's/\"//g')
-          JEZ_TAG="$JEZ_VERSION-$JEZ_SHORT_COMMIT_HASH"
-          git tag "$JEZ_TAG"
-          git push origin "$JEZ_TAG"
+          JEZ_TAG="$JEZ_VERSION-pr"
           echo "JEZ_TAG=$JEZ_TAG" >> $GITHUB_ENV
-          echo "JEZ_LONG_COMMIT_HASH=$JEZ_LONG_COMMIT_HASH" >> $GITHUB_ENV
       - name: Create Package
         run: |
           ls -R
@@ -158,14 +153,3 @@ jobs:
           name: dist
           path: 'jabronez-${{ env.JEZ_TAG }}.zip'
           retention-days: 90
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: 'See the commit hash for information.'
-          token: ${{ secrets.SERVICE_PAT }}
-          tag_name: '${{ env.JEZ_TAG }}'
-          target_commitish: '${{ env.JEZ_LONG_COMMIT_HASH }}'
-          name: '${{ env.JEZ_TAG }}'
-          files: 'jabronez-${{ env.JEZ_TAG }}.zip'
-        env:
-          GITHUB_REPOSITORY: JabronEZ/JabronEZ
