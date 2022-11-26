@@ -55,39 +55,56 @@ bool ConsoleManager::Init(ISmmAPI *ismm, char *error, size_t maxlen)
     GET_V_IFACE_CURRENT(GetServerFactory, _serverClients, IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
     GET_V_IFACE_ANY(GetEngineFactory, _pluginHelpers, IServerPluginHelpers, INTERFACEVERSION_ISERVERPLUGINHELPERS);
 
-    SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
+    auto sayCommand = _cvarInterface->FindCommand("say");
 
-    _sayCommand = _cvarInterface->FindCommand("say");
-
-    if (_sayCommand == nullptr)
+    if (sayCommand == nullptr)
     {
         snprintf(error, maxlen, "Unable to find say command");
         return false;
     }
 
-    SH_ADD_HOOK(ConCommand, Dispatch, _sayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+    auto teamSayCommand = _cvarInterface->FindCommand("say_team");
 
-    _teamSayCommand = _cvarInterface->FindCommand("say_team");
-
-    if (_teamSayCommand == nullptr)
+    if (teamSayCommand == nullptr)
     {
         snprintf(error, maxlen, "Unable to find say_team command");
         return false;
     }
 
-    SH_ADD_HOOK(ConCommand, Dispatch, _teamSayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
-
-    SH_ADD_HOOK(IServerGameClients, SetCommandClient, _serverClients, SH_MEMBER(this, &ConsoleManager::SetCommandClient), false);
+    _onClientCommandHookId = SH_ADD_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
+    _sayCommandHookId = SH_ADD_HOOK(ConCommand, Dispatch, sayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+    _teamSayCommandHookId = SH_ADD_HOOK(ConCommand, Dispatch, teamSayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
+    _setCommandClientHookId = SH_ADD_HOOK(IServerGameClients, SetCommandClient, _serverClients, SH_MEMBER(this, &ConsoleManager::SetCommandClient), false);
 
     return true;
 }
 
 ConsoleManager::~ConsoleManager()
 {
-    SH_REMOVE_HOOK(IServerGameClients, ClientCommand, _serverClients, SH_MEMBER(this, &ConsoleManager::OnClientCommand), false);
-    SH_REMOVE_HOOK(ConCommand, Dispatch, _sayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
-    SH_REMOVE_HOOK(ConCommand, Dispatch, _teamSayCommand, SH_MEMBER(this, &ConsoleManager::OnSayCommand), false);
-    SH_REMOVE_HOOK(IServerGameClients, SetCommandClient, _serverClients, SH_MEMBER(this, &ConsoleManager::SetCommandClient), false);
+    if (_onClientCommandHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(_onClientCommandHookId);
+        _onClientCommandHookId = 0;
+    }
+
+    if (_sayCommandHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(_sayCommandHookId);
+        _sayCommandHookId = 0;
+    }
+
+    if (_teamSayCommandHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(_teamSayCommandHookId);
+        _teamSayCommandHookId = 0;
+    }
+
+    if (_setCommandClientHookId != 0)
+    {
+        SH_REMOVE_HOOK_ID(_setCommandClientHookId);
+        _setCommandClientHookId = 0;
+    }
+
     _cvarInterface = nullptr;
     _engineServer = nullptr;
 }
@@ -148,11 +165,10 @@ void ConsoleManager::LoadConfiguration()
 
 void ConsoleManager::OnSayCommand(const CCommand &command)
 {
-    if (command.ArgC() < 2)
+    if (command.ArgC() < 2 || _lastCommandClient <= 0)
         RETURN_META(MRES_IGNORED);
 
-    auto clientIndex = _lastCommandClient + 1; // Convert the client index to the engine client index.
-    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(clientIndex);
+    auto player = g_JabronEZ.GetPlayerManager()->GetPlayerByClientIndex(_lastCommandClient);
 
     if (player == nullptr || !player->IsValid())
         RETURN_META(MRES_IGNORED);
@@ -224,8 +240,9 @@ void ConsoleManager::OnSayCommand(const CCommand &command)
     RETURN_META(MRES_IGNORED);
 }
 
-void ConsoleManager::SetCommandClient(int client)
+void ConsoleManager::SetCommandClient(int clientSlot)
 {
-    _lastCommandClient = client;
+    // Convert the client slot to the client entity index.
+    _lastCommandClient = clientSlot + 1;
     RETURN_META(MRES_IGNORED);
 }

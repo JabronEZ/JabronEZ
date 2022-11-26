@@ -35,7 +35,7 @@ public:
 
     void OnClientCommand(edict_t *edict, const CCommand &args);
     void OnSayCommand(const CCommand &command);
-    void SetCommandClient(int client);
+    void SetCommandClient(int clientSlot);
 
     void LoadConfiguration();
     void SendClientCommand(edict_t *edict, const char *command);
@@ -45,8 +45,10 @@ private:
     IServerGameClients *_serverClients { nullptr };
     IVEngineServer *_engineServer { nullptr };
     IServerPluginHelpers *_pluginHelpers { nullptr };
-    ConCommand *_sayCommand { nullptr };
-    ConCommand *_teamSayCommand { nullptr };
+    int _onClientCommandHookId { 0 };
+    int _sayCommandHookId { 0 };
+    int _teamSayCommandHookId { 0 };
+    int _setCommandClientHookId { 0 };
     int _lastCommandClient { -1 };
 };
 
