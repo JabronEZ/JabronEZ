@@ -147,6 +147,21 @@ public:
 
 private:
     unsigned int GetMoveTypeOffset() const;
+    bool HandleSwitchGrenade(
+            CUserCmd *command,
+            const char *weaponClassName,
+            const char *activeWeaponClassName,
+            const SourceHook::CVector<CBaseEntity*>& allWeapons);
+    bool HandleSwitchPrimaryWeapon(
+            CUserCmd *command,
+            const char *weaponClassName,
+            const char *activeWeaponClassName,
+            const SourceHook::CVector<CBaseEntity*>& allWeapons);
+    bool HandleSwitchSecondaryWeapon(
+            CUserCmd *command,
+            const char *weaponClassName,
+            const char *activeWeaponClassName,
+            const SourceHook::CVector<CBaseEntity*>& allWeapons);
 
     IGameHelpers *_gameHelpers { nullptr };
     ITimerSystem *_timerSystem { nullptr };

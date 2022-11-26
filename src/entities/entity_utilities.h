@@ -40,6 +40,8 @@ public:
     CBaseEntity *FindEntityInListByClassName(const SourceHook::CVector<CBaseEntity *>& searchList, const char *className) const;
     Vector GetEntityAbsOrigin(CBaseEntity *entity) const;
     void KillEntity(CBaseEntity *entity);
+    bool IsPrimaryWeaponClassName(const char *className) const;
+    bool IsSecondaryWeaponClassName(const char *className) const;
 
 private:
     IGameHelpers *_gameHelpers { nullptr };
