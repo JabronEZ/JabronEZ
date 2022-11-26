@@ -231,3 +231,47 @@ Vector EntityUtilities::GetEntityAbsOrigin(CBaseEntity *entity) const
 
     return { originVector->x, originVector->y, originVector->z };
 }
+
+bool EntityUtilities::IsPrimaryWeaponClassName(const char *className) const
+{
+    // FIXME: Is there a way to figure this out dynamically without having to list all primary weapons here?
+    return strcmp("weapon_ak47", className) == 0
+            || strcmp("weapon_awp", className) == 0
+            || strcmp("weapon_m4a1", className) == 0
+            || strcmp("weapon_m4a1_silencer", className) == 0
+            || strcmp("weapon_sg556", className) == 0
+            || strcmp("weapon_aug", className) == 0
+            || strcmp("weapon_famas", className) == 0
+            || strcmp("weapon_g3sg1", className) == 0
+            || strcmp("weapon_scar20", className) == 0
+            || strcmp("weapon_galilar", className) == 0
+            || strcmp("weapon_ssg08", className) == 0
+            || strcmp("weapon_bizon", className) == 0
+            || strcmp("weapon_mac10", className) == 0
+            || strcmp("weapon_mp7", className) == 0
+            || strcmp("weapon_mp9", className) == 0
+            || strcmp("weapon_p90", className) == 0
+            || strcmp("weapon_ump45", className) == 0
+            || strcmp("weapon_mp5sd", className) == 0
+            || strcmp("weapon_m249", className) == 0
+            || strcmp("weapon_negev", className) == 0
+            || strcmp("weapon_sawedoff", className) == 0
+            || strcmp("weapon_mag7", className) == 0
+            || strcmp("weapon_nova", className) == 0
+            || strcmp("weapon_xm1014", className) == 0;
+}
+
+bool EntityUtilities::IsSecondaryWeaponClassName(const char *className) const
+{
+    // FIXME: Is there a way to figure this out dynamically without having to list all secondary weapons here?
+    return strcmp("weapon_usp_silencer", className) == 0
+            || strcmp("weapon_deagle", className) == 0
+            || strcmp("weapon_elite", className) == 0
+            || strcmp("weapon_fiveseven", className) == 0
+            || strcmp("weapon_glock", className) == 0
+            || strcmp("weapon_hkp2000", className) == 0
+            || strcmp("weapon_p250", className) == 0
+            || strcmp("weapon_tec9", className) == 0
+            || strcmp("weapon_cz75a", className) == 0
+            || strcmp("weapon_revolver", className) == 0;
+}

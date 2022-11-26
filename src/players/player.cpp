@@ -521,6 +521,20 @@ bool Player::OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
     auto activeWeaponClassName = _gameHelpers->GetEntityClassname(currentActiveWeapon);
     auto allWeapons = GetAllWeapons();
 
+    if (HandleSwitchGrenade(command, weaponClassName, activeWeaponClassName, allWeapons)
+        || HandleSwitchPrimaryWeapon(command, weaponClassName, activeWeaponClassName, allWeapons)
+        || HandleSwitchSecondaryWeapon(command, weaponClassName, activeWeaponClassName, allWeapons))
+        return true;
+
+    return true;
+}
+
+bool Player::HandleSwitchGrenade(
+        CUserCmd *command,
+        const char *weaponClassName,
+        const char *activeWeaponClassName,
+        const SourceHook::CVector<CBaseEntity*>& allWeapons)
+{
     if (strcmp(weaponClassName, "weapon_incgrenade") == 0 && strcmp(activeWeaponClassName, "weapon_decoy") == 0)
     {
         auto molotovEntity = g_JabronEZ.GetEntityUtilities()->FindEntityInListByClassName(allWeapons, "weapon_molotov");
@@ -551,6 +565,100 @@ bool Player::OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
         return true;
     }
 
+    return false;
+}
+
+bool Player::HandleSwitchPrimaryWeapon(
+        CUserCmd *command,
+        const char *weaponClassName,
+        const char *activeWeaponClassName,
+        const SourceHook::CVector<CBaseEntity*>& allWeapons)
+{
+    bool isAttemptingToSwitchToPrimaryWeapon = g_JabronEZ.GetEntityUtilities()->IsPrimaryWeaponClassName(weaponClassName);
+    bool isAlreadyHoldingPrimaryWeapon = g_JabronEZ.GetEntityUtilities()->IsPrimaryWeaponClassName(activeWeaponClassName);
+
+    if (!isAttemptingToSwitchToPrimaryWeapon || !isAlreadyHoldingPrimaryWeapon)
+        return false;
+
+    SourceHook::CVector<CBaseEntity*> primaryWeapons;
+    primaryWeapons.clear();
+
+    size_t currentWeaponIndex = 0;
+    for (auto weaponEntity : allWeapons)
+    {
+        if (weaponEntity == nullptr)
+            continue;
+
+        const char *checkWeaponClassName = _gameHelpers->GetEntityClassname(weaponEntity);
+
+        if (g_JabronEZ.GetEntityUtilities()->IsPrimaryWeaponClassName(checkWeaponClassName))
+        {
+            size_t nextIndex = primaryWeapons.size();
+            primaryWeapons.push_back(weaponEntity);
+
+            if (strcmp(checkWeaponClassName, activeWeaponClassName) == 0)
+                currentWeaponIndex = nextIndex;
+        }
+    }
+
+    if (primaryWeapons.size() <= 1)
+        return false;
+
+    // Select the next primary weapon index, wrapping around if we hit the end.
+    auto nextWeaponIndex = currentWeaponIndex + 1;
+
+    if (nextWeaponIndex >= primaryWeapons.size())
+        nextWeaponIndex = 0;
+
+    auto desiredWeaponEntity = primaryWeapons.at(nextWeaponIndex);
+    command->weaponselect = g_JabronEZ.GetEntityUtilities()->GetIndexByEntity(desiredWeaponEntity);
+    return true;
+}
+
+bool Player::HandleSwitchSecondaryWeapon(
+        CUserCmd *command,
+        const char *weaponClassName,
+        const char *activeWeaponClassName,
+        const SourceHook::CVector<CBaseEntity*>& allWeapons)
+{
+    bool isAttemptingToSwitchToSecondaryWeapon = g_JabronEZ.GetEntityUtilities()->IsSecondaryWeaponClassName(weaponClassName);
+    bool isAlreadyHoldingSecondaryWeapon = g_JabronEZ.GetEntityUtilities()->IsSecondaryWeaponClassName(activeWeaponClassName);
+    
+    if (!isAttemptingToSwitchToSecondaryWeapon || !isAlreadyHoldingSecondaryWeapon)
+        return false;
+
+    SourceHook::CVector<CBaseEntity*> secondaryWeapons;
+    secondaryWeapons.clear();
+
+    size_t currentWeaponIndex = 0;
+    for (auto weaponEntity : allWeapons)
+    {
+        if (weaponEntity == nullptr)
+            continue;
+
+        const char *checkWeaponClassName = _gameHelpers->GetEntityClassname(weaponEntity);
+
+        if (g_JabronEZ.GetEntityUtilities()->IsSecondaryWeaponClassName(checkWeaponClassName))
+        {
+            size_t nextIndex = secondaryWeapons.size();
+            secondaryWeapons.push_back(weaponEntity);
+
+            if (strcmp(checkWeaponClassName, activeWeaponClassName) == 0)
+                currentWeaponIndex = nextIndex;
+        }
+    }
+
+    if (secondaryWeapons.size() <= 1)
+        return false;
+
+    // Select the next secondary weapon index, wrapping around if we hit the end.
+    auto nextWeaponIndex = currentWeaponIndex + 1;
+
+    if (nextWeaponIndex >= secondaryWeapons.size())
+        nextWeaponIndex = 0;
+
+    auto desiredWeaponEntity = secondaryWeapons.at(nextWeaponIndex);
+    command->weaponselect = g_JabronEZ.GetEntityUtilities()->GetIndexByEntity(desiredWeaponEntity);
     return true;
 }
 
