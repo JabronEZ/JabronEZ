@@ -113,7 +113,8 @@ public:
     CBaseEntity *GetEntity() const;
     SourceHook::CVector<CBaseEntity*> GetAllWeapons() const;
 
-    void OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType);
+    void OnProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType);
+    void OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType, CBaseEntity *projectileEntity);
     void OnGrenadeDetonationEvent(GrenadeType grenadeType, cell_t projectileReference);
     bool OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper);
 

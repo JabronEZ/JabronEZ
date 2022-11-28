@@ -49,14 +49,14 @@ extern void *Hook_Original_MolotovProjectileCreate;
 extern void *Hook_Original_DecoyProjectileCreate;
 extern void *Hook_Original_HEGrenadeProjectileCreate;
 
-CBaseEntity *Hook_Call_SmokeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
-CBaseEntity *Hook_Call_FlashbangProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
-CBaseEntity *Hook_Call_MolotovProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
-CBaseEntity *Hook_Call_DecoyProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
-CBaseEntity *Hook_Call_HEGrenadeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_SmokeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_FlashbangProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_MolotovProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_DecoyProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
+CBaseEntity *Hook_Call_HEGrenadeProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
 
 CBaseEntity* __cdecl Hook_Callback_ProjectileCreate(const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
-CBaseEntity* Hook_Call_Internal_ProjectileCreate(void *originalAddress, const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, void* player, int grenadeItemDefinitionIndex);
+CBaseEntity* Hook_Call_Internal_ProjectileCreate(void *originalAddress, const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, CBaseEntity *playerEntity, int grenadeItemDefinitionIndex);
 #else
 JEZ_HOOK_STATIC_DECL6(
         SmokeProjectileCreate,
@@ -70,8 +70,8 @@ JEZ_HOOK_STATIC_DECL6(
         velocity,
         const Vector&,
         angularImpulse,
-        void*,
-        player,
+        CBaseEntity*,
+        playerEntity,
         int,
         grenadeItemDefinitionIndex);
 
@@ -87,8 +87,8 @@ JEZ_HOOK_STATIC_DECL6(
         velocity,
         const Vector&,
         angularImpulse,
-        void*,
-        player,
+        CBaseEntity*,
+        playerEntity,
         int,
         grenadeItemDefinitionIndex);
 
@@ -104,8 +104,8 @@ JEZ_HOOK_STATIC_DECL6(
         velocity,
         const Vector&,
         angularImpulse,
-        void*,
-        player,
+        CBaseEntity*,
+        playerEntity,
         int,
         grenadeItemDefinitionIndex);
 
@@ -121,8 +121,8 @@ JEZ_HOOK_STATIC_DECL6(
         velocity,
         const Vector&,
         angularImpulse,
-        void*,
-        player,
+        CBaseEntity*,
+        playerEntity,
         int,
         grenadeItemDefinitionIndex);
 
@@ -138,8 +138,8 @@ JEZ_HOOK_STATIC_DECL6(
         velocity,
         const Vector&,
         angularImpulse,
-        void*,
-        player,
+        CBaseEntity*,
+        playerEntity,
         int,
         grenadeItemDefinitionIndex);
 
