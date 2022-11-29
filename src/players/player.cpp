@@ -488,7 +488,7 @@ QAngle Player::GetEyeAngles() const
     return Callables_Call_GetEyeAngles(playerEntity);
 }
 
-void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType)
+void Player::OnProjectileCreate(const Vector &origin, const QAngle &angle, const Vector &velocity, const Vector &angularImpulse, GrenadeType grenadeType)
 {
     if(GetGrenadePlaybackStarted() || !GetGrenadePlaybackEnabled() || GetGrenadeAwaitingDetonation())
         return;
@@ -499,6 +499,16 @@ void Player::OnProjectileCreated(const Vector &origin, const QAngle &angle, cons
 
     SetProjectileParameters(ProjectileParameters(origin, angle, velocity, angularImpulse));
     SetGrenadeThrowerSpot(Spot(GetAbsOrigin(), GetEyeAngles()));
+}
+
+void Player::OnProjectileCreated(
+        const Vector &origin,
+        const QAngle &angle,
+        const Vector &velocity,
+        const Vector &angularImpulse,
+        GrenadeType grenadeType,
+        CBaseEntity *projectileEntity)
+{
 }
 
 bool Player::OnRunCmd(CUserCmd *command, IMoveHelper *moveHelper)
