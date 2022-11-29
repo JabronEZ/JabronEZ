@@ -51,6 +51,8 @@ void Hook_Callback_CBaseCSGrenadeStartGrenadeThrow()
         throwTimeOffset = sendpropInfo.actual_offset;
     }
 
+    // Thanks to @rtldg for finding this trick!
+    // For more information, see: https://github.com/rtldg/64tick_nades
     float newValue = g_JabronEZ.GetGlobalVars()->curtime + 0.109375f;
     *(float*)((uint8_t *)weaponEntity + throwTimeOffset) = newValue;
 
